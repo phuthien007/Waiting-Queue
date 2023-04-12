@@ -15,6 +15,7 @@ import { EnrollQueue } from './enroll-queues/entities/enroll-queue.entity';
 import { Event } from './events/entities/event.entity';
 import { SessionsModule } from './sessions/sessions.module';
 import { Session } from './sessions/entities/session.entity';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -40,6 +41,11 @@ import { Session } from './sessions/entities/session.entity';
     }),
     TenantsModule,
     SessionsModule,
+    AuthModule,
+    EventsModule,
+    QueuesModule,
+    EnrollQueuesModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
