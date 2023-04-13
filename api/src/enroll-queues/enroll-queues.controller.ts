@@ -1,8 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { EnrollQueuesService } from './enroll-queues.service';
 import { CreateEnrollQueueDto } from './dto/create-enroll-queue.dto';
 import { UpdateEnrollQueueDto } from './dto/update-enroll-queue.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('enroll-queues')
 @Controller('enroll-queues')
 export class EnrollQueuesController {
   constructor(private readonly enrollQueuesService: EnrollQueuesService) {}
@@ -23,7 +33,10 @@ export class EnrollQueuesController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateEnrollQueueDto: UpdateEnrollQueueDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateEnrollQueueDto: UpdateEnrollQueueDto,
+  ) {
     return this.enrollQueuesService.update(+id, updateEnrollQueueDto);
   }
 
