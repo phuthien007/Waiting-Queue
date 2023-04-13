@@ -1,7 +1,7 @@
 import { BaseEntity } from 'src/common/base.entity';
 import { commonEnum } from 'src/common/enum';
 import { Queue } from 'src/queues/entities/queue.entity';
-import { Tenant } from 'src/tenants/entities/tenant.entity';
+import { Tenant } from 'src/tenants/entities/tenants.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
   Column,

@@ -2,7 +2,7 @@ import { BaseEntity } from 'src/common/base.entity';
 import { RoleEnum, commonEnum } from 'src/common/enum';
 import { Event } from 'src/events/entities/event.entity';
 import { Queue } from 'src/queues/entities/queue.entity';
-import { Tenant } from 'src/tenants/entities/tenant.entity';
+import { Tenant } from 'src/tenants/entities/tenants.entity';
 import {
   Column,
   Entity,

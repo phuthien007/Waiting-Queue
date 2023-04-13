@@ -24,7 +24,7 @@ export class TenantsController {
   }
 
   @Get()
-  findAll(@Param() params?: TenantDto) {
+  findAll() {
     return this.tenantsService.findAll();
   }
 
