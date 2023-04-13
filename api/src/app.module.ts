@@ -9,13 +9,14 @@ import { EventsModule } from './events/events.module';
 import { QueuesModule } from './queues/queues.module';
 import { EnrollQueuesModule } from './enroll-queues/enroll-queues.module';
 import { User } from './users/entities/user.entity';
-import { Tenant } from './tenants/entities/tenant.entity';
+import { Tenant } from './tenants/entities/tenants.entity';
 import { Queue } from './queues/entities/queue.entity';
 import { EnrollQueue } from './enroll-queues/entities/enroll-queue.entity';
 import { Event } from './events/entities/event.entity';
 import { SessionsModule } from './sessions/sessions.module';
 import { Session } from './sessions/entities/session.entity';
 import { UsersModule } from './users/users.module';
+import { LoggerModule } from './logger/logger.module';
 
 @Module({
   imports: [
@@ -33,8 +34,8 @@ import { UsersModule } from './users/users.module';
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
         synchronize: configService.get<boolean>('DB_SYNC'),
-        logging: configService.get<boolean>('DB_LOGGING'),
-
+        logging: true,
+        logger: 'simple-console',
         // entities
         entities: [User, Tenant, Queue, EnrollQueue, Event, Session],
       }),
@@ -46,6 +47,7 @@ import { UsersModule } from './users/users.module';
     QueuesModule,
     EnrollQueuesModule,
     UsersModule,
+    LoggerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
