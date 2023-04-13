@@ -1,3 +1,5 @@
+import { APP_FILTER } from '@nestjs/core';
+import { AllExceptionsFilter } from './exception/exception.filter';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -17,6 +19,7 @@ import { SessionsModule } from './sessions/sessions.module';
 import { Session } from './sessions/entities/session.entity';
 import { UsersModule } from './users/users.module';
 import { LoggerModule } from './logger/logger.module';
+import { ExceptionModule } from './exception/exception.module';
 
 @Module({
   imports: [
@@ -48,8 +51,15 @@ import { LoggerModule } from './logger/logger.module';
     EnrollQueuesModule,
     UsersModule,
     LoggerModule,
+    ExceptionModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionsFilter,
+    },
+    AppService,
+  ],
 })
 export class AppModule {}
