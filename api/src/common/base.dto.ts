@@ -1,16 +1,21 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Expose } from 'class-transformer';
 
 export abstract class BaseDto {
   @ApiPropertyOptional()
-  id: string;
+  @Expose()
+  id: number;
 
   // @ApiProperty()
-  @ApiPropertyOptional()
+  @Expose()
+  @ApiPropertyOptional({
+    default: new Date(),
+  })
   createdAt: Date;
   // @ApiProperty()
-  @ApiPropertyOptional()
+  @Expose()
+  @ApiPropertyOptional({
+    default: new Date(),
+  })
   updatedAt: Date;
-  // @ApiProperty()
-  @ApiPropertyOptional()
-  deletedAt: Date;
 }

@@ -6,11 +6,19 @@ import {
   Patch,
   Param,
   Delete,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiCreatedResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { UserDto } from './dto/user.dto';
 
 @ApiTags('users')
 @Controller('users')
@@ -18,27 +26,49 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
+  @ApiCreatedResponse({ type: UserDto })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  create(@Body() createUserDto: CreateUserDto): Promise<UserDto> {
     return this.usersService.create(createUserDto);
+    // return null;
   }
 
   @Get()
-  findAll() {
+  @ApiOkResponse({ type: [UserDto] })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  findAll(): Promise<UserDto[]> {
     return this.usersService.findAll();
+    // return null;
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  @ApiOkResponse({ type: UserDto })
+  @ApiNotFoundResponse({ description: 'Not Found' })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  findOne(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  @ApiOkResponse({ type: UserDto })
+  @ApiNotFoundResponse({ description: 'Not Found' })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    // remove field not update
+    delete updateUserDto.tenantCode;
+    delete updateUserDto.email;
+    delete updateUserDto.id;
     return this.usersService.update(+id, updateUserDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  @ApiNotFoundResponse({ description: 'Not Found' })
+  @ApiOkResponse({ description: 'OK' })
+  remove(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.remove(+id);
   }
 }

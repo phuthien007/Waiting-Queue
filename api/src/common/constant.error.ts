@@ -6,11 +6,17 @@ export const ERROR_TYPE = {
   PATTERN: 'pattern',
   MIN: 'min',
   MAX: 'max',
+  EXIST: 'exist',
+  NOT_FOUND: 'not_found',
 };
 
 export const transformError = (field: string, type: string) => {
   // using vietnamese message
   switch (type) {
+    case ERROR_TYPE.NOT_FOUND:
+      return `${field} không tìm thấy`;
+    case ERROR_TYPE.EXIST:
+      return `${field} đã tồn tại`;
     case ERROR_TYPE.REQUIRED:
       return `${field} không được để trống`;
     case ERROR_TYPE.MINLENGTH:

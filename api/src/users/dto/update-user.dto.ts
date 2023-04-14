@@ -1,11 +1,19 @@
-import { PartialType } from '@nestjs/mapped-types';
 import { CreateUserDto } from './create-user.dto';
+import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
+import { IsArray, IsDateString, IsNumber, IsString } from 'class-validator';
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
-  resetTokenPassword: string;
+  @ApiPropertyOptional()
+  @IsString()
+  resetTokenPassword?: string;
 
-  resetDatePassword: Date;
+  @ApiPropertyOptional()
+  @IsDateString()
+  resetDatePassword?: Date;
 
-  tenantId: number;
-  queueIds: number[];
+  @ApiPropertyOptional()
+  @IsArray({
+    message: 'queueIds must be an array',
+  })
+  queueIds?: number[];
 }

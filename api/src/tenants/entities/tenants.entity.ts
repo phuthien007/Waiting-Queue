@@ -4,6 +4,7 @@ import { BaseEntity } from 'src/common/base.entity';
 import { RoleEnum, commonEnum } from 'src/common/enum';
 import { User } from 'src/users/entities/user.entity';
 import {
+  BeforeInsert,
   Column,
   Entity,
   OneToMany,
