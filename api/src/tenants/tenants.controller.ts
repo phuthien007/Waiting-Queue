@@ -8,6 +8,7 @@ import {
   Delete,
   ParseIntPipe,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { TenantsService } from './tenants.service';
 import { CreateTenantDto } from './dto/create-tenant.dto';
@@ -22,9 +23,11 @@ import {
 } from '@nestjs/swagger';
 import { TenantDto } from './dto/tenant.dto';
 import { FilterOperator } from 'src/common/filters.vm';
+import { RoleGuard } from 'src/auth/role.guard';
 
 @ApiTags('tenants')
 @Controller('tenants')
+@UseGuards(RoleGuard)
 export class TenantsController {
   constructor(private readonly tenantsService: TenantsService) {}
 

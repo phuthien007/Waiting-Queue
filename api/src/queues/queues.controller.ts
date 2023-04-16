@@ -8,6 +8,7 @@ import {
   Delete,
   Query,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { QueuesService } from './queues.service';
 import { CreateQueueDto } from './dto/create-queue.dto';
@@ -22,8 +23,10 @@ import {
 } from '@nestjs/swagger';
 import { QueueDto } from './dto/queue.dto';
 import { FilterOperator } from 'src/common/filters.vm';
+import { RoleGuard } from 'src/auth/role.guard';
 @ApiTags('queues')
 @Controller('queues')
+@UseGuards(RoleGuard)
 export class QueuesController {
   constructor(private readonly queuesService: QueuesService) {}
 

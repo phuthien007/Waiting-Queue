@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { LoggerService } from './logger/logger.service';
 import { ValidationPipe } from '@nestjs/common';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -20,7 +21,7 @@ async function bootstrap() {
         type: 'http',
         scheme: 'bearer',
         bearerFormat: 'JWT',
-        in: 'header',
+        in: 'cookie',
         description: 'Enter your JWT token',
       },
       'jwt',
@@ -43,6 +44,7 @@ async function bootstrap() {
     }),
   );
 
+  app.use(cookieParser());
   await app.listen(process.env.PORT || 5000, () => {
     console.log(`Our server is listening on PORT: ${process.env.PORT || 5000}`);
   });

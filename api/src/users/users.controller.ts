@@ -8,6 +8,7 @@ import {
   Delete,
   ParseIntPipe,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -22,9 +23,14 @@ import {
 } from '@nestjs/swagger';
 import { UserDto } from './dto/user.dto';
 import { FilterOperator } from 'src/common/filters.vm';
+import { RoleGuard } from 'src/auth/role.guard';
+import { HasRole } from 'src/common/decorators';
+import { RoleEnum } from 'src/common/enum';
 
 @ApiTags('users')
 @Controller('users')
+@UseGuards(RoleGuard)
+@HasRole(RoleEnum.ADMIN, RoleEnum.SUPER_ADMIN)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 

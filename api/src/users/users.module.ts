@@ -15,6 +15,6 @@ import { LoggerModule } from 'src/logger/logger.module';
   ],
   controllers: [UsersController],
   providers: [UsersService, UsersRepository],
-  exports: [UsersService],
+  exports: [UsersService, UsersRepository],
 })
 export class UsersModule {}

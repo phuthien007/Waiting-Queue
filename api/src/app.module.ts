@@ -1,4 +1,4 @@
-import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { AllExceptionsFilter } from './exception/exception.filter';
 import {
   ClassSerializerInterceptor,
@@ -24,6 +24,7 @@ import { Session } from './sessions/entities/session.entity';
 import { UsersModule } from './users/users.module';
 import { LoggerModule } from './logger/logger.module';
 import { ExceptionModule } from './exception/exception.module';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
 
 @Module({
   imports: [
@@ -67,6 +68,10 @@ import { ExceptionModule } from './exception/exception.module';
     {
       provide: APP_INTERCEPTOR,
       useClass: ClassSerializerInterceptor,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
     },
 
     AppService,
