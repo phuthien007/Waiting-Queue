@@ -13,8 +13,9 @@ import { UsersRepository } from './users.repository';
 import { plainToInstance } from 'class-transformer';
 import { ERROR_TYPE, transformError } from 'src/common/constant.error';
 import { TenantsRepository } from 'src/tenants/tenants.repository';
-import { RoleEnum } from 'src/common/enum';
-import { partialMapping } from 'src/common/algorithm';
+import { RoleEnum, commonEnum } from 'src/common/enum';
+import { partialMapping, randomPassword } from 'src/common/algorithm';
+import { Tenant } from 'src/tenants/entities/tenants.entity';
 
 @Injectable()
 export class UsersService {
@@ -22,6 +23,8 @@ export class UsersService {
     private readonly userRepository: UsersRepository,
     private readonly tenantRepository: TenantsRepository,
   ) {}
+
+  // using for auth login
   async create(createUserDto: CreateUserDto): Promise<UserDto> {
     // check tenant exist
     const tenantObj = await this.tenantRepository.exist({
@@ -63,6 +66,52 @@ export class UsersService {
     });
 
     const savedUser = await this.userRepository.save(user);
+    return plainToInstance(UserDto, savedUser, {
+      excludeExtraneousValues: true,
+    });
+  }
+
+  // using for register from tenant
+  async createFromTenant(tenantObj: Tenant): Promise<UserDto> {
+    // check tenant exist
+
+    const user = new User();
+    if (!tenantObj)
+      throw new BadRequestException(
+        transformError(
+          `TenantCode: ${tenantObj.tenantCode}`,
+          ERROR_TYPE.NOT_FOUND,
+        ),
+      );
+    user.tenant = tenantObj;
+    // email for each tenant always unique so no need to check email exist in tenant
+    user.email = tenantObj.contactEmail;
+
+    // if (userObjEmail)
+    //   throw new BadRequestException(
+    //     transformError(`Email: ${createUserDto.email}`, ERROR_TYPE.EXIST),
+    //   );
+
+    // check role is not nessary because role is always ADMIN when register from tenant
+    // if (createUserDto.role === RoleEnum.SUPER_ADMIN) {
+    //   throw new BadRequestException(
+    //     `Bạn không có quyền tạo tài khoản ${RoleEnum.SUPER_ADMIN}`,
+    //   );
+    // }
+
+    user.status = true;
+    user.role = RoleEnum.ADMIN;
+    user.fullName = tenantObj.name;
+    user.note = 'Tài khoản được tạo tự động từ tenant';
+    user.isWorking = true;
+
+    // random a password when create
+    user.password = randomPassword();
+
+    const savedUser = await this.userRepository.save(user);
+
+    // TODO: send email to user
+
     return plainToInstance(UserDto, savedUser, {
       excludeExtraneousValues: true,
     });

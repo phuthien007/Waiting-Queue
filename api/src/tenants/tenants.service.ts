@@ -13,15 +13,21 @@ import { plainToInstance } from 'class-transformer';
 import { partialMapping, randomCodeTenant } from 'src/common/algorithm';
 import { TenantDto } from './dto/tenant.dto';
 import { ERROR_TYPE, transformError } from 'src/common/constant.error';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class TenantsService {
-  constructor(private readonly tenantRepository: TenantsRepository) {}
+  constructor(
+    private readonly tenantRepository: TenantsRepository,
+    private readonly userService: UsersService,
+  ) {}
   async create(createTenantDto: CreateTenantDto): Promise<TenantDto> {
     // return 'This action adds a new tenant';
     // mapping to entity
 
     // validate  contactEmail
+
+    // TODO: transaction when create tenant and user admin error
 
     const tenantObjEmail = await this.tenantRepository.exist({
       where: { contactEmail: createTenantDto.contactEmail },
@@ -39,6 +45,14 @@ export class TenantsService {
     const savedTenant = this.tenantRepository.save(tenant);
 
     // TODO: create user admin for tenant
+    const resUser = await this.userService.createFromTenant(tenant);
+
+    if (!resUser) {
+      throw new BadRequestException(
+        'Có lỗi xảy ra khi tạo tài khoản admin cho tenant',
+      );
+    }
+
     return plainToInstance(TenantDto, savedTenant, {
       excludeExtraneousValues: true,
     });
