@@ -17,6 +17,7 @@ import {
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { TenantDto } from './dto/tenant.dto';
@@ -36,6 +37,12 @@ export class TenantsController {
 
   @Get()
   @ApiOkResponse({ type: [TenantDto] })
+  @ApiQuery({
+    name: 'search',
+    required: false,
+    type: FilterOperator,
+    description: 'Search query',
+  })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   async findAll(@Query() search: any) {
     return this.tenantsService.findAll(search);

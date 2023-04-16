@@ -25,6 +25,8 @@ export class User extends BaseEntity {
     name: 'contact_email',
   })
   email: string;
+
+  @Column({})
   password: string;
 
   @Column({

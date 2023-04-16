@@ -17,9 +17,11 @@ import {
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { QueueDto } from './dto/queue.dto';
+import { FilterOperator } from 'src/common/filters.vm';
 @ApiTags('queues')
 @Controller('queues')
 export class QueuesController {
@@ -33,6 +35,12 @@ export class QueuesController {
   }
 
   @Get()
+  @ApiQuery({
+    name: 'search',
+    required: false,
+    type: FilterOperator,
+    description: 'Search query',
+  })
   @ApiOkResponse({ type: [QueueDto] })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   findAll(@Query() search: any) {

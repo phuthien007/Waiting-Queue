@@ -17,9 +17,11 @@ import {
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { EventDto } from './dto/event.dto';
+import { FilterOperator } from 'src/common/filters.vm';
 
 @ApiTags('events')
 @Controller('events')
@@ -34,6 +36,12 @@ export class EventsController {
   }
 
   @Get()
+  @ApiQuery({
+    name: 'search',
+    required: false,
+    type: FilterOperator,
+    description: 'Search query',
+  })
   @ApiOkResponse({ type: [EventDto] })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   findAll(@Query() search: any) {

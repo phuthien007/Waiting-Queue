@@ -18,7 +18,7 @@ import {
 export class Queue extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
-
+  @Column({})
   name: string;
 
   @Column({
@@ -30,7 +30,7 @@ export class Queue extends BaseEntity {
     nullable: true,
   })
   coord: string;
-
+  @Column({})
   code: string;
 
   @Column({

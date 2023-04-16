@@ -17,9 +17,11 @@ import {
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { UserDto } from './dto/user.dto';
+import { FilterOperator } from 'src/common/filters.vm';
 
 @ApiTags('users')
 @Controller('users')
@@ -35,6 +37,12 @@ export class UsersController {
   }
 
   @Get()
+  @ApiQuery({
+    name: 'search',
+    required: false,
+    type: FilterOperator,
+    description: 'Search query',
+  })
   @ApiOkResponse({ type: [UserDto] })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   findAll(@Query() search: any): Promise<UserDto[]> {

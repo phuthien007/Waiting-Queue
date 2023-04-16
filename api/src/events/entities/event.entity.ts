@@ -17,6 +17,7 @@ export class Event extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({})
   name: string;
 
   @Column({
@@ -34,6 +35,7 @@ export class Event extends BaseEntity {
   })
   note: string;
 
+  @Column({})
   place: string;
 
   @Column({

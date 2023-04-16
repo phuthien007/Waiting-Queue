@@ -17,9 +17,11 @@ import {
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { EnrollQueueDto } from './dto/enroll-queue.dto';
+import { FilterOperator } from 'src/common/filters.vm';
 
 @ApiTags('enroll-queues')
 @Controller('enroll-queues')
@@ -34,6 +36,12 @@ export class EnrollQueuesController {
   }
 
   @Get()
+  @ApiQuery({
+    name: 'search',
+    required: false,
+    type: FilterOperator,
+    description: 'Search query',
+  })
   @ApiOkResponse({ type: [EnrollQueueDto] })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   findAll(@Query() search: any) {

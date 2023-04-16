@@ -66,6 +66,8 @@ export class EventsService {
       );
     }
 
+    console.log('events', events);
+
     return events.map((event: Event) =>
       plainToInstance(EventDto, event, {
         excludeExtraneousValues: true,
