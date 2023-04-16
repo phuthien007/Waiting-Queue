@@ -63,7 +63,6 @@ export class UserDto extends BaseDto {
   // @Type(() => TenantDto)
   tenant: TenantDto;
 
-  @Expose()
   @Exclude()
   resetTokenPassword: Date;
 }

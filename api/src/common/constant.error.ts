@@ -8,6 +8,7 @@ export const ERROR_TYPE = {
   MAX: 'max',
   EXIST: 'exist',
   NOT_FOUND: 'not_found',
+  IN_VALID: 'in_valid',
 };
 
 export const transformError = (field: string, type: string) => {
@@ -31,6 +32,8 @@ export const transformError = (field: string, type: string) => {
       return `${field} phải lớn hơn hoặc bằng 0`;
     case ERROR_TYPE.MAX:
       return `${field} phải nhỏ hơn hoặc bằng 100`;
+    case ERROR_TYPE.IN_VALID:
+      return `${field} không chính xác`;
     default:
       return `${field} không hợp lệ`;
   }

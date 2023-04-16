@@ -1,4 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
+import { Expose } from 'class-transformer';
 import {
   IsDate,
   IsDateString,
@@ -7,35 +8,37 @@ import {
   IsString,
 } from 'class-validator';
 import { EnrollQueueEnum } from 'src/common/enum';
+import { Queue } from 'src/queues/entities/queue.entity';
+import { Session } from 'src/sessions/entities/session.entity';
 
-export class CreateEnrollQueueDto {
+export class EnrollQueueDto {
   @ApiPropertyOptional()
-  @IsDateString()
+  @Expose()
   startServe: Date;
 
   @ApiPropertyOptional()
-  @IsDateString()
+  @Expose()
   endServe: Date;
 
   @ApiPropertyOptional()
-  @IsDateString()
+  @Expose()
   enrollTime: Date;
 
   @ApiPropertyOptional()
-  @IsEnum(EnrollQueueEnum)
+  @Expose()
   status: string;
 
   @ApiPropertyOptional()
-  @IsString()
+  @Expose()
   note: string;
 
   // relations
 
+  @Expose()
   @ApiPropertyOptional()
-  @IsNumber()
-  queueId: number;
+  queue: Queue;
 
+  @Expose()
   @ApiPropertyOptional()
-  @IsNumber()
-  sessionId: number;
+  session: Session;
 }

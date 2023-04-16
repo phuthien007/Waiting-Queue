@@ -1,9 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { CreateEnrollQueueDto } from './dto/create-enroll-queue.dto';
 import { UpdateEnrollQueueDto } from './dto/update-enroll-queue.dto';
+import { EnrollQueuesRepository } from './enroll-queues.repository';
+import { LoggerService } from 'src/logger/logger.service';
 
 @Injectable()
 export class EnrollQueuesService {
+  constructor(
+    private readonly enrollQueueRepository: EnrollQueuesRepository,
+    // private readonly enrollQueue: EventsRepository,
+    private readonly log: LoggerService,
+  ) {}
   create(createEnrollQueueDto: CreateEnrollQueueDto) {
     return 'This action adds a new enrollQueue';
   }

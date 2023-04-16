@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -36,8 +37,8 @@ export class UsersController {
   @Get()
   @ApiOkResponse({ type: [UserDto] })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  findAll(): Promise<UserDto[]> {
-    return this.usersService.findAll();
+  findAll(@Query() search: any): Promise<UserDto[]> {
+    return this.usersService.findAll(search);
     // return null;
   }
 

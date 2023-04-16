@@ -1,3 +1,4 @@
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsBoolean,
   IsDateString,
@@ -15,35 +16,46 @@ export class CreateEventDto extends BaseDto {
     message: transformError('Tên sự kiện', ERROR_TYPE.REQUIRED),
   })
   @IsNotEmpty()
+  @ApiPropertyOptional()
   name: string;
 
   @IsDateString()
+  @ApiPropertyOptional()
   from: Date;
 
   @IsDateString()
+  @ApiPropertyOptional()
   to: Date;
 
   @IsString()
+  @ApiPropertyOptional()
   note: string;
 
   @IsString()
+  @ApiPropertyOptional()
   place: string;
 
   @IsString()
+  @ApiPropertyOptional()
   drawImagePath: string;
 
   @IsBoolean()
+  @ApiPropertyOptional()
   daily: boolean;
 
   @IsString()
+  @ApiPropertyOptional()
   description: string;
 
   @IsEnum(commonEnum)
+  @ApiPropertyOptional()
   status: boolean;
 
   // relations
+  @ApiPropertyOptional()
   @IsNumber()
   tenantId: number;
   @IsNumber()
+  @ApiPropertyOptional()
   userId: number;
 }

@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { TenantsService } from './tenants.service';
 import { CreateTenantDto } from './dto/create-tenant.dto';
@@ -19,6 +20,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { TenantDto } from './dto/tenant.dto';
+import { FilterOperator } from 'src/common/filters.vm';
 
 @ApiTags('tenants')
 @Controller('tenants')
@@ -35,8 +37,8 @@ export class TenantsController {
   @Get()
   @ApiOkResponse({ type: [TenantDto] })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  async findAll() {
-    return this.tenantsService.findAll();
+  async findAll(@Query() search: any) {
+    return this.tenantsService.findAll(search);
   }
 
   @Get(':id')

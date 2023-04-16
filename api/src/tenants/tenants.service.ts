@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { CreateTenantDto } from './dto/create-tenant.dto';
@@ -14,12 +15,15 @@ import { partialMapping, randomCodeTenant } from 'src/common/algorithm';
 import { TenantDto } from './dto/tenant.dto';
 import { ERROR_TYPE, transformError } from 'src/common/constant.error';
 import { UsersService } from 'src/users/users.service';
+import { FilterOperator } from 'src/common/filters.vm';
+import { LoggerService } from 'src/logger/logger.service';
 
 @Injectable()
 export class TenantsService {
   constructor(
     private readonly tenantRepository: TenantsRepository,
     private readonly userService: UsersService,
+    private readonly log: LoggerService,
   ) {}
   async create(createTenantDto: CreateTenantDto): Promise<TenantDto> {
     // return 'This action adds a new tenant';
@@ -59,8 +63,33 @@ export class TenantsService {
   }
 
   // TODO: search
-  async findAll(): Promise<TenantDto[]> {
-    const tenants = await this.tenantRepository.find();
+  async findAll(search: any): Promise<TenantDto[]> {
+    // start create search
+    const filterObj = new FilterOperator();
+    // transform to filter
+    Object.keys(search).forEach((key) => {
+      if (search[key] instanceof Array) {
+        search[key].forEach((tmp: any) => {
+          filterObj.addOperator(key, tmp);
+        });
+      } else {
+        filterObj.addOperator(key, search[key]);
+      }
+    });
+    let tenants: Tenant[] = [];
+    try {
+      tenants = await this.tenantRepository.find({
+        where: filterObj.transformToQuery(),
+      });
+    } catch (error) {
+      this.log.error(error);
+      throw new BadRequestException(
+        transformError(
+          `Search: ${JSON.stringify(search)}`,
+          ERROR_TYPE.IN_VALID,
+        ),
+      );
+    }
 
     return tenants.map((tenant) =>
       plainToInstance(TenantDto, tenant, {

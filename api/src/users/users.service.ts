@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -16,12 +17,15 @@ import { TenantsRepository } from 'src/tenants/tenants.repository';
 import { RoleEnum, commonEnum } from 'src/common/enum';
 import { partialMapping, randomPassword } from 'src/common/algorithm';
 import { Tenant } from 'src/tenants/entities/tenants.entity';
+import { FilterOperator } from 'src/common/filters.vm';
+import { LoggerService } from 'src/logger/logger.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly userRepository: UsersRepository,
     private readonly tenantRepository: TenantsRepository,
+    private readonly log: LoggerService,
   ) {}
 
   // using for auth login
@@ -117,10 +121,36 @@ export class UsersService {
     });
   }
 
-  async findAll(): Promise<UserDto[]> {
-    const users = await this.userRepository.find({
-      relations: ['tenant'],
+  async findAll(search: any): Promise<UserDto[]> {
+    // start create search
+    const filterObj = new FilterOperator();
+    // transform to filter
+    Object.keys(search).forEach((key) => {
+      if (search[key] instanceof Array) {
+        search[key].forEach((tmp: any) => {
+          filterObj.addOperator(key, tmp);
+        });
+      } else {
+        filterObj.addOperator(key, search[key]);
+      }
     });
+
+    let users: User[] = [];
+    try {
+      users = await this.userRepository.find({
+        relations: ['tenant'],
+        where: filterObj.transformToQuery(),
+      });
+    } catch (error) {
+      this.log.error(error);
+
+      throw new BadRequestException(
+        transformError(
+          `Search: ${JSON.stringify(search)}`,
+          ERROR_TYPE.IN_VALID,
+        ),
+      );
+    }
 
     return users.map((user: User) =>
       plainToInstance(UserDto, user, {
