@@ -15,7 +15,7 @@ export class EnrollQueuesService {
     return 'This action adds a new enrollQueue';
   }
 
-  findAll() {
+  findAll(search: any) {
     return `This action returns all enrollQueues`;
   }
 
