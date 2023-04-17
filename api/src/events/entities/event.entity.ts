@@ -1,7 +1,7 @@
 import { BaseEntity } from 'src/common/base.entity';
 import { commonEnum } from 'src/common/enum';
 import { Queue } from 'src/queues/entities/queue.entity';
-import { Tenant } from 'src/tenants/entities/tenant.entity';
+import { Tenant } from 'src/tenants/entities/tenants.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
   Column,
@@ -12,11 +12,15 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
+/**
+ * Event entity class for event table
+ */
 @Entity('Events')
 export class Event extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({})
   name: string;
 
   @Column({
@@ -34,6 +38,7 @@ export class Event extends BaseEntity {
   })
   note: string;
 
+  @Column({})
   place: string;
 
   @Column({

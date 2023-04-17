@@ -2,8 +2,10 @@ import { BaseEntity } from 'src/common/base.entity';
 import { RoleEnum, commonEnum } from 'src/common/enum';
 import { Event } from 'src/events/entities/event.entity';
 import { Queue } from 'src/queues/entities/queue.entity';
-import { Tenant } from 'src/tenants/entities/tenant.entity';
+import { Tenant } from 'src/tenants/entities/tenants.entity';
+import * as bcrypt from 'bcrypt';
 import {
+  BeforeInsert,
   Column,
   Entity,
   JoinColumn,
@@ -12,7 +14,11 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Exclude } from 'class-transformer';
 
+/**
+ * User class for user entity object
+ */
 @Entity('Users')
 export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
@@ -23,6 +29,7 @@ export class User extends BaseEntity {
   })
   email: string;
 
+  @Column({})
   password: string;
 
   @Column({
@@ -65,7 +72,8 @@ export class User extends BaseEntity {
 
   @ManyToOne(() => Tenant, (tenant) => tenant.users)
   @JoinColumn({
-    name: 'tenant_id',
+    name: 'tenant_code',
+    referencedColumnName: 'tenantCode',
   })
   tenant: Tenant;
 
@@ -74,4 +82,29 @@ export class User extends BaseEntity {
 
   @ManyToMany(() => Queue, (queue) => queue.users)
   queues: Promise<Queue[]>;
+
+  // hash password
+  @BeforeInsert()
+  async hashPassword() {
+    this.password = await bcrypt.hash(this.password, 10);
+  }
+
+  // method mapping password
+  async comparePassword(attempt: string): Promise<boolean> {
+    return await bcrypt.compare(attempt, this.password);
+  }
+
+  // method to check if user is admin
+  isAdmin(): boolean {
+    return this.role === RoleEnum.ADMIN;
+  }
+
+  // method to check if user is operator
+  isOperator(): boolean {
+    return this.role === RoleEnum.OPERATOR;
+  }
+
+  isSuperAdmin(): boolean {
+    return this.role === RoleEnum.SUPER_ADMIN;
+  }
 }

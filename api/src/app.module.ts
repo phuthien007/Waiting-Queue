@@ -1,4 +1,10 @@
-import { Module } from '@nestjs/common';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { AllExceptionsFilter } from './exception/exception.filter';
+import {
+  ClassSerializerInterceptor,
+  Module,
+  ValidationPipe,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -9,12 +15,16 @@ import { EventsModule } from './events/events.module';
 import { QueuesModule } from './queues/queues.module';
 import { EnrollQueuesModule } from './enroll-queues/enroll-queues.module';
 import { User } from './users/entities/user.entity';
-import { Tenant } from './tenants/entities/tenant.entity';
+import { Tenant } from './tenants/entities/tenants.entity';
 import { Queue } from './queues/entities/queue.entity';
 import { EnrollQueue } from './enroll-queues/entities/enroll-queue.entity';
 import { Event } from './events/entities/event.entity';
 import { SessionsModule } from './sessions/sessions.module';
 import { Session } from './sessions/entities/session.entity';
+import { UsersModule } from './users/users.module';
+import { LoggerModule } from './logger/logger.module';
+import { ExceptionModule } from './exception/exception.module';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
 
 @Module({
   imports: [
@@ -32,16 +42,39 @@ import { Session } from './sessions/entities/session.entity';
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
         synchronize: configService.get<boolean>('DB_SYNC'),
-        logging: configService.get<boolean>('DB_LOGGING'),
-
+        logging: true,
+        logger: 'simple-console',
         // entities
         entities: [User, Tenant, Queue, EnrollQueue, Event, Session],
       }),
     }),
     TenantsModule,
     SessionsModule,
+    AuthModule,
+    EventsModule,
+    QueuesModule,
+    EnrollQueuesModule,
+    UsersModule,
+    LoggerModule,
+    ExceptionModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionsFilter,
+    },
+
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ClassSerializerInterceptor,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+
+    AppService,
+  ],
 })
 export class AppModule {}
