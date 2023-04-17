@@ -14,6 +14,9 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
+/**
+ * Queue class for queue entity object
+ */
 @Entity('Queues')
 export class Queue extends BaseEntity {
   @PrimaryGeneratedColumn()

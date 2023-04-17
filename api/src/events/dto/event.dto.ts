@@ -4,6 +4,9 @@ import { BaseDto } from 'src/common/base.dto';
 import { TenantDto } from 'src/tenants/dto/tenant.dto';
 import { UserDto } from 'src/users/dto/user.dto';
 
+/**
+ * Event DTO class for event response body and request body (create, update)
+ */
 export class EventDto extends BaseDto {
   @ApiPropertyOptional()
   @Expose()
@@ -43,6 +46,7 @@ export class EventDto extends BaseDto {
   // relations
   @ApiPropertyOptional()
   @Expose()
+  // transform tenant to tenantDto when return response body to client
   @Transform(({ obj }) => {
     // transform tenant to tenantDto
     if (obj.tenant) {

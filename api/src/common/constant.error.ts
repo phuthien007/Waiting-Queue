@@ -1,3 +1,7 @@
+/**
+ * Error type
+ * @enum {string} ERROR_TYPE
+ */
 export const ERROR_TYPE = {
   REQUIRED: 'required',
   MINLENGTH: 'minlength',
@@ -11,6 +15,12 @@ export const ERROR_TYPE = {
   IN_VALID: 'in_valid',
 };
 
+/**
+ * Transform error message to vietnamese
+ * @param field field name of error
+ * @param type type of error message from enum ERROR_TYPE
+ * @returns vietnamese error message for field
+ */
 export const transformError = (field: string, type: string) => {
   // using vietnamese message
   switch (type) {

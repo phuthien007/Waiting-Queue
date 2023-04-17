@@ -4,6 +4,9 @@ import { Observable } from 'rxjs';
 import { ROLES_KEY } from 'src/common/decorators';
 import { RoleEnum } from 'src/common/enum';
 
+/**
+ * Role guard class for role-based authorization (check if user has role to access route or not)
+ */
 @Injectable()
 export class RoleGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
@@ -16,6 +19,7 @@ export class RoleGuard implements CanActivate {
       [context.getHandler(), context.getClass()],
     );
 
+    // public route
     if (!requiredRoles || requiredRoles.length === 0) {
       return true;
     }
@@ -26,12 +30,10 @@ export class RoleGuard implements CanActivate {
       return false;
     }
     const userRole = request.user.role;
+    // check if user login has role which is in requiredRoles array
     if (requiredRoles.filter((item) => userRole.includes(item)).length > 0) {
       return true;
     }
-    // if (requiredRoles.includes(Role.Admin)) {
-    //   return true;
-    // }
     return false;
   }
 }

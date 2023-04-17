@@ -20,6 +20,9 @@ import { Tenant } from 'src/tenants/entities/tenants.entity';
 import { FilterOperator } from 'src/common/filters.vm';
 import { LoggerService } from 'src/logger/logger.service';
 
+/**
+ * UsersService class for users service with CRUD operations for users and other operations
+ */
 @Injectable()
 export class UsersService {
   constructor(
@@ -28,6 +31,14 @@ export class UsersService {
     private readonly log: LoggerService,
   ) {}
 
+  /**
+   * Create a new user with createUserDto
+   * @param createUserDto  - CreateUserDto object from request body
+   * @returns  UserDto object with created user data
+   * @throws {BadRequestException} - if email is exist in database
+   * @throws {BadRequestException} - if tenantCode is not exist in database
+   * @throws {BadRequestException} - if role is SUPER_ADMIN
+   */
   // using for auth login
   async create(createUserDto: CreateUserDto): Promise<UserDto> {
     // check tenant exist
@@ -54,6 +65,7 @@ export class UsersService {
       throw new BadRequestException(
         transformError(`Email: ${createUserDto.email}`, ERROR_TYPE.EXIST),
       );
+    // TODO: check role login to create role
 
     // check role
     if (createUserDto.role === RoleEnum.SUPER_ADMIN) {
@@ -61,8 +73,6 @@ export class UsersService {
         `Bạn không có quyền tạo tài khoản ${RoleEnum.SUPER_ADMIN}`,
       );
     }
-
-    // TODO: check role login to create role
 
     const user = plainToInstance(User, {
       ...createUserDto,
@@ -75,6 +85,14 @@ export class UsersService {
     });
   }
 
+  /**
+   * Find all users with search
+   * @param tenantObj - Tenant object from request body
+   * @returns UserDto object with created user data
+   * @throws {BadRequestException} - if tenantCode is not exist in database
+   *  @throws {BadRequestException} - if role is SUPER_ADMIN
+   * @throws {BadRequestException} - if email is exist in database
+   */
   // using for register from tenant
   async createFromTenant(tenantObj: Tenant): Promise<UserDto> {
     // check tenant exist
@@ -121,6 +139,12 @@ export class UsersService {
     });
   }
 
+  /**
+   * Find all users with search
+   * @param search - search object from request body
+   * @returns UserDto object with created user data
+   * @throws {BadRequestException} - if search is not valid
+   */
   async findAll(search: any): Promise<UserDto[]> {
     // start create search
     const filterObj = new FilterOperator();
@@ -159,6 +183,12 @@ export class UsersService {
     );
   }
 
+  /**
+   * Find one user by id
+   * @param id - id of user
+   * @returns  UserDto object with created user data
+   * @throws {NotFoundException} - if id is not exist in database
+   */
   async findOne(id: number) {
     const user = await this.userRepository.findOne({
       where: { id },
@@ -173,6 +203,13 @@ export class UsersService {
     });
   }
 
+  /**
+   * Update user by id
+   * @param id - id of user
+   * @param updateUserDto - update user object from request body
+   * @returns UserDto object with created user data
+   * @throws {NotFoundException} - if id is not exist in database
+   */
   async update(id: number, updateUserDto: UpdateUserDto) {
     let data = await this.userRepository.findOne({
       where: { id },
@@ -199,6 +236,11 @@ export class UsersService {
     });
   }
 
+  /**
+   * Remove user by id
+   * @param id - id of user
+   * @returns UserDto object with created user data
+   */
   remove(id: number) {
     // return `This action removes a #${id} user`;
     return this.userRepository.delete(id);

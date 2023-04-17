@@ -10,13 +10,15 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 
+/**
+ * AllExceptionsFilter catches all exceptions and returns a standard response
+ */
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
     const request = ctx.getRequest();
-    console.log('exception', exception);
     const status =
       exception instanceof HttpException
         ? exception.getStatus()

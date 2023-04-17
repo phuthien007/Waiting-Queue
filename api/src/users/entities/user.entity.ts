@@ -16,6 +16,9 @@ import {
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 
+/**
+ * User class for user entity object
+ */
 @Entity('Users')
 export class User extends BaseEntity {
   @PrimaryGeneratedColumn()

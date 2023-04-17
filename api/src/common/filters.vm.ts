@@ -15,36 +15,76 @@ import { IsNotIn, NotEquals } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Optional } from '@nestjs/common';
 
+/**
+ * Filter operator class for filter operator in query string
+ */
 export class FilterOperator {
+  /**
+   * Equal operator (eq)
+   */
   @ApiPropertyOptional()
   @Optional()
   eq: string[];
 
+  /**
+   * Not equal operator (ne)
+   */
   @ApiPropertyOptional()
   @Optional()
   ne: string[];
+
+  /**
+   * Greater than operator (gt)
+   */
   @ApiPropertyOptional()
   @Optional()
   gt: string[];
+
+  /**
+   * Greater than or equal operator (gte)
+   */
   @ApiPropertyOptional()
   @Optional()
   gte: string[];
+
+  /**
+   * Less than operator (lt)
+   */
   @ApiPropertyOptional()
   @Optional()
   lt: string[];
+
+  /**
+   * Less than or equal operator (lte)
+   */
   @ApiPropertyOptional()
   @Optional()
   lte: string[];
+
+  /**
+   * In operator (in)
+   */
   @ApiPropertyOptional()
   @Optional()
   in: string[];
+
+  /**
+   * Not in operator (notIn)
+   */
   @ApiPropertyOptional()
   @Optional()
   notIn: string[];
 
+  /**
+   * Like operator (like)
+   */
   @ApiPropertyOptional()
   @Optional()
   like: string[];
+
+  /**
+   * Not like operator (notLike)
+   */
   @ApiPropertyOptional()
   @Optional()
   notLike: string[];
@@ -62,8 +102,20 @@ export class FilterOperator {
     this.notLike = [];
   }
 
+  /**
+   * Transform filter operator to query object
+   * @returns  query object for typeorm query builder
+   * @example
+   * const filter = new FilterOperator();
+   * filter.eq = ['name:John'];
+   * filter.gt = ['age:20'];
+   * filter.transformToQuery();
+   * // return { name: Equal('John'), age: MoreThan('20') }
+   *
+   */
   public transformToQuery() {
     const query = {};
+    // check if eq operator has value then transform to query object
     if (this.eq.length > 0) {
       this.eq.forEach((item) => {
         // split value to key and value with the first character is ':'
@@ -72,6 +124,7 @@ export class FilterOperator {
       });
     }
 
+    // check if ne operator has value then transform to query object
     if (this.ne.length > 0) {
       this.ne.forEach((item) => {
         const [key, value] = item.split(':');
@@ -79,8 +132,7 @@ export class FilterOperator {
       });
     }
 
-    // transform all operator to query
-
+    // check if gt operator has value then transform to query object
     if (this.gt.length > 0) {
       this.gt.forEach((item) => {
         const [key, value] = item.split(':');
@@ -88,6 +140,7 @@ export class FilterOperator {
       });
     }
 
+    // check if gte operator has value then transform to query object
     if (this.gte.length > 0) {
       this.gte.forEach((item) => {
         const [key, value] = item.split(':');
@@ -95,6 +148,7 @@ export class FilterOperator {
       });
     }
 
+    // check if lt operator has value then transform to query object
     if (this.lt.length > 0) {
       this.lt.forEach((item) => {
         const [key, value] = item.split(':');
@@ -102,6 +156,7 @@ export class FilterOperator {
       });
     }
 
+    // check if lte operator has value then transform to query object
     if (this.lte.length > 0) {
       this.lte.forEach((item) => {
         const [key, value] = item.split(':');
@@ -109,6 +164,7 @@ export class FilterOperator {
       });
     }
 
+    //  check if in operator has value then transform to query object
     if (this.in.length > 0) {
       this.in.forEach((item) => {
         const [key, value] = item.split(':');
@@ -116,6 +172,7 @@ export class FilterOperator {
       });
     }
 
+    // check if notIn operator has value then transform to query object
     if (this.notIn.length > 0) {
       this.notIn.forEach((item) => {
         const [key, value] = item.split(':');
@@ -123,6 +180,7 @@ export class FilterOperator {
       });
     }
 
+    // check if like operator has value then transform to query object
     if (this.like.length > 0) {
       this.like.forEach((item) => {
         const [key, value] = item.split(':');
@@ -130,6 +188,7 @@ export class FilterOperator {
       });
     }
 
+    // check if notLike operator has value then transform to query object
     if (this.notLike.length > 0) {
       this.notLike.forEach((item) => {
         const [key, value] = item.split(':');
@@ -140,6 +199,17 @@ export class FilterOperator {
     return query;
   }
 
+  /**
+   * Add operator to filter operator object
+   * @param operator  operator name
+   * @param value  value of operator
+   * @example
+   * const filter = new FilterOperator();
+   * filter.addOperator('eq', 'name:John');
+   * filter.addOperator('gt', 'age:20');
+   * filter.transformToQuery();
+   * // return { name: Equal('John'), age: MoreThan('20') }
+   */
   public addOperator(operator: string, value: string) {
     switch (operator) {
       case OperatorQueryEnum.eq:

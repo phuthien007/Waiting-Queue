@@ -24,12 +24,23 @@ import {
 import { QueueDto } from './dto/queue.dto';
 import { FilterOperator } from 'src/common/filters.vm';
 import { RoleGuard } from 'src/auth/role.guard';
+/**
+ * QueuesController class for queues controller with CRUD operations for queues
+ */
 @ApiTags('queues')
 @Controller('queues')
 @UseGuards(RoleGuard)
 export class QueuesController {
   constructor(private readonly queuesService: QueuesService) {}
 
+  /**
+   *  Create a new queue with createQueueDto
+   * @param createQueueDto - CreateQueueDto object from request body
+   * @returns QueueDto object with created queue data
+   * @throws {BadRequestException} - if createQueueDto is invalid
+   * @throws {InternalServerErrorException} - if error occurs during creating queue
+   * @throws {NotFoundException} - if event with id from createQueueDto.eventId not found
+   */
   @Post()
   @ApiCreatedResponse({ type: QueueDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })
@@ -37,6 +48,13 @@ export class QueuesController {
     return this.queuesService.create(createQueueDto);
   }
 
+  /**
+   * Find all queues with search query params
+   * @param search - search query params
+   * @returns array of QueueDto objects with queues data
+   * @throws {BadRequestException} - if search query params is invalid
+   * @throws {InternalServerErrorException} - if error occurs during finding queues
+   */
   @Get()
   @ApiQuery({
     name: 'search',
@@ -50,6 +68,14 @@ export class QueuesController {
     return this.queuesService.findAll(search);
   }
 
+  /**
+   * Find queue by id
+   * @param id - id of queue to find
+   * @returns QueueDto object with queue data
+   * @throws {BadRequestException} - if id is invalid
+   * @throws {InternalServerErrorException} - if error occurs during finding queue
+   * @throws {NotFoundException} - if queue with id not found
+   */
   @Get(':id')
   @ApiOkResponse({ type: QueueDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })
@@ -58,6 +84,15 @@ export class QueuesController {
     return this.queuesService.findOne(+id);
   }
 
+  /**
+   * Update queue by id with updateQueueDto
+   * @param id  - id of queue to update
+   * @param updateQueueDto  - UpdateQueueDto object from request body
+   * @returns  QueueDto object with updated queue data
+   * @throws {BadRequestException} - if id or updateQueueDto is invalid
+   * @throws {InternalServerErrorException} - if error occurs during updating queue
+   * @throws {NotFoundException} - if queue with id not found
+   */
   @Patch(':id')
   @ApiOkResponse({ type: QueueDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })
@@ -69,6 +104,14 @@ export class QueuesController {
     return this.queuesService.update(+id, updateQueueDto);
   }
 
+  /**
+   * Delete queue by id
+   * @param id - id of queue to delete
+   * @returns  QueueDto object with deleted queue data
+   * @throws {BadRequestException} - if id is invalid
+   * @throws {InternalServerErrorException} - if error occurs during deleting queue
+   * @throws {NotFoundException} - if queue with id not found
+   */
   @Delete(':id')
   @ApiOkResponse({ description: 'OK' })
   @ApiBadRequestResponse({ description: 'Bad Request' })

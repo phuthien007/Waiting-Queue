@@ -18,12 +18,6 @@ export abstract class BaseEntity {
   })
   updatedAt: Date;
 
-  // @Column({
-  //   name: 'deleted_at',
-  //   nullable: true,
-  // })
-  // deletedAt: Date;
-
   // init create date
   @BeforeInsert()
   initCreate() {

@@ -15,6 +15,9 @@ import { QueueDto } from './dto/queue.dto';
 import { FilterOperator } from 'src/common/filters.vm';
 import { partialMapping } from 'src/common/algorithm';
 
+/**
+ * QueuesService class for queues service with CRUD operations for queues and other operations
+ */
 @Injectable()
 export class QueuesService {
   constructor(
@@ -22,6 +25,12 @@ export class QueuesService {
     private readonly eventRepository: EventsRepository,
     private readonly log: LoggerService,
   ) {}
+
+  /**
+   * Create a new queue with createQueueDto
+   * @param createQueueDto - CreateQueueDto object from request body
+   * @returns QueueDto object with created queue data
+   */
   async create(createQueueDto: CreateQueueDto) {
     // check event exist
     if (!createQueueDto.eventId) {
@@ -30,7 +39,7 @@ export class QueuesService {
         transformError('Sự kiện', ERROR_TYPE.REQUIRED),
       );
     }
-
+    // check event exist in database
     const eventExist = await this.eventRepository.findOne({
       where: { id: createQueueDto.eventId },
     });
@@ -56,6 +65,11 @@ export class QueuesService {
     });
   }
 
+  /**
+   * Find all queues with search query params
+   * @param search - search query params
+   * @returns array of QueueDto objects with queues data
+   */
   async findAll(search: any) {
     // start create search
     const filterObj = new FilterOperator();
@@ -94,6 +108,12 @@ export class QueuesService {
     );
   }
 
+  /**
+   * Find a queue by id
+   * @param id - id of queue
+   * @returns QueueDto object with queue data
+   * @throws NotFoundException if queue not found
+   */
   async findOne(id: number) {
     const queue = await this.queueRepository.findOne({
       where: { id },
@@ -108,6 +128,13 @@ export class QueuesService {
     });
   }
 
+  /**
+   * Update a queue by id
+   * @param id  - id of queue
+   * @param updateQueueDto  - UpdateQueueDto object from request body
+   * @returns   QueueDto object with updated queue data
+   * @throws NotFoundException if queue not found
+   */
   async update(id: number, updateQueueDto: UpdateQueueDto) {
     let data = await this.queueRepository.findOne({
       where: { id },
@@ -140,6 +167,11 @@ export class QueuesService {
     });
   }
 
+  /**
+   *  Remove a queue by id
+   * @param id  - id of queue
+   * @returns  QueueDto object with removed queue data
+   */
   remove(id: number) {
     return this.eventRepository.delete(id);
   }

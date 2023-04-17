@@ -11,6 +11,9 @@ import { RoleEnum } from 'src/common/enum';
 import { TenantDto } from 'src/tenants/dto/tenant.dto';
 import { Tenant } from 'src/tenants/entities/tenants.entity';
 
+/**
+ * UserDto class for user DTO object from request body and response body
+ */
 export class UserDto extends BaseDto {
   @ApiPropertyOptional()
   @Expose()

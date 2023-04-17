@@ -12,6 +12,9 @@ import {
   Table,
 } from 'typeorm';
 
+/**
+ * Tenant class for tenant entity object
+ */
 @Entity('Tenants')
 export class Tenant extends BaseEntity {
   @PrimaryGeneratedColumn()

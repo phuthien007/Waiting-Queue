@@ -15,6 +15,9 @@ import { FilterOperator } from 'src/common/filters.vm';
 import { ERROR_TYPE, transformError } from 'src/common/constant.error';
 import { partialMapping } from 'src/common/algorithm';
 
+/**
+ * Events service class for events endpoints (create, update, delete, etc.)
+ */
 @Injectable()
 export class EventsService {
   constructor(
@@ -22,8 +25,13 @@ export class EventsService {
     private readonly log: LoggerService,
   ) {}
 
+  /**
+   * create event service method
+   * @param createEventDto create event DTO object from request body
+   * @returns created event DTO object
+   */
   async create(createEventDto: CreateEventDto) {
-    // TODO: get user from token, tenant from user
+    // TODO: get user from request, tenant from user
     // create event
     const event = plainToInstance(Event, {
       ...createEventDto,
@@ -35,6 +43,11 @@ export class EventsService {
     });
   }
 
+  /**
+   * find all events service method with search query
+   * @param search search query from request query
+   * @returns   array of event DTO objects
+   */
   async findAll(search: any) {
     // start create search
     const filterObj = new FilterOperator();
@@ -66,8 +79,6 @@ export class EventsService {
       );
     }
 
-    console.log('events', events);
-
     return events.map((event: Event) =>
       plainToInstance(EventDto, event, {
         excludeExtraneousValues: true,
@@ -75,6 +86,11 @@ export class EventsService {
     );
   }
 
+  /**
+   * find one event service method with id param
+   * @param id event id from request param (id)
+   * @returns event DTO object with id
+   */
   async findOne(id: number) {
     const event = await this.eventRepository.findOne({
       where: { id },
@@ -89,6 +105,12 @@ export class EventsService {
     });
   }
 
+  /**
+   * update event service method with id param and updateEventDto object from request body
+   * @param id event id from request param (id)
+   * @param updateEventDto update event DTO object from request body
+   * @returns updated event DTO object with id
+   */
   async update(id: number, updateEventDto: UpdateEventDto) {
     let data = await this.eventRepository.findOne({
       where: { id },
@@ -106,6 +128,11 @@ export class EventsService {
     });
   }
 
+  /**
+   * remove event service method with id param
+   * @param id  event id from request param (id)
+   * @returns deleted event DTO object with id
+   */
   remove(id: number) {
     return this.eventRepository.delete(id);
   }

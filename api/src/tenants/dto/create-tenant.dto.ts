@@ -3,6 +3,9 @@ import { IsEmail, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import { BaseDto } from 'src/common/base.dto';
 import { commonEnum } from 'src/common/enum';
 
+/**
+ * CreateTenantDto class for create tenant DTO object from request body
+ */
 export class CreateTenantDto extends BaseDto {
   @IsNotEmpty()
   @IsString()

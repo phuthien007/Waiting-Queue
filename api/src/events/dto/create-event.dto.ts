@@ -11,6 +11,9 @@ import { BaseDto } from 'src/common/base.dto';
 import { ERROR_TYPE, transformError } from 'src/common/constant.error';
 import { commonEnum } from 'src/common/enum';
 
+/**
+ * Create event DTO class for create event request body
+ */
 export class CreateEventDto extends BaseDto {
   @IsString({
     message: transformError('Tên sự kiện', ERROR_TYPE.REQUIRED),

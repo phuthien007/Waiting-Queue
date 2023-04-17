@@ -3,6 +3,9 @@ import { Expose, Transform } from 'class-transformer';
 import { BaseDto } from 'src/common/base.dto';
 import { EventDto } from 'src/events/dto/event.dto';
 
+/**
+ * QueueDto class for queue DTO object from request body and response body
+ */
 export class QueueDto extends BaseDto {
   @ApiPropertyOptional()
   @Expose()

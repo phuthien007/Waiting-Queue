@@ -12,6 +12,9 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
+/**
+ * Event entity class for event table
+ */
 @Entity('Events')
 export class Event extends BaseEntity {
   @PrimaryGeneratedColumn()

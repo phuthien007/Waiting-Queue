@@ -1,5 +1,9 @@
 import { ConsoleLogger, Injectable, Logger, Scope } from '@nestjs/common';
 
+/**
+ * LoggerService is a custom logger that extends the NestJS ConsoleLogger class and overrides the log methods
+ * to add custom functionality. The LoggerService is set to be transient scoped so that a new instance is created for each request.
+ */
 @Injectable({ scope: Scope.TRANSIENT })
 export class LoggerService extends ConsoleLogger {
   error(message: any, trace?: string, context?: string) {

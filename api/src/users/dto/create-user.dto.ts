@@ -10,6 +10,9 @@ import {
 import { BaseDto } from 'src/common/base.dto';
 import { RoleEnum, commonEnum } from 'src/common/enum';
 
+/**
+ * CreateUserDto class for create user DTO object from request body
+ */
 export class CreateUserDto extends BaseDto {
   @IsEmail()
   @IsNotEmpty()

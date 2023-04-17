@@ -1,28 +1,45 @@
-import { Equal } from 'typeorm';
-
+/**
+ * @description: common enum for all project
+ */
 export enum commonEnum {
   ACTIVE = 1,
   INACTIVE = 0,
 }
 
+/**
+ * @description: enum for role
+ */
 export enum RoleEnum {
   SUPER_ADMIN = 'super_admin',
   ADMIN = 'admin',
   OPERATOR = 'operator',
 }
 
+/**
+ * @description: enum for status of queue
+ * @enum PENDING: queue is pending
+ * @enum SERVING: queue is serving
+ * @enum WAITING: queue is waiting when OPERATOR is working but not have patient to serve
+ */
 export enum QueueEnum {
   PENDING = 'pending',
   SERVING = 'serving',
   WAITING = 'waiting',
 }
 
+/**
+ * @description: enum for status of enroll queue (when patient enroll queue)
+ * TODO: modify later
+ */
 export enum EnrollQueueEnum {
   PENDING = 'pending',
   SERVING = 'serving',
   WAITING = 'waiting',
 }
 
+/**
+ * @description: operator query enum for filter query string
+ */
 export enum OperatorQueryEnum {
   eq = 'eq',
   ne = 'ne',

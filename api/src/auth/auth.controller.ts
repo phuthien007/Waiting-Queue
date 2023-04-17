@@ -15,12 +15,23 @@ import { AuthService } from './auth.service';
 import { HasRole } from 'src/common/decorators';
 import { RoleGuard } from './role.guard';
 
+/**
+ * Auth controller class for auth endpoints (login, logout, etc.)
+ */
 @Controller()
 @UseGuards(RoleGuard)
 @ApiTags('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  /**
+   * Login endpoint
+   * @param login Login DTO object from request body
+   * @param req Request from client (contains user data)
+   * @param res Response to client (contains cookie)
+   * @returns Login success message and user data
+   * @returns Login failed message
+   */
   @Post('login')
   @HasRole()
   @ApiCreatedResponse({ description: 'Login success' })
@@ -31,6 +42,7 @@ export class AuthController {
     @Req() req: any,
     @Res({ passthrough: true }) res: any,
   ) {
+    // Create cookie and set it to response header (res)
     const cookie = await this.authService.login({
       id: req.user.id,
       role: req.user.role,

@@ -3,6 +3,9 @@ import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import { BaseDto } from 'src/common/base.dto';
 import { QueueEnum } from 'src/common/enum';
 
+/**
+ * CreateQueueDto class for create queue DTO object from request body
+ */
 export class CreateQueueDto extends BaseDto {
   @IsString()
   @IsNotEmpty()

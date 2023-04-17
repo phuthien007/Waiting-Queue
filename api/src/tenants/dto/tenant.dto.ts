@@ -3,6 +3,9 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
 import { BaseDto } from 'src/common/base.dto';
 
+/**
+ * TenantDto class for tenant DTO object from request body and response body
+ */
 export class TenantDto extends BaseDto {
   @ApiPropertyOptional()
   @Expose()

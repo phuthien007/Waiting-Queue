@@ -18,6 +18,9 @@ import { UsersService } from 'src/users/users.service';
 import { FilterOperator } from 'src/common/filters.vm';
 import { LoggerService } from 'src/logger/logger.service';
 
+/**
+ * TenantsService class for tenants service with CRUD operations for tenants and other operations
+ */
 @Injectable()
 export class TenantsService {
   constructor(
@@ -25,6 +28,17 @@ export class TenantsService {
     private readonly userService: UsersService,
     private readonly log: LoggerService,
   ) {}
+
+  /**
+   * Create a new tenant with createTenantDto
+   * @param createTenantDto  - CreateTenantDto object from request body
+   * @returns  TenantDto object with created tenant data
+   * @throws {BadRequestException} - if contactEmail is exist in database
+   * @throws {BadRequestException} - if create user admin error
+   * @throws {BadRequestException} - if create tenant error
+   * @throws {BadRequestException} - if create user admin error
+   *
+   */
   async create(createTenantDto: CreateTenantDto): Promise<TenantDto> {
     // return 'This action adds a new tenant';
     // mapping to entity
@@ -62,7 +76,12 @@ export class TenantsService {
     });
   }
 
-  // TODO: search
+  // TODO: pagination
+  /**
+   * Find all tenants with search query params
+   * @param search - search query params
+   * @returns TenantDto[] object with found tenants data
+   */
   async findAll(search: any): Promise<TenantDto[]> {
     // start create search
     const filterObj = new FilterOperator();
@@ -96,9 +115,15 @@ export class TenantsService {
         excludeExtraneousValues: true,
       }),
     );
-    // return `This action returns all tenants`;
   }
 
+  /**
+   * Find one tenant with id
+   * @param id - id of tenant
+   * @returns TenantDto object with found tenant data
+   * @throws {NotFoundException} - if id is not exist in database
+   * @throws {BadRequestException} - if id is not valid
+   */
   async findOne(id: number): Promise<TenantDto> {
     const tenant = await this.tenantRepository.findOne({
       where: { id },
@@ -115,6 +140,14 @@ export class TenantsService {
     // return `This action returns a #${id} tenant`;
   }
 
+  /**
+   * Update tenant with id and updateTenantDto
+   * @param id  - id of tenant
+   * @param updateTenantDto - UpdateTenantDto object from request body
+   * @returns TenantDto object with updated tenant data
+   * @throws {NotFoundException} - if id is not exist in database
+   * @throws {BadRequestException} - if id is not valid
+   */
   async update(
     id: number,
     updateTenantDto: UpdateTenantDto,
@@ -129,9 +162,6 @@ export class TenantsService {
       );
     }
 
-    // mapping to entity
-    // const tenantUpdate = plainToInstance(Tenant, updateTenantDto);
-
     // check field exist then update or using old value
     tenant = partialMapping(tenant, updateTenantDto) as Tenant;
 
@@ -140,6 +170,12 @@ export class TenantsService {
     });
   }
 
+  /**
+   * Remove tenant with id
+   * @param id - id of tenant
+   * @returns TenantDto object with removed tenant data
+   *
+   */
   remove(id: number) {
     return this.tenantRepository.delete(id);
   }

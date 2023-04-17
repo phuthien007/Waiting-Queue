@@ -9,12 +9,17 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   constructor(private reflector: Reflector) {
     super();
   }
+  /**
+   * custom canActivate function to check if user has role to access route or not
+   * @param context
+   * @returns
+   */
   canActivate(context: ExecutionContext) {
+    // get role from route handler or class
     const role: RoleEnum[] = this.reflector.getAllAndOverride<RoleEnum[]>(
       ROLES_KEY,
       [context.getHandler(), context.getClass()],
     ) as RoleEnum[];
-    // console.log('role', role);
     // if done have role => public route
     if (role?.length == 0) {
       return true;
