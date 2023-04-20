@@ -9,9 +9,10 @@ import { JwtService } from '@nestjs/jwt';
 import { RoleEnum } from 'src/common/enum';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
-import { createResetTokenPassword } from 'src/common/algorithm';
+import { createResetTokenPassword, randomPassword } from 'src/common/algorithm';
 import { ResetPasswordDto } from './dto/resetPassword.dto';
-import _ from 'lodash';
+import _, { parseInt } from 'lodash';
+import { MailService } from 'src/mail/mail.service';
 
 /**
  * Auth service class for auth endpoints (login, logout, etc.) business logic and data access layer
@@ -22,6 +23,7 @@ export class AuthService {
     private readonly userRepository: UsersRepository,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly mailService: MailService,
   ) {}
 
   /**
@@ -73,22 +75,28 @@ export class AuthService {
    * @param email email to send reset password
    * @returns void
    */
-  async createResetPassword(email: string) {
-    let res = await this.userRepository.findOne({
+  async createResetPassword(email: string, tenantCode: string) {
+    const res = await this.userRepository.findOne({
       where: {
         email,
+        status: true,
+        tenant: {
+          tenantCode,
+        },
       },
+      relations: ['tenant'],
     });
     if (res) {
       // token to send to email
-      const hashToken = createResetTokenPassword();
-      res = await this.userRepository.save({
+      const hashToken = await createResetTokenPassword();
+      await this.userRepository.update(res.id, {
         ...res,
-        resetPasswordToken: hashToken,
+        resetTokenPassword: hashToken,
         resetDatePassword: new Date(),
       });
 
       // send email
+      this.mailService.sendResetToken(hashToken, res);
     }
     return;
   }
@@ -104,16 +112,19 @@ export class AuthService {
     resetPassword: ResetPasswordDto,
   ) => {
     const { replyPassword, newPassword } = resetPassword;
-
+    console.log('resetPassword', resetPassword);
+    console.log('resetPassword', replyPassword);
+    console.log('resetPassword', newPassword);
     // check password
     if (newPassword !== replyPassword) {
       throw new BadRequestException('Mật khẩu mới không khớp');
     }
 
-    let res = await this.userRepository.findOne({
+    const res = await this.userRepository.findOne({
       where: {
         resetTokenPassword: token,
       },
+      relations: ['tenant'],
     });
 
     // check result query
@@ -127,19 +138,22 @@ export class AuthService {
     const diff = now.getTime() - resetDatePassword.getTime();
     // unit is second
     const diffHours = Math.floor(diff / 1000);
-
     // default time is 5 minutes
-    if (diffHours > _.toSafeInteger(process.env.RESET_PASSWORD_TIME) || 300) {
+    if (diffHours > (parseInt(process.env.RESET_PASSWORD_TIME) ?? 300)) {
       throw new BadRequestException('Token đã hết hạn');
     }
 
+    const hashPassword = await bcrypt.hash(newPassword, 10);
     // update password
-    res = await this.userRepository.save({
+    await this.userRepository.update(res.id, {
       ...res,
-      password: newPassword,
-      resetPasswordToken: null,
+      password: hashPassword,
+      resetTokenPassword: null,
       resetDatePassword: null,
     });
+
+    // send mail notification
+    this.mailService.sendResetPasswordSuccess(res);
 
     return;
   };

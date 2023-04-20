@@ -73,7 +73,10 @@ export class AuthController {
   @HasRole()
   @ApiCreatedResponse({ description: 'Create reset password success' })
   createResetPassword(@Body() resetPassword: ResetPasswordDto) {
-    return this.authService.createResetPassword(resetPassword.email);
+    return this.authService.createResetPassword(
+      resetPassword.email,
+      resetPassword.tenantCode,
+    );
   }
 
   // finish reset password
@@ -83,13 +86,10 @@ export class AuthController {
    * @param resetPassword ResetPasswordDto object from request body, require password and confirmPassword
    * @returns Finish reset password success message
    */
-  @Post('finish-reset-password')
+  @Post('finish-reset-password/:token')
   @HasRole()
   @ApiCreatedResponse({ description: 'Finish reset password success' })
-  finishResetPassword(
-    @Param('token') token: string,
-    @Body() resetPassword: ResetPasswordDto,
-  ) {
+  finishResetPassword(@Param('token') token: string, @Body() resetPassword) {
     return this.authService.finishResetPassword(token, resetPassword);
   }
   // logout endpoint

@@ -18,7 +18,6 @@ export class AppController {
   @HasRole()
   // @UseGuards(JwtAuthGuard)
   getHello(): string {
-    this.mailService.sendUserConfirmation('token test nhe');
     return this.appService.getHello();
   }
 }

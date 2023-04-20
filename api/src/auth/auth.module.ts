@@ -8,6 +8,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { JwtStrategy } from './jwt.strategy';
 import { RoleGuard } from './role.guard';
+import { MailModule } from 'src/mail/mail.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { RoleGuard } from './role.guard';
         global: true,
       }),
     }),
+    MailModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, JwtStrategy, RoleGuard],
