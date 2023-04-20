@@ -100,7 +100,7 @@ export class AuthController {
    */
   @Post('logout')
   @HasRole()
-  @ApiOkResponse({ description: 'Logout success' })
+  @ApiCreatedResponse({ description: 'Logout success' })
   async logout(@Res({ passthrough: true }) res: any) {
     // remove Authentication out of cookie
     res.clearCookie('Authentication');
