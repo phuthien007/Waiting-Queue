@@ -28,7 +28,7 @@ import { RoleGuard } from 'src/auth/role.guard';
  * QueuesController class for queues controller with CRUD operations for queues
  */
 @ApiTags('queues')
-@Controller('queues')
+@Controller('/api/queues')
 @UseGuards(RoleGuard)
 export class QueuesController {
   constructor(private readonly queuesService: QueuesService) {}

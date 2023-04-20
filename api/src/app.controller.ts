@@ -6,7 +6,7 @@ import { HasRole } from './common/decorators';
 import { RoleEnum } from './common/enum';
 import { MailService } from './mail/mail.service';
 
-@Controller()
+@Controller('/api')
 export class AppController {
   constructor(
     private readonly appService: AppService,

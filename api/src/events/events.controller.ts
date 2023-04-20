@@ -27,7 +27,7 @@ import { FilterOperator } from 'src/common/filters.vm';
  * Events controller class for events endpoints (create, update, delete, etc.)
  */
 @ApiTags('events')
-@Controller('events')
+@Controller('/api/events')
 export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
 

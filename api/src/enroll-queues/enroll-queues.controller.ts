@@ -24,7 +24,7 @@ import { EnrollQueueDto } from './dto/enroll-queue.dto';
 import { FilterOperator } from 'src/common/filters.vm';
 
 @ApiTags('enroll-queues')
-@Controller('enroll-queues')
+@Controller('/api/enroll-queues')
 export class EnrollQueuesController {
   constructor(private readonly enrollQueuesService: EnrollQueuesService) {}
 

@@ -29,7 +29,7 @@ import { RoleGuard } from 'src/auth/role.guard';
  * TenantsController class for tenants controller with CRUD operations for tenants and other controller methods
  */
 @ApiTags('tenants')
-@Controller('tenants')
+@Controller('/api/tenants')
 @UseGuards(RoleGuard)
 export class TenantsController {
   constructor(private readonly tenantsService: TenantsService) {}

@@ -22,71 +22,71 @@ export class FilterOperator {
   /**
    * Equal operator (eq)
    */
-  @ApiPropertyOptional()
-  @Optional()
+  @ApiPropertyOptional({ type: [String] })
+  // @Optional()
   eq: string[];
 
   /**
    * Not equal operator (ne)
    */
-  @ApiPropertyOptional()
-  @Optional()
+  @ApiPropertyOptional({ type: [String] })
+  // @Optional()
   ne: string[];
 
   /**
    * Greater than operator (gt)
    */
-  @ApiPropertyOptional()
-  @Optional()
+  @ApiPropertyOptional({ type: [String] })
+  // @Optional()
   gt: string[];
 
   /**
    * Greater than or equal operator (gte)
    */
-  @ApiPropertyOptional()
-  @Optional()
+  @ApiPropertyOptional({ type: [String] })
+  // @Optional()
   gte: string[];
 
   /**
    * Less than operator (lt)
    */
-  @ApiPropertyOptional()
-  @Optional()
+  @ApiPropertyOptional({ type: [String] })
+  // @Optional()
   lt: string[];
 
   /**
    * Less than or equal operator (lte)
    */
-  @ApiPropertyOptional()
-  @Optional()
+  @ApiPropertyOptional({ type: [String] })
+  // @Optional()
   lte: string[];
 
   /**
    * In operator (in)
    */
-  @ApiPropertyOptional()
-  @Optional()
+  @ApiPropertyOptional({ type: [String] })
+  // @Optional()
   in: string[];
 
   /**
    * Not in operator (notIn)
    */
-  @ApiPropertyOptional()
-  @Optional()
+  @ApiPropertyOptional({ type: [String] })
+  // @Optional()
   notIn: string[];
 
   /**
    * Like operator (like)
    */
-  @ApiPropertyOptional()
-  @Optional()
+  @ApiPropertyOptional({ type: [String] })
+  // @Optional()
   like: string[];
 
   /**
    * Not like operator (notLike)
    */
-  @ApiPropertyOptional()
-  @Optional()
+  @ApiPropertyOptional({ type: [String] })
+  // @Optional()
   notLike: string[];
 
   constructor() {

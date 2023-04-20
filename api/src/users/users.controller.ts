@@ -33,7 +33,7 @@ import { Request } from 'express';
  * UsersController class for users controller with CRUD operations for users
  */
 
-@Controller('users')
+@Controller('/api/users')
 @UseGuards(RoleGuard)
 @HasRole(RoleEnum.ADMIN, RoleEnum.SUPER_ADMIN)
 export class UsersController {

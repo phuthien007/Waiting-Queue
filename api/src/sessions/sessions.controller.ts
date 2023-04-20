@@ -15,7 +15,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { RoleGuard } from 'src/auth/role.guard';
 
 @ApiTags('sessions')
-@Controller('sessions')
+@Controller('/api/sessions')
 @UseGuards(RoleGuard)
 export class SessionsController {
   constructor(private readonly sessionsService: SessionsService) {}

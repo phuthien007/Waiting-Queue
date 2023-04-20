@@ -27,7 +27,7 @@ import { ResetPasswordDto } from './dto/resetPassword.dto';
 /**
  * Auth controller class for auth endpoints (login, logout, etc.)
  */
-@Controller()
+@Controller('/api/auth')
 @UseGuards(RoleGuard)
 @ApiTags('auth')
 export class AuthController {
