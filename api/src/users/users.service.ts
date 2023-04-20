@@ -245,4 +245,14 @@ export class UsersService {
     // return `This action removes a #${id} user`;
     return this.userRepository.delete(id);
   }
+
+  // get me
+  /**
+   * Get me by id of user from auth token
+   * @param id - id of user
+   * @returns UserDto object with profile of this user
+   */
+  getMe(id: number) {
+    return this.findOne(id);
+  }
 }
