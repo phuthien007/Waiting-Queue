@@ -45,7 +45,9 @@ export class TenantsController {
   @Post()
   @ApiCreatedResponse({ type: TenantDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  async create(@Body() createTenantDto: CreateTenantDto): Promise<TenantDto> {
+  async createTenant(
+    @Body() createTenantDto: CreateTenantDto,
+  ): Promise<TenantDto> {
     return this.tenantsService.create(createTenantDto);
   }
 
@@ -65,7 +67,7 @@ export class TenantsController {
     description: 'Search query',
   })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  async findAll(@Query() search: any) {
+  async findAllTenant(@Query() search: any) {
     return this.tenantsService.findAll(search);
   }
 
@@ -81,7 +83,7 @@ export class TenantsController {
   @ApiOkResponse({ type: TenantDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
-  findOne(@Param('id', ParseIntPipe) id: number) {
+  findOneTenant(@Param('id', ParseIntPipe) id: number) {
     return this.tenantsService.findOne(id);
   }
 
@@ -98,7 +100,7 @@ export class TenantsController {
   @ApiOkResponse({ type: TenantDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
-  update(
+  updateTenant(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateTenantDto: UpdateTenantDto,
   ): Promise<TenantDto> {
@@ -124,7 +126,7 @@ export class TenantsController {
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
   @ApiOkResponse({ description: 'OK' })
-  remove(@Param('id', ParseIntPipe) id: number) {
+  removeTenant(@Param('id', ParseIntPipe) id: number) {
     return this.tenantsService.remove(+id);
   }
 }

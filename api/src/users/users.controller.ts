@@ -51,7 +51,7 @@ export class UsersController {
   @Post()
   @ApiCreatedResponse({ type: UserDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  create(@Body() createUserDto: CreateUserDto): Promise<UserDto> {
+  createUser(@Body() createUserDto: CreateUserDto): Promise<UserDto> {
     return this.usersService.create(createUserDto);
   }
 
@@ -73,7 +73,7 @@ export class UsersController {
   })
   @ApiOkResponse({ type: [UserDto] })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  findAll(@Query() search: any): Promise<UserDto[]> {
+  findAllUser(@Query() search: any): Promise<UserDto[]> {
     return this.usersService.findAll(search);
     // return null;
   }
@@ -91,7 +91,7 @@ export class UsersController {
   @ApiOkResponse({ type: UserDto })
   @ApiNotFoundResponse({ description: 'Not Found' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  findOne(@Param('id', ParseIntPipe) id: number) {
+  findOneUser(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.findOne(+id);
   }
 
@@ -109,7 +109,7 @@ export class UsersController {
   @ApiOkResponse({ type: UserDto })
   @ApiNotFoundResponse({ description: 'Not Found' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  update(
+  updateUser(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: UpdateUserDto,
   ) {
@@ -133,7 +133,7 @@ export class UsersController {
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
   @ApiOkResponse({ description: 'OK' })
-  remove(@Param('id', ParseIntPipe) id: number) {
+  removeUser(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.remove(+id);
   }
 
