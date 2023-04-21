@@ -22,16 +22,10 @@ const ProfileMenu = () => {
           Thông tin cá nhân
         </Link>
       </Menu.Item>
-      <Menu.Item key="active-sessions">
-        <Link to="/personal-user/active-sessions">
+      <Menu.Item key="profile-tenant">
+        <Link to="/personal-user/profile-tenant">
           <i className="fa fa-laptop mr-2" />
-          Phiên đăng nhập
-        </Link>
-      </Menu.Item>
-      <Menu.Item key="setting-notifications">
-        <Link to="/personal-user/setting-notifications">
-          <i className="fe fe-bell mr-2" />
-          Thông báo
+          Thông tin công ty
         </Link>
       </Menu.Item>
       <Menu.Item key="authentication">

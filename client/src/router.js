@@ -26,38 +26,43 @@ const routes = [
     exact: true,
   },
 
-  // // personal user
+  // personal user
+  {
+    path: "personal-user/profile",
+    Component: lazy(() => import("pages/personal-user/profile")),
+    exact: true,
+  },
+
+  // setting
+
+  {
+    path: "personal-user/authentication",
+    Component: lazy(() => import("pages/personal-user/authentication")),
+    exact: true,
+  },
   // {
-  //   path: "personal-user/profile",
-  //   Component: lazy(() => import("pages/personal-user/profile")),
+  //   path: "personal-user/active-sessions",
+  //   Component: lazy(() => import("pages/personal-user/sessions")),
   //   exact: true,
   // },
-
-  // // setting
-
+  {
+    path: "personal-user/change-pw",
+    Component: lazy(() => import("pages/personal-user/change-password")),
+    exact: true,
+  },
+  {
+    path: "/personal-user/profile",
+    Component: lazy(() => import("pages/personal-user/profile")),
+    exact: true,
+  },
+  {
+    path: "/personal-user/profile-tenant",
+    Component: lazy(() => import("pages/personal-user/profile-tenant")),
+    exact: true,
+  },
   // {
-  //   path: "personal-user/authentication",
-  //   Component: lazy(() => import("pages/personal-user/authentication")),
-  //   exact: true,
-  // },
-  // // {
-  // //   path: "personal-user/active-sessions",
-  // //   Component: lazy(() => import("pages/personal-user/sessions")),
-  // //   exact: true,
-  // // },
-  // {
-  //   path: "personal-user/change-pw",
+  //   path: "/personal-user/change-pw",
   //   Component: lazy(() => import("pages/personal-user/change-password")),
-  //   exact: true,
-  // },
-  // {
-  //   path: '/personal-user/profile',
-  //   Component: lazy(() => import('pages/personal-user/profile')),
-  //   exact: true,
-  // },
-  // {
-  //   path: '/personal-user/change-pw',
-  //   Component: lazy(() => import('pages/personal-user/change-password')),
   //   exact: true,
   // },
 

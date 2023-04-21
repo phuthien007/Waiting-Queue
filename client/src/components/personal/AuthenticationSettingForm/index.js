@@ -1,5 +1,5 @@
 import { CloseOutlined, SaveOutlined } from "@ant-design/icons";
-import { useChangePassword } from "@api/auth";
+// import { useChangePassword } from "@api/auth";
 import { Button, Form, Input, Modal, notification } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -28,7 +28,7 @@ const AuthenticationSettingForm = () => {
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { isLoading, mutateAsync } = useChangePassword();
+  // const { isLoading, mutateAsync } = useChangePassword();
 
   const [form] = Form.useForm();
   useEffect(() => {
@@ -43,38 +43,37 @@ const AuthenticationSettingForm = () => {
   }, []);
 
   const onFinish = (values) => {
-    mutateAsync({
-      data: {
-        currentPassword: values.oldPw,
-        newPassword: values.newPw,
-      },
-    })
-      .then(() => {
-        if (!isLoading) {
-          notification.success({
-            message: "Thành công",
-            description: "Đổi mật khẩu thành công",
-          });
-        }
-
-        setTimeout(() => {
-          // dispatch({
-          //   type: "user/SET_STATE",
-          //   payload: {
-          //     loading: true,
-          //   },
-          // });
-          dispatch(logoutUser());
-        }, 1000);
-        setIsModalOpen(false);
-        // dispatch({
-        //   type: "user/SET_STATE",
-        //   payload: {
-        //     loading: false,
-        //   },
-        // });
-      })
-      .catch((err) => console.log(err));
+    // mutateAsync({
+    //   data: {
+    //     currentPassword: values.oldPw,
+    //     newPassword: values.newPw,
+    //   },
+    // })
+    //   .then(() => {
+    //     if (!isLoading) {
+    //       notification.success({
+    //         message: "Thành công",
+    //         description: "Đổi mật khẩu thành công",
+    //       });
+    //     }
+    //     setTimeout(() => {
+    //       // dispatch({
+    //       //   type: "user/SET_STATE",
+    //       //   payload: {
+    //       //     loading: true,
+    //       //   },
+    //       // });
+    //       dispatch(logoutUser());
+    //     }, 1000);
+    //     setIsModalOpen(false);
+    //     // dispatch({
+    //     //   type: "user/SET_STATE",
+    //     //   payload: {
+    //     //     loading: false,
+    //     //   },
+    //     // });
+    //   })
+    //   .catch((err) => console.log(err));
   };
 
   const showModal = () => {
@@ -228,7 +227,7 @@ const AuthenticationSettingForm = () => {
               Hủy
             </Button>
             <Button
-              loading={isLoading}
+              // loading={isLoading}
               type="primary"
               icon={<SaveOutlined />}
               htmlType="submit"
