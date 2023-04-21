@@ -116,7 +116,10 @@ const SubMainLayout = ({ children }) => {
                       <Avatar size={128} icon={<UserOutlined />} />
                     </Row>
                     <p style={{ textAlign: "center" }}>
-                      <b>{user.fullName || "Họ và tên"}</b>
+                      <b>
+                        {user.fullName || "Họ và tên"} -{" "}
+                        {user.tenant.name || "Công ty"}
+                      </b>
                     </p>
                     <Menu
                       style={{

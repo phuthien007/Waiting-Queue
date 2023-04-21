@@ -86,7 +86,9 @@ const Layout = ({ children }) => {
     dispatch(setup());
     if (!isUserAuthorized) dispatch(loadCurrentAccount());
 
-    if (isAuthLayout && isUserAuthorized) navigate("/");
+    if (isAuthLayout && isUserAuthorized) navigate("/home");
+    if (pathname === "/" && isUserAuthorized) navigate("/public/home");
+    // if (!isAuthLayout && !isUserAuthorized) navigate("/public/home");
   }, [
     dispatch,
     navigate,
@@ -98,7 +100,6 @@ const Layout = ({ children }) => {
 
   // eslint-disable-next-line react/no-unstable-nested-components
   const BootstrappedLayout = () => {
-    console.log("show loader1");
     // show loader when user in check authorization process, not authorized yet and not on login pages
     if (
       isUserLoading &&
@@ -110,8 +111,7 @@ const Layout = ({ children }) => {
     }
 
     // if (isPublicLayout) return <Container>{children}</Container>;
-
-    console.log("show loader2");
+    if (isPublicLayout && isUserAuthorized) navigate("/home");
     // redirect to login page if current is not login page and user not authorized
     // TODO: move it to separate layout component
     if (!isAuthLayout && !isPublicLayout && !isUserAuthorized) {
@@ -122,19 +122,17 @@ const Layout = ({ children }) => {
     }
 
     // authority url with role
-    // const menuItem = findURL(currentPath);
-    // if (menuItem) {
-    //   if (
-    //     user.role.filter((item) => menuItem?.roles.includes(item)).length <= 0
-    //   ) {
-    //     console.log("redirect to 403");
-    //     return (
-    //       <Container>
-    //         <System403 />
-    //       </Container>
-    //     );
-    //   }
-    // }
+    const menuItem = findURL(currentPath);
+    if (menuItem) {
+      if (menuItem?.roles.includes(user.role)) {
+        console.log("redirect to 403");
+        return (
+          <Container>
+            <System403 />
+          </Container>
+        );
+      }
+    }
 
     return <Container>{children}</Container>;
   };

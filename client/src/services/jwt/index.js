@@ -14,7 +14,6 @@ export async function currentAccount() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   return useUsersControllerGetMeHook()()
     .then((response) => {
-      console.log("response", response);
       if (response) {
         return response;
       }

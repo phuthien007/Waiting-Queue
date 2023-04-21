@@ -28,13 +28,14 @@ import { useAuthControllerLogin } from "@api/waitingQueue";
 const initialAccount = {
   email: "xephang@super.admin.com",
   password: "123456Aa@",
+  tenantCode: "qeGFUgg2Pw",
 };
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { isLoading, mutateAsync } = useAuthControllerLogin();
+  const { isLoading: isAuthenticating, mutateAsync } = useAuthControllerLogin();
 
   const onFinish = async (values) => {
     // navigate("/public/home");
@@ -111,7 +112,7 @@ const Login = () => {
           size="large"
           className="text-center w-100 mb-4"
           htmlType="submit"
-          // loading={isAuthenticating}
+          loading={isAuthenticating}
         >
           <strong>Đăng nhập</strong>
         </Button>
