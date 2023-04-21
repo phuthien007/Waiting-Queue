@@ -114,6 +114,19 @@ export interface UpdateQueueDto {
   eventId?: number;
 }
 
+export interface QueueDto {
+  id?: number;
+  createdAt?: string;
+  updatedAt?: string;
+  name?: string;
+  note?: string;
+  coord?: string;
+  code?: string;
+  description?: string;
+  status?: string;
+  event?: EventDto;
+}
+
 export interface CreateQueueDto {
   id?: number;
   createdAt?: string;
@@ -161,19 +174,6 @@ export interface EventDto {
   user?: UserDto;
 }
 
-export interface QueueDto {
-  id?: number;
-  createdAt?: string;
-  updatedAt?: string;
-  name?: string;
-  note?: string;
-  coord?: string;
-  code?: string;
-  description?: string;
-  status?: string;
-  event?: EventDto;
-}
-
 export interface CreateEventDto {
   id?: number;
   createdAt?: string;
@@ -189,6 +189,12 @@ export interface CreateEventDto {
   status?: boolean;
   tenantId?: number;
   userId?: number;
+}
+
+export interface ChangePasswordDto {
+  oldPassword: string;
+  newPassword: string;
+  confirmPassword: string;
 }
 
 export interface ResetPasswordDto {
@@ -216,6 +222,39 @@ export interface CreateSessionDto {
   id?: number;
   createdAt?: string;
   updatedAt?: string;
+}
+
+export type UserMeDtoRole = typeof UserMeDtoRole[keyof typeof UserMeDtoRole];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const UserMeDtoRole = {
+  super_admin: 'super_admin',
+  admin: 'admin',
+  operator: 'operator',
+} as const;
+
+export type UserMeDtoStatus = typeof UserMeDtoStatus[keyof typeof UserMeDtoStatus];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const UserMeDtoStatus = {
+  super_admin: 'super_admin',
+  admin: 'admin',
+  operator: 'operator',
+} as const;
+
+export interface UserMeDto {
+  id?: number;
+  createdAt?: string;
+  updatedAt?: string;
+  email?: string;
+  fullName?: string;
+  status?: UserMeDtoStatus;
+  note?: string;
+  role?: UserMeDtoRole;
+  isWorking?: boolean;
+  tenant?: TenantDto;
 }
 
 export type UpdateUserDtoRole = typeof UpdateUserDtoRole[keyof typeof UpdateUserDtoRole];
