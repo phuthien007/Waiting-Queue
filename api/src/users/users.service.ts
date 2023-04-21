@@ -190,6 +190,7 @@ export class UsersService {
    * @throws {NotFoundException} - if id is not exist in database
    */
   async findOne(id: number) {
+    console.log('1', id);
     const user = await this.userRepository.findOne({
       where: { id },
       relations: ['tenant'],
@@ -249,7 +250,6 @@ export class UsersService {
   // get me
   /**
    * Get me by id of user from auth token
-   * @param id - id of user
    * @returns UserDto object with profile of this user
    */
   getMe(id: number) {

@@ -10,6 +10,7 @@ import {
   Query,
   UseGuards,
   Req,
+  Res,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -28,6 +29,7 @@ import { RoleGuard } from 'src/auth/role.guard';
 import { HasRole } from 'src/common/decorators';
 import { RoleEnum } from 'src/common/enum';
 import { Request } from 'express';
+import { LoggerService } from 'src/logger/logger.service';
 
 /**
  * UsersController class for users controller with CRUD operations for users
@@ -37,7 +39,10 @@ import { Request } from 'express';
 @UseGuards(RoleGuard)
 @HasRole(RoleEnum.ADMIN, RoleEnum.SUPER_ADMIN)
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly log: LoggerService,
+  ) {}
 
   /**
    * Create a new user with createUserDto
@@ -139,13 +144,16 @@ export class UsersController {
 
   // get me
   @ApiTags('profile')
-  @Get('me')
+  @Get('/profile/me')
+  @UseGuards(RoleGuard)
+  @HasRole(RoleEnum.OPERATOR, RoleEnum.ADMIN, RoleEnum.SUPER_ADMIN)
   @ApiOkResponse({ type: UserDto })
   @ApiNotFoundResponse({ description: 'Not Found' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   getMe(@Req() req: any) {
     // get me
-    return this.usersService.getMe(req?.user?.id);
+
+    return this.usersService.getMe(req.user.id);
   }
   // update me
   /**
@@ -155,7 +163,7 @@ export class UsersController {
    * @returns new data user
    */
   @ApiTags('profile')
-  @Patch('me')
+  @Patch('/profile/me')
   @ApiOkResponse({ type: UserDto })
   @ApiNotFoundResponse({ description: 'Not Found' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
