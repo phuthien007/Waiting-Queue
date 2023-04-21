@@ -57,4 +57,23 @@ export class MailService {
       console.log('error when send mail', error);
     }
   }
+
+  async sendChangePasswordSuccess(user: User) {
+    try {
+      this.mailerService.sendMail({
+        to: user.email,
+        from: 'Support Team <support@gmail.com>',
+        subject: 'Đổi mật khẩu thành công ✔',
+        template: './changePasswordSuccess', // `.hbs` extension is appended automatically
+        context: {
+          // ✏️ filling curly brackets with content
+          name: user.fullName,
+          email: user.email,
+          tenant: user.tenant.name,
+        },
+      });
+    } catch (error) {
+      console.log('error when send mail', error);
+    }
+  }
 }

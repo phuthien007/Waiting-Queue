@@ -23,6 +23,7 @@ import { AuthService } from './auth.service';
 import { HasRole } from 'src/common/decorators';
 import { RoleGuard } from './role.guard';
 import { ResetPasswordDto } from './dto/resetPassword.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 /**
  * Auth controller class for auth endpoints (login, logout, etc.)
@@ -55,6 +56,7 @@ export class AuthController {
     const cookie = await this.authService.login({
       id: req.user.id,
       role: req.user.role,
+      tenantCode: login.tenantCode,
     });
     res.setHeader('Set-Cookie', cookie);
     return {
@@ -108,5 +110,26 @@ export class AuthController {
     return {
       message: 'Logout success',
     };
+  }
+
+  // change password endpoint
+  /**
+   *  change password endpoint
+   * @param changePassword ResetPasswordDto object from request body, require password and confirmPassword
+   * @returns Change password success message
+   * @returns Change password failed message
+   * @throws {BadRequestException} - if changePassword is invalid
+   * @throws {InternalServerErrorException} - if error occurs during changing password
+   * @throws {NotFoundException} - if user is not found
+   * @throws {UnauthorizedException} - if old password is incorrect
+   * @throws {ForbiddenException} - if user is not allowed to change password
+   * @throws {ConflictException} - if new password is the same as old password
+   * @throws {UnprocessableEntityException} - if new password is the same as old password
+   */
+  @Post('change-password')
+  @ApiCreatedResponse({ description: 'Change password success' })
+  @ApiUnauthorizedResponse({ description: 'Change password failed' })
+  changePassword(@Req() req: any, @Body() changePassword: ChangePasswordDto) {
+    return this.authService.changePassword(req.user.id, changePassword);
   }
 }

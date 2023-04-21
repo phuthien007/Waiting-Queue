@@ -13,6 +13,7 @@ import { createResetTokenPassword, randomPassword } from 'src/common/algorithm';
 import { ResetPasswordDto } from './dto/resetPassword.dto';
 import _, { parseInt } from 'lodash';
 import { MailService } from 'src/mail/mail.service';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 /**
  * Auth service class for auth endpoints (login, logout, etc.) business logic and data access layer
@@ -62,7 +63,7 @@ export class AuthService {
    * @param payload Payload object contains user id and role (for JWT)
    * @returns Cookie string
    */
-  async login(payload: { id: number; role: string }) {
+  async login(payload: { id: number; role: string; tenantCode: string }) {
     const token = this.jwtService.sign({ ...payload });
     // httpOnly in cookie will prevent client from accessing cookie (prevent XSS)
     return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${
@@ -112,9 +113,7 @@ export class AuthService {
     resetPassword: ResetPasswordDto,
   ) => {
     const { replyPassword, newPassword } = resetPassword;
-    console.log('resetPassword', resetPassword);
-    console.log('resetPassword', replyPassword);
-    console.log('resetPassword', newPassword);
+
     // check password
     if (newPassword !== replyPassword) {
       throw new BadRequestException('Mật khẩu mới không khớp');
@@ -157,4 +156,48 @@ export class AuthService {
 
     return;
   };
+
+  /**
+   * change password
+   * @param userId  user id
+   * @param changePassword    change password dto from request body
+   * @returns void
+   */
+  async changePassword(userId: string, changePassword: ChangePasswordDto) {
+    const { oldPassword, newPassword, confirmPassword } = changePassword;
+
+    // check password
+    if (newPassword !== confirmPassword) {
+      throw new BadRequestException('Mật khẩu mới không khớp');
+    }
+
+    const res = await this.userRepository.findOne({
+      where: {
+        id: parseInt(userId) ?? 0,
+      },
+      relations: ['tenant'],
+    });
+
+    // check result query
+    if (!res) {
+      throw new BadRequestException('Tài khoản không tồn tại');
+    }
+
+    const isMatch = await res.comparePassword(oldPassword);
+    if (!isMatch) {
+      throw new BadRequestException('Mật khẩu cũ không đúng');
+    }
+
+    const hashPassword = await bcrypt.hash(newPassword, 10);
+    // update password
+    await this.userRepository.update(res.id, {
+      ...res,
+      password: hashPassword,
+    });
+
+    // send mail notification
+    this.mailService.sendChangePasswordSuccess(res);
+
+    return;
+  }
 }

@@ -30,6 +30,7 @@ import { HasRole } from 'src/common/decorators';
 import { RoleEnum } from 'src/common/enum';
 import { Request } from 'express';
 import { LoggerService } from 'src/logger/logger.service';
+import { UserMeDto } from './dto/user-me.dto';
 
 /**
  * UsersController class for users controller with CRUD operations for users
@@ -164,7 +165,7 @@ export class UsersController {
    */
   @ApiTags('profile')
   @Patch('/profile/me')
-  @ApiOkResponse({ type: UserDto })
+  @ApiOkResponse({ type: UserMeDto })
   @ApiNotFoundResponse({ description: 'Not Found' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   updateMe(@Req() req: any, @Body() updateUserDto: UpdateUserDto) {

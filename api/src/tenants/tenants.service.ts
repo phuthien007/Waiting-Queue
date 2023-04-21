@@ -179,4 +179,22 @@ export class TenantsService {
   remove(id: number) {
     return this.tenantRepository.delete(id);
   }
+
+  /**
+   * Update tenant with id and updateTenantDto
+   * @param userId  - userId
+   * @param updateTenantDto - UpdateTenantDto object from request body
+   * @returns TenantDto object with updated tenant data
+   */
+  async updateMyTenant(userId: number, updateTenantDto: UpdateTenantDto) {
+    // check permission can update
+    const resUser = await this.userService.findOne(userId);
+    if (resUser.email !== updateTenantDto.contactEmail) {
+      throw new BadRequestException(
+        'Bạn không có quyền cập nhật thông tin này',
+      );
+    }
+
+    return this.update(updateTenantDto.id, updateTenantDto);
+  }
 }

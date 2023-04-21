@@ -19,6 +19,7 @@ import { partialMapping, randomPassword } from 'src/common/algorithm';
 import { Tenant } from 'src/tenants/entities/tenants.entity';
 import { FilterOperator } from 'src/common/filters.vm';
 import { LoggerService } from 'src/logger/logger.service';
+import { TenantDto } from 'src/tenants/dto/tenant.dto';
 
 /**
  * UsersService class for users service with CRUD operations for users and other operations
@@ -190,7 +191,6 @@ export class UsersService {
    * @throws {NotFoundException} - if id is not exist in database
    */
   async findOne(id: number) {
-    console.log('1', id);
     const user = await this.userRepository.findOne({
       where: { id },
       relations: ['tenant'],
@@ -252,7 +252,24 @@ export class UsersService {
    * Get me by id of user from auth token
    * @returns UserDto object with profile of this user
    */
-  getMe(id: number) {
-    return this.findOne(id);
+  async getMe(id: number) {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: ['tenant'],
+    });
+    if (!user)
+      throw new NotFoundException(
+        transformError(`Id: ${id}`, ERROR_TYPE.NOT_FOUND),
+      );
+    const resToInstance = plainToInstance(UserDto, user, {
+      excludeExtraneousValues: true,
+    });
+    resToInstance.tenant = plainToInstance(TenantDto, user.tenant, {
+      excludeExtraneousValues: true,
+    });
+    return {
+      ...resToInstance,
+      isOwnerTenant: user.tenant.contactEmail === user.email,
+    };
   }
 }
