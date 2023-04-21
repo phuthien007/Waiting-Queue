@@ -24,14 +24,14 @@ import { EnrollQueueDto } from './dto/enroll-queue.dto';
 import { FilterOperator } from 'src/common/filters.vm';
 
 @ApiTags('enroll-queues')
-@Controller('enroll-queues')
+@Controller('/api/enroll-queues')
 export class EnrollQueuesController {
   constructor(private readonly enrollQueuesService: EnrollQueuesService) {}
 
   @Post()
   @ApiCreatedResponse({ type: EnrollQueueDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  create(@Body() createEnrollQueueDto: CreateEnrollQueueDto) {
+  createEnrollQueue(@Body() createEnrollQueueDto: CreateEnrollQueueDto) {
     return this.enrollQueuesService.create(createEnrollQueueDto);
   }
 
@@ -44,7 +44,7 @@ export class EnrollQueuesController {
   })
   @ApiOkResponse({ type: [EnrollQueueDto] })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  findAll(@Query() search: any) {
+  findAllEnrollQueue(@Query() search: any) {
     return this.enrollQueuesService.findAll(search);
   }
 
@@ -52,7 +52,7 @@ export class EnrollQueuesController {
   @ApiOkResponse({ type: EnrollQueueDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
-  findOne(@Param('id', ParseIntPipe) id: number) {
+  findOneEnrollQueue(@Param('id', ParseIntPipe) id: number) {
     return this.enrollQueuesService.findOne(+id);
   }
 
@@ -60,7 +60,7 @@ export class EnrollQueuesController {
   @ApiOkResponse({ type: EnrollQueueDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
-  update(
+  updateEnrollQueue(
     @Param('id', ParseIntPipe) id: number,
 
     @Body() updateEnrollQueueDto: UpdateEnrollQueueDto,
@@ -72,7 +72,7 @@ export class EnrollQueuesController {
   @ApiOkResponse({ description: 'OK' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
-  remove(@Param('id', ParseIntPipe) id: number) {
+  removeEnrollQueue(@Param('id', ParseIntPipe) id: number) {
     return this.enrollQueuesService.remove(+id);
   }
 }

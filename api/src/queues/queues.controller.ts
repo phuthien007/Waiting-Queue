@@ -28,7 +28,7 @@ import { RoleGuard } from 'src/auth/role.guard';
  * QueuesController class for queues controller with CRUD operations for queues
  */
 @ApiTags('queues')
-@Controller('queues')
+@Controller('/api/queues')
 @UseGuards(RoleGuard)
 export class QueuesController {
   constructor(private readonly queuesService: QueuesService) {}
@@ -44,7 +44,7 @@ export class QueuesController {
   @Post()
   @ApiCreatedResponse({ type: QueueDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  create(@Body() createQueueDto: CreateQueueDto) {
+  createQueue(@Body() createQueueDto: CreateQueueDto) {
     return this.queuesService.create(createQueueDto);
   }
 
@@ -64,7 +64,7 @@ export class QueuesController {
   })
   @ApiOkResponse({ type: [QueueDto] })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  findAll(@Query() search: any) {
+  findAllQueue(@Query() search: any) {
     return this.queuesService.findAll(search);
   }
 
@@ -80,7 +80,7 @@ export class QueuesController {
   @ApiOkResponse({ type: QueueDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
-  findOne(@Param('id', ParseIntPipe) id: number) {
+  findOneQueue(@Param('id', ParseIntPipe) id: number) {
     return this.queuesService.findOne(+id);
   }
 
@@ -97,7 +97,7 @@ export class QueuesController {
   @ApiOkResponse({ type: QueueDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
-  update(
+  updateQueue(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateQueueDto: UpdateQueueDto,
   ) {
@@ -116,7 +116,7 @@ export class QueuesController {
   @ApiOkResponse({ description: 'OK' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
-  remove(@Param('id', ParseIntPipe) id: number) {
+  removeQueue(@Param('id', ParseIntPipe) id: number) {
     return this.queuesService.remove(+id);
   }
 }

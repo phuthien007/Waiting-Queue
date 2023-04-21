@@ -25,6 +25,7 @@ import { UsersModule } from './users/users.module';
 import { LoggerModule } from './logger/logger.module';
 import { ExceptionModule } from './exception/exception.module';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
     UsersModule,
     LoggerModule,
     ExceptionModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [

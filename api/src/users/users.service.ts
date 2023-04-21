@@ -190,6 +190,7 @@ export class UsersService {
    * @throws {NotFoundException} - if id is not exist in database
    */
   async findOne(id: number) {
+    console.log('1', id);
     const user = await this.userRepository.findOne({
       where: { id },
       relations: ['tenant'],
@@ -244,5 +245,14 @@ export class UsersService {
   remove(id: number) {
     // return `This action removes a #${id} user`;
     return this.userRepository.delete(id);
+  }
+
+  // get me
+  /**
+   * Get me by id of user from auth token
+   * @returns UserDto object with profile of this user
+   */
+  getMe(id: number) {
+    return this.findOne(id);
   }
 }

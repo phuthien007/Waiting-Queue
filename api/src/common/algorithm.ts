@@ -1,3 +1,5 @@
+import * as bcrypt from 'bcrypt';
+
 // random code tenant
 /**
  * function random code tenant
@@ -54,4 +56,16 @@ export const partialMapping = (entity: any, dto: any) => {
     }
   });
   return result;
+};
+
+/**
+ * function create token reset password
+ * @returns a random token with length is 10
+ */
+export const createResetTokenPassword = () => {
+  // random token
+  const token = randomPassword();
+  // hash token
+  const hashToken = bcrypt.hash(token, 10);
+  return hashToken;
 };

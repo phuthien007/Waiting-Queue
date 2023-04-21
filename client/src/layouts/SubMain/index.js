@@ -49,12 +49,10 @@ const SubMainLayout = ({ children }) => {
     if (path.endsWith("/personal-user/profile")) {
       return ["profile"];
     }
-    if (path.endsWith("/personal-user/active-sessions")) {
-      return ["active-sessions"];
+    if (path.endsWith("/personal-user/profile-tenant")) {
+      return ["profile-tenant"];
     }
-    if (path.endsWith("/personal-user/setting-notifications")) {
-      return ["setting-notifications"];
-    }
+
     if (path.endsWith("/personal-user/authentication")) {
       return ["authentication"];
     }
@@ -69,15 +67,11 @@ const SubMainLayout = ({ children }) => {
       <UserOutlined />
     ),
     getItem(
-      <Link to="/personal-user/active-sessions">Phiên đăng nhập</Link>,
-      "active-sessions",
+      <Link to="/personal-user/profile-tenant">Thông tin công ty</Link>,
+      "profile-tenant",
       <i className="fa fa-laptop" />
     ),
-    getItem(
-      <Link to="/personal-user/setting-notifications">Thông báo</Link>,
-      "setting-notifications",
-      <i className="fe fe-bell" />
-    ),
+
     getItem(
       <Link to="/personal-user/authentication">Bảo mật</Link>,
       "authentication",

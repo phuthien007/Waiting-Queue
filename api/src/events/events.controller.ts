@@ -27,7 +27,7 @@ import { FilterOperator } from 'src/common/filters.vm';
  * Events controller class for events endpoints (create, update, delete, etc.)
  */
 @ApiTags('events')
-@Controller('events')
+@Controller('/api/events')
 export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
 
@@ -39,7 +39,7 @@ export class EventsController {
   @Post()
   @ApiCreatedResponse({ type: EventDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  create(@Body() createEventDto: CreateEventDto) {
+  createEvent(@Body() createEventDto: CreateEventDto) {
     return this.eventsService.create(createEventDto);
   }
 
@@ -57,7 +57,7 @@ export class EventsController {
   })
   @ApiOkResponse({ type: [EventDto] })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  findAll(@Query() search: any) {
+  findAllEvent(@Query() search: any) {
     return this.eventsService.findAll(search);
   }
 
@@ -72,7 +72,7 @@ export class EventsController {
   @ApiOkResponse({ type: EventDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
-  findOne(@Param('id', ParseIntPipe) id: number) {
+  findOneEvent(@Param('id', ParseIntPipe) id: number) {
     return this.eventsService.findOne(+id);
   }
 
@@ -88,7 +88,7 @@ export class EventsController {
   @ApiOkResponse({ type: EventDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
-  update(
+  updateEvent(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateEventDto: UpdateEventDto,
   ) {
@@ -105,7 +105,7 @@ export class EventsController {
   @ApiOkResponse({ description: 'OK' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
-  remove(@Param('id', ParseIntPipe) id: number) {
+  removeEvent(@Param('id', ParseIntPipe) id: number) {
     return this.eventsService.remove(+id);
   }
 }

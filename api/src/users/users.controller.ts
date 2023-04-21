@@ -9,6 +9,8 @@ import {
   ParseIntPipe,
   Query,
   UseGuards,
+  Req,
+  Res,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -26,16 +28,21 @@ import { FilterOperator } from 'src/common/filters.vm';
 import { RoleGuard } from 'src/auth/role.guard';
 import { HasRole } from 'src/common/decorators';
 import { RoleEnum } from 'src/common/enum';
+import { Request } from 'express';
+import { LoggerService } from 'src/logger/logger.service';
 
 /**
  * UsersController class for users controller with CRUD operations for users
  */
-@ApiTags('users')
-@Controller('users')
+
+@Controller('/api/users')
 @UseGuards(RoleGuard)
 @HasRole(RoleEnum.ADMIN, RoleEnum.SUPER_ADMIN)
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly log: LoggerService,
+  ) {}
 
   /**
    * Create a new user with createUserDto
@@ -45,10 +52,11 @@ export class UsersController {
    * @throws {InternalServerErrorException} - if error occurs during creating user
    * @throws {NotFoundException} - if tenant with code from createUserDto.tenantCode not found
    */
+  @ApiTags('users')
   @Post()
   @ApiCreatedResponse({ type: UserDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  create(@Body() createUserDto: CreateUserDto): Promise<UserDto> {
+  createUser(@Body() createUserDto: CreateUserDto): Promise<UserDto> {
     return this.usersService.create(createUserDto);
   }
 
@@ -60,6 +68,7 @@ export class UsersController {
    * @throws {InternalServerErrorException} - if error occurs during finding users
    * @throws {NotFoundException} - if tenant with code from search.tenantCode not found
    */
+  @ApiTags('users')
   @Get()
   @ApiQuery({
     name: 'search',
@@ -69,7 +78,7 @@ export class UsersController {
   })
   @ApiOkResponse({ type: [UserDto] })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  findAll(@Query() search: any): Promise<UserDto[]> {
+  findAllUser(@Query() search: any): Promise<UserDto[]> {
     return this.usersService.findAll(search);
     // return null;
   }
@@ -82,11 +91,12 @@ export class UsersController {
    * @throws {InternalServerErrorException} - if error occurs during finding user
    * @throws {NotFoundException} - if user not found or tenant with code from search.tenantCode not found
    */
+  @ApiTags('users')
   @Get(':id')
   @ApiOkResponse({ type: UserDto })
   @ApiNotFoundResponse({ description: 'Not Found' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  findOne(@Param('id', ParseIntPipe) id: number) {
+  findOneUser(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.findOne(+id);
   }
 
@@ -99,11 +109,12 @@ export class UsersController {
    * @throws {InternalServerErrorException} - if error occurs during updating user
    *  @throws {NotFoundException} - if user not found or tenant with code from search.tenantCode not found
    */
+  @ApiTags('users')
   @Patch(':id')
   @ApiOkResponse({ type: UserDto })
   @ApiNotFoundResponse({ description: 'Not Found' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  update(
+  updateUser(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: UpdateUserDto,
   ) {
@@ -122,11 +133,45 @@ export class UsersController {
    * @throws {InternalServerErrorException} - if error occurs during deleting user
    * @throws {NotFoundException} - if user not found or tenant with code from search.tenantCode not found
    */
+  @ApiTags('users')
   @Delete(':id')
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
   @ApiOkResponse({ description: 'OK' })
-  remove(@Param('id', ParseIntPipe) id: number) {
+  removeUser(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.remove(+id);
+  }
+
+  // get me
+  @ApiTags('profile')
+  @Get('/profile/me')
+  @UseGuards(RoleGuard)
+  @HasRole(RoleEnum.OPERATOR, RoleEnum.ADMIN, RoleEnum.SUPER_ADMIN)
+  @ApiOkResponse({ type: UserDto })
+  @ApiNotFoundResponse({ description: 'Not Found' })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  getMe(@Req() req: any) {
+    // get me
+
+    return this.usersService.getMe(req.user.id);
+  }
+  // update me
+  /**
+   * api for update profile user
+   * @param req request user send
+   * @param updateUserDto data update
+   * @returns new data user
+   */
+  @ApiTags('profile')
+  @Patch('/profile/me')
+  @ApiOkResponse({ type: UserDto })
+  @ApiNotFoundResponse({ description: 'Not Found' })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  updateMe(@Req() req: any, @Body() updateUserDto: UpdateUserDto) {
+    // remove field not update
+    delete updateUserDto.tenantCode;
+    delete updateUserDto.email;
+    delete updateUserDto.id;
+    return this.usersService.update(req?.user?.id, updateUserDto);
   }
 }

@@ -19,22 +19,23 @@ async function bootstrap() {
     .setTitle('XepHang API')
     .setDescription('The waiting queue API description')
     .setVersion('1.0')
-    .addBearerAuth(
-      {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
-        in: 'cookie',
-        description: 'Enter your JWT token',
-      },
-      'jwt',
-    )
-    .addSecurityRequirements('jwt')
+    // .addBearerAuth(
+    //   {
+    //     type: 'http',
+    //     scheme: 'bearer',
+    //     bearerFormat: 'JWT',
+    //     in: 'cookie',
+    //     description: 'Enter your JWT token',
+    //   },
+    //   'jwt',
+    // )
+    // .addSecurityRequirements('jwt')
     .build();
   // setup api-docs route
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document, {
     yamlDocumentUrl: '/api.yaml',
+    jsonDocumentUrl: '/api.json',
   });
 
   // setup global validation pipe for all routes

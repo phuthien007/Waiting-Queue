@@ -22,26 +22,33 @@ import store from "store";
 import settingsConfig from "configs/settingsConfig";
 import { loadCurrentAccount } from "store/userSlice";
 import style from "../style.module.scss";
+import { ValidateEmail } from "services/utils/validates";
+import { useAuthControllerLogin } from "@api/waitingQueue";
 
-const initialAccount = {};
-
-let myInterval;
-const disableOTPSeconds = 30;
+const initialAccount = {
+  email: "xephang@super.admin.com",
+  password: "123456Aa@",
+};
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const { isLoading, mutateAsync } = useAuthControllerLogin();
+
   const onFinish = async (values) => {
-    navigate("/public/home");
-    // const authenticatedData = await authenticateAsync({
-    //   data: { ...values, rememberMe: true },
-    // });
-    // if (authenticatedData) {
-    //   store.set("accessToken", authenticatedData.accessToken);
-    //   dispatch(loadCurrentAccount());
-    //   navigate(settingsConfig.getLoginRedirectUrl() || "/");
-    // }
+    // navigate("/public/home");
+    const authenticatedData = await mutateAsync({
+      data: {
+        email: values.email,
+        password: values.password,
+        tenantCode: values.tenantCode,
+      },
+    });
+    if (authenticatedData) {
+      dispatch(loadCurrentAccount());
+      navigate(settingsConfig.getLoginRedirectUrl() || "/");
+    }
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -69,18 +76,34 @@ const Login = () => {
         }
       >
         <Form.Item
-          name="username"
+          name="email"
           rules={[
-            { required: true, message: "Tên đăng nhập không được bỏ trống" },
+            { required: true, message: "Email không được bỏ trống" },
+            {
+              validator: (rule, value) => {
+                if (value && !ValidateEmail(value)) {
+                  return Promise.reject("Email không hợp lệ");
+                }
+                return Promise.resolve();
+              },
+            },
           ]}
         >
-          <Input size="large" placeholder="Tên đăng nhập" />
+          <Input size="large" placeholder="Email" />
         </Form.Item>
         <Form.Item
           name="password"
           rules={[{ required: true, message: "Mật khẩu không được bỏ trống" }]}
         >
-          <Input size="large" type="password" placeholder="Mật khẩu" />
+          <Input.Password size="large" type="password" placeholder="Mật khẩu" />
+        </Form.Item>
+        <Form.Item
+          name="tenantCode"
+          rules={[
+            { required: true, message: "Mã công ty không được bỏ trống" },
+          ]}
+        >
+          <Input size="large" type="text" placeholder="Mã công ty" />
         </Form.Item>
 
         <Button
