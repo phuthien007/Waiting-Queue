@@ -146,7 +146,7 @@ export class UsersService {
    * @returns UserDto object with created user data
    * @throws {BadRequestException} - if search is not valid
    */
-  async findAll(search: any): Promise<UserDto[]> {
+  async findAll(search: any, tenantCode?: string): Promise<UserDto[]> {
     // start create search
     const filterObj = new FilterOperator();
     // transform to filter
@@ -164,7 +164,12 @@ export class UsersService {
     try {
       users = await this.userRepository.find({
         relations: ['tenant'],
-        where: filterObj.transformToQuery(),
+        where: {
+          ...filterObj.transformToQuery(),
+          tenant: {
+            tenantCode: tenantCode,
+          },
+        },
       });
     } catch (error) {
       this.log.error(error);
