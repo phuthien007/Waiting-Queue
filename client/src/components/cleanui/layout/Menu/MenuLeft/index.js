@@ -24,7 +24,6 @@ const MenuLeft = () => {
   } = useSelector(selectSettings);
   const { role } = useSelector(selectUser);
   const { pathname } = useLocation();
-
   const [selectedKeys, setSelectedKeys] = useState(
     store.get("app.menu.selectedKeys") || []
   );
@@ -138,7 +137,7 @@ const MenuLeft = () => {
     return menuData.map((menuItem) => {
       if (menuItem.roles && role) {
         const checkArr = menuItem.roles.includes(role);
-        if (checkArr.length === 0) {
+        if (!checkArr) {
           return null;
         }
       }

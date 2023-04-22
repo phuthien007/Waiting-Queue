@@ -154,11 +154,12 @@
       .icon {
         color: $primary;
       }
+      
     }
 
     :global(.ant-menu-submenu-active) {
       .icon {
-        color: $primary;
+        color: $white;
       }
     }
 
@@ -171,7 +172,7 @@
     :global(.ant-menu-item-selected) {
       background: $primary !important;
       > span {
-        color: $primary;
+        color:$white;
         > a {
           color: $white !important;
 

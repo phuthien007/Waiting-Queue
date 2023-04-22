@@ -124,7 +124,7 @@ const Layout = ({ children }) => {
     // authority url with role
     const menuItem = findURL(currentPath);
     if (menuItem) {
-      if (menuItem?.roles.includes(user.role)) {
+      if (!menuItem?.roles.includes(user.role)) {
         console.log("redirect to 403");
         return (
           <Container>

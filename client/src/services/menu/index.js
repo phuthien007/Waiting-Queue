@@ -4,6 +4,30 @@ export default [
     key: "dashboardAdmin",
     url: "/home",
     icon: "fe fe-home",
-    roles: ["A1", "ADMIN", "USER"],
+    roles: ["ADMIN", "SUPER ADMIN", "OPERATOR"],
+  },
+
+  {
+    title: "Danh sách sự kiện",
+    key: "management-event",
+    url: "/event",
+    icon: "fa fa-calendar",
+    roles: ["ADMIN"],
+  },
+  {
+    title: "Danh sách đối tác",
+    key: "management-tenant",
+    url: "/manage/tenant",
+
+    icon: "fa fa-building-o",
+    roles: ["SUPER ADMIN"],
+  },
+  {
+    title: "Danh sách tài khoản",
+    key: "management-account",
+    url: "/manage/account",
+
+    icon: "fe fe-users",
+    roles: ["ADMIN", "SUPER ADMIN"],
   },
 ];
