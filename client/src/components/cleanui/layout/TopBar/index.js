@@ -8,7 +8,10 @@ import style from "./style.module.scss";
 const TopBar = () => {
   const user = useSelector(selectUser);
   return (
-    <div className={style.topbar}>
+    <div
+      style={{ width: "100%", justifyContent: "flex-end" }}
+      className={style.topbar}
+    >
       {/* <div className="mr-4">
         <FavPages />
       </div>
@@ -28,11 +31,25 @@ const TopBar = () => {
         <Actions />
       </div> */}
       {!user.authorized ? (
-        <div className="mr-4 d-none d-sm-block">
-          <Button>Login</Button>
+        <div className="mt-2 mr-5">
+          <Button
+            className="mr-2"
+            icon={<i className="fa fa-camera mr-2" />}
+            type="primary"
+          >
+            Mở camera
+          </Button>
+          <Button
+            className="mr-2"
+            icon={<i className="fe fe-log-in mr-2" />}
+            type="primary"
+            href="/auth/login"
+          >
+            Đăng nhập
+          </Button>
         </div>
       ) : (
-        <div className="">
+        <div className="mt-2 mr-5">
           <UserMenu />
         </div>
       )}

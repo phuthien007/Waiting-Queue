@@ -86,7 +86,7 @@ const Menu = () => {
     if (menuLayoutType === "nomenu") {
       return null;
     }
-    return <MenuTop />;
+    return <MenuLeft />;
   };
 
   return GetMenu();
