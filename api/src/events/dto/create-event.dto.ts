@@ -57,6 +57,9 @@ export class CreateEventDto extends BaseDto {
   // relations
   @ApiPropertyOptional()
   @IsNumber()
+  @IsNotEmpty({
+    message: transformError('Công ty', ERROR_TYPE.REQUIRED),
+  })
   tenantId: number;
   @IsNumber()
   @ApiPropertyOptional()

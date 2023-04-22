@@ -11,7 +11,7 @@ export class TenantDto extends BaseDto {
   @Expose()
   name: string;
   @ApiPropertyOptional()
-  @Exclude()
+  @Expose()
   tenantCode: string;
   @ApiPropertyOptional()
   @Expose()
