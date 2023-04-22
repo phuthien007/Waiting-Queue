@@ -15,6 +15,7 @@ import {
   Switch,
   Tooltip,
   TreeSelect,
+  notification,
 } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { useState, useEffect } from "react";
@@ -37,16 +38,14 @@ const tailLayout = {
 
 const { SHOW_PARENT } = TreeSelect;
 
-const AccountForm = ({ type, data }) => {
+const AccountForm = ({ type, data, saveData, loading, reloadData }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
-  const { role: roleUser } = useSelector(selectUser);
+  const { role: roleUser, tenant } = useSelector(selectUser);
   const showModal = () => {
     form.resetFields();
-    console.log("data", data);
     form.setFieldsValue({
       ...data,
-      role: data?.role,
     });
 
     setIsModalOpen(true);
@@ -62,7 +61,22 @@ const AccountForm = ({ type, data }) => {
 
   const onFinish = (values) => {
     // values.id = data.id
-    // saveData({ ...values })
+    saveData({
+      id: data.id,
+      data: {
+        ...values,
+        tenantCode: tenant.tenantCode,
+      },
+    }).then((res) => {
+      if (res) {
+        reloadData();
+        notification.success({
+          message: "Thành công",
+          description: "Lưu thành công",
+        });
+        handleOk();
+      }
+    });
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -277,7 +291,7 @@ const AccountForm = ({ type, data }) => {
               </Col>
               <Col offset={4} span={16}>
                 <Button
-                  // loading={loadingSave}
+                  loading={loading}
                   icon={<i className="fe fe-save mr-2" />}
                   type="primary"
                   htmlType="submit"

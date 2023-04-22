@@ -14,11 +14,9 @@ import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { RoleRender, StatusRender } from "services/utils/format";
 
-const dataSource = [];
-
 function ManagementTenants() {
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState(dataSource);
+  const [keyword, setKeyword] = useState("");
+
   const { isLoading: loadingCreate, mutateAsync: createTenant } =
     useTenantsControllerCreateTenant();
   const { isLoading: loadingUpdate, mutateAsync: updateTenant } =
@@ -27,9 +25,9 @@ function ManagementTenants() {
     refetch,
     isFetching,
     data: dataTenant,
-  } = useTenantsControllerFindAllTenant({});
-
-  const [keyword, setKeyword] = useState("");
+  } = useTenantsControllerFindAllTenant({
+    like: keyword ? [`contactEmail:${keyword}`] : [],
+  });
 
   const columns = [
     {
@@ -82,23 +80,11 @@ function ManagementTenants() {
 
   const onSearch = (value) => {
     setKeyword(value);
-    getData(0, pagination.pageSize, value);
   };
-
-  const handleChangeTable = (e) => {
-    setPagination({
-      ...pagination,
-      ...e,
-    });
-
-    getData(e.current - 1, pagination.pageSize, keyword);
-  };
-
-  const getData = async (page, size, key = keyword) => {};
 
   useEffect(() => {
     refetch();
-  }, []);
+  }, [keyword]);
 
   return (
     <>
@@ -133,15 +119,13 @@ function ManagementTenants() {
         </Col>
       </Row>
       <Row>
-        <Card loading={isFetching} style={{ width: "100%" }}>
+        <Card style={{ width: "100%" }}>
           <Table
             scroll={{ x: 1200 }}
             rowKey="id"
-            onChange={handleChangeTable}
-            loading={loading}
+            loading={isFetching}
             style={{ width: "100%" }}
             dataSource={dataTenant}
-            // pagination={pagination}
             columns={columns}
           />
         </Card>

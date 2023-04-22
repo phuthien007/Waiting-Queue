@@ -1,7 +1,9 @@
 import { DeleteOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import {
+  useUsersControllerCreateUser,
   useUsersControllerFindAllUser,
   useUsersControllerRemoveUser,
+  useUsersControllerUpdateUser,
 } from "@api/waitingQueue";
 import {
   Button,
@@ -24,11 +26,8 @@ import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { RoleRender, StatusRender } from "services/utils/format";
 
-const dataSource = [];
-
 function ManagementAccounts() {
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState(dataSource);
+  const [keyword, setKeyword] = useState();
 
   const { isLoading: loadingDelete, mutateAsync: deleteAccount } =
     useUsersControllerRemoveUser();
@@ -36,9 +35,14 @@ function ManagementAccounts() {
     refetch,
     isFetching,
     data: dataAccount,
-  } = useUsersControllerFindAllUser({});
+  } = useUsersControllerFindAllUser({
+    like: keyword ? [`email:${keyword}`] : [],
+  });
 
-  const [keyword, setKeyword] = useState("");
+  const { isLoading: loadingCreate, mutateAsync: createUser } =
+    useUsersControllerCreateUser();
+  const { isLoading: loadingUpdate, mutateAsync: updateUser } =
+    useUsersControllerUpdateUser();
 
   const handleDelete = (id) => {
     deleteAccount({
@@ -101,7 +105,13 @@ function ManagementAccounts() {
         return (
           <>
             <Space>
-              <AccountForm type="edit" data={record} />
+              <AccountForm
+                reloadData={refetch}
+                saveData={updateUser}
+                loading={loadingUpdate}
+                type="edit"
+                data={record}
+              />
 
               <Tooltip title="Xóa">
                 <Popconfirm
@@ -146,25 +156,11 @@ function ManagementAccounts() {
 
   const onSearch = (value) => {
     setKeyword(value);
-    getData(0, pagination.pageSize, value);
   };
-
-  const handleChangeTable = (e) => {
-    setPagination({
-      ...pagination,
-      ...e,
-    });
-
-    getData(e.current - 1, pagination.pageSize, keyword);
-  };
-
-  const saveData = (newData) => {};
-
-  const getData = async (page, size, key = keyword) => {};
 
   useEffect(() => {
     refetch();
-  }, []);
+  }, [keyword]);
 
   return (
     <>
@@ -187,15 +183,15 @@ function ManagementAccounts() {
         <Col span={12} style={{ display: "flex", justifyContent: "end" }}>
           {" "}
           <AccountForm
-            saveData={saveData}
+            reloadData={refetch}
+            saveData={createUser}
+            loading={loadingCreate}
             type="add"
             data={{
-              email: "",
               role: "operator",
-              fullName: "",
-              note: "",
+
               status: 1,
-              isWorking: true,
+              isWorking: false,
             }}
           />
         </Col>
@@ -205,11 +201,9 @@ function ManagementAccounts() {
           <Table
             scroll={{ x: 1200 }}
             rowKey="id"
-            onChange={handleChangeTable}
-            loading={loading}
+            loading={isFetching}
             style={{ width: "100%" }}
             dataSource={dataAccount}
-            // pagination={pagination}
             columns={columns}
           />
         </Card>
