@@ -55,6 +55,23 @@ export class TenantsController {
   }
 
   /**
+   * Create a new tenant with createTenantDto
+   * @param createTenantDto - CreateTenantDto object from request body
+   * @returns TenantDto object with created tenant data
+   * @throws {BadRequestException} - if createTenantDto is invalid
+   * @throws {InternalServerErrorException} - if error occurs during creating tenant
+   * @throws {NotFoundException} - if event with id from createTenantDto.eventId not found
+   */
+  @Post('/register/tenant')
+  @ApiCreatedResponse({ type: TenantDto })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  async registerTenant(
+    @Body() createTenantDto: CreateTenantDto,
+  ): Promise<TenantDto> {
+    return this.tenantsService.create(createTenantDto);
+  }
+
+  /**
    * Find all tenants with search query params
    * @param search - search query params
    * @returns array of TenantDto objects with tenants data

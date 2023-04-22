@@ -62,7 +62,6 @@ export class TenantsService {
     tenant.tenantCode = randomCodeTenant();
     const savedTenant = this.tenantRepository.save(tenant);
 
-    // TODO: create user admin for tenant
     const resUser = await this.userService.createFromTenant(tenant);
 
     if (!resUser) {

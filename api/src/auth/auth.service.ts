@@ -38,7 +38,7 @@ export class AuthService {
     const user = await this.userRepository.findOne({
       where: {
         email: loginModel.email,
-        status: true,
+        status: 1,
         tenant: {
           tenantCode: loginModel.tenantCode,
         },
@@ -80,7 +80,7 @@ export class AuthService {
     const res = await this.userRepository.findOne({
       where: {
         email,
-        status: true,
+        status: 1,
         tenant: {
           tenantCode,
         },
@@ -148,7 +148,7 @@ export class AuthService {
       ...res,
       password: hashPassword,
       resetTokenPassword: null,
-      resetDatePassword: null,
+      resetDatePassword: new Date(),
     });
 
     // send mail notification
@@ -193,6 +193,7 @@ export class AuthService {
     await this.userRepository.update(res.id, {
       ...res,
       password: hashPassword,
+      resetDatePassword: new Date(),
     });
 
     // send mail notification

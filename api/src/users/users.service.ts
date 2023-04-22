@@ -20,6 +20,7 @@ import { Tenant } from 'src/tenants/entities/tenants.entity';
 import { FilterOperator } from 'src/common/filters.vm';
 import { LoggerService } from 'src/logger/logger.service';
 import { TenantDto } from 'src/tenants/dto/tenant.dto';
+import { MailService } from 'src/mail/mail.service';
 
 /**
  * UsersService class for users service with CRUD operations for users and other operations
@@ -30,6 +31,7 @@ export class UsersService {
     private readonly userRepository: UsersRepository,
     private readonly tenantRepository: TenantsRepository,
     private readonly log: LoggerService,
+    private readonly mailService: MailService,
   ) {}
 
   /**
@@ -95,7 +97,10 @@ export class UsersService {
    * @throws {BadRequestException} - if email is exist in database
    */
   // using for register from tenant
-  async createFromTenant(tenantObj: Tenant): Promise<UserDto> {
+  async createFromTenant(
+    tenantObj: Tenant,
+    password?: string,
+  ): Promise<UserDto> {
     // check tenant exist
 
     const user = new User();
@@ -122,18 +127,24 @@ export class UsersService {
     //   );
     // }
 
-    user.status = true;
+    user.status = commonEnum.ACTIVE;
     user.role = RoleEnum.ADMIN;
     user.fullName = tenantObj.name;
     user.note = 'Tài khoản được tạo tự động từ tenant';
-    user.isWorking = true;
+    user.isWorking = false;
 
     // random a password when create
-    user.password = randomPassword();
+    const randomRaw = randomPassword();
+    user.password = randomRaw;
 
     const savedUser = await this.userRepository.save(user);
 
-    // TODO: send email to user
+    // TODO: send email to user if not have password
+    this.mailService.sendRegisterTenantSuccess(
+      savedUser,
+      randomRaw,
+      tenantObj.tenantCode,
+    );
 
     return plainToInstance(UserDto, savedUser, {
       excludeExtraneousValues: true,
