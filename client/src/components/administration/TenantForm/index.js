@@ -1,10 +1,10 @@
-/* eslint-disable no-shadow */
-/* eslint-disable no-unused-vars */
-import { CloseOutlined, EditOutlined } from "@ant-design/icons";
-import { useGetAllDepartment } from "@api/manage";
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unreachable */
+/* eslint-disable react/jsx-indent */
+import { CheckOutlined, CloseOutlined, EditOutlined } from "@ant-design/icons";
 import {
-  AutoComplete,
   Button,
+  Checkbox,
   Col,
   Form,
   Input,
@@ -12,10 +12,22 @@ import {
   Row,
   Select,
   Space,
+  Switch,
   Tooltip,
+  TreeSelect,
+  notification,
 } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import {
+  removeVietnameseTones,
+  ValidateEmail,
+  ValidatePassword,
+  ValidateUserName,
+} from "services/utils/validates";
+import { selectUser } from "store/userSlice";
+// import ValidateUserName from '../../../services/utils/validates'
 
 const tailLayout = {
   wrapperCol: {
@@ -23,23 +35,21 @@ const tailLayout = {
     span: 16,
   },
 };
-const DocGroupForm = ({ type, data, saveData, loadingSave, isSuccess }) => {
+
+const { SHOW_PARENT } = TreeSelect;
+
+const TenantForm = ({ type, data, saveData, loading, reloadData }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [dataDeparment, setDataDepartment] = useState([]);
   const [form] = Form.useForm();
-  const { refetch: getAllDepartment } = useGetAllDepartment({
-    query: { enabled: false },
-  });
+  const { role: roleUser } = useSelector(selectUser);
 
   const showModal = () => {
     form.resetFields();
     form.setFieldsValue({
       ...data,
-      status: data?.status.toString() || undefined,
+      role: data?.role,
     });
-    getAllDepartment().then((res) => {
-      setDataDepartment(res.data);
-    });
+
     setIsModalOpen(true);
   };
 
@@ -53,36 +63,28 @@ const DocGroupForm = ({ type, data, saveData, loadingSave, isSuccess }) => {
 
   const onFinish = (values) => {
     values.id = data.id;
-    values.name = values.name?.trim();
-    values.department =
-      values.department === "" ? undefined : values.department?.trim();
-    saveData(type, values);
-    // values.id = data.id
     // saveData({ ...values })
+    console.log("values", values);
+    saveData({
+      id: values.id,
+      data: { ...values },
+    }).then((res) => {
+      if (res) {
+        notification.success({
+          message: "Thành công",
+          description: "Lưu thành công",
+        });
+        handleCancel();
+        reloadData();
+      }
+    });
   };
-  const [options, setOptions] = useState([]);
+
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
-  const onSearch = (searchText) => {
-    setOptions(
-      !searchText
-        ? []
-        : [
-            ...dataDeparment
-              .filter((item) => item.trim().indexOf(searchText.trim()) !== -1)
-              .map((item) => {
-                return { value: item };
-              }),
-          ]
-    );
-  };
 
-  useEffect(() => {
-    if (isSuccess) {
-      handleOk();
-    }
-  }, [isSuccess]);
+  useEffect(() => {}, []);
 
   return (
     <>
@@ -120,7 +122,6 @@ const DocGroupForm = ({ type, data, saveData, loadingSave, isSuccess }) => {
         <Form
           name="basic"
           form={form}
-          style={{ marginBottom: 0 }}
           labelCol={{
             span: 6,
           }}
@@ -133,40 +134,63 @@ const DocGroupForm = ({ type, data, saveData, loadingSave, isSuccess }) => {
         >
           <Form.Item
             style={{ marginBottom: 0 }}
-            label="Tên nhóm văn bản"
+            label="Tên công ty:"
             name="name"
             rules={[
               {
                 required: true,
-                message: "Tên nhóm văn bản không được bỏ trống",
+                message: "Tên công ty không được bỏ trống",
               },
               {
                 validator: (_, value) =>
                   !value || (value.length >= 0 && value.length <= 256)
                     ? Promise.resolve()
                     : Promise.reject(
-                        new Error("Tên nhóm văn bản chỉ chứa tối đa 256 kí tự")
+                        new Error("Tên công ty chỉ chứa tối đa 256 kí tự")
                       ),
               },
             ]}
           >
-            <Input type="text" placeholder="Tên nhóm văn bản" />
+            <Input type="text" placeholder="Tên công ty" />
           </Form.Item>
+
           <Form.Item
             style={{ marginBottom: 0 }}
-            label="Phòng quản lý"
-            name="department"
+            label="Email:"
+            name="contactEmail"
+            rules={[
+              {
+                required: true,
+                message: "Email không được bỏ trống",
+              },
+              ValidateEmail,
+            ]}
           >
-            <AutoComplete
-              options={options}
-              onSearch={onSearch}
-              placeholder="Tên Phòng quản lý"
+            <Input
+              disabled={type === "edit"}
+              type="email"
+              placeholder="Email"
             />
           </Form.Item>
 
           <Form.Item
             style={{ marginBottom: 0 }}
-            label="Trạng thái:"
+            label="Số điện thoại:"
+            name="contactPhone"
+          >
+            <Input placeholder="Số điện thoại" />
+          </Form.Item>
+          <Form.Item
+            style={{ marginBottom: 0 }}
+            label="Địa chỉ:"
+            name="address"
+          >
+            <Input placeholder="Địa chỉ" />
+          </Form.Item>
+
+          <Form.Item
+            style={{ marginBottom: 0 }}
+            label="Trạng thái tài khoản:"
             name="status"
             rules={[
               {
@@ -176,8 +200,12 @@ const DocGroupForm = ({ type, data, saveData, loadingSave, isSuccess }) => {
             ]}
           >
             <Select placeholder="Trạng thái">
-              <Select.Option key="1">Hoạt động</Select.Option>
-              <Select.Option key="0">Ngừng hoạt động</Select.Option>
+              <Select.Option key={1} value={1}>
+                Hoạt động
+              </Select.Option>
+              <Select.Option key={0} value={0}>
+                Ngừng hoạt động
+              </Select.Option>
             </Select>
           </Form.Item>
 
@@ -195,7 +223,23 @@ const DocGroupForm = ({ type, data, saveData, loadingSave, isSuccess }) => {
               },
             ]}
           >
-            <TextArea placeholder="Mô tả" rows={3} />
+            <Input placeholder="Mô tả" rows={3} />
+          </Form.Item>
+          <Form.Item
+            label="Ghi chú"
+            name="note"
+            rules={[
+              {
+                validator: (_, value) =>
+                  !value || (value.length >= 0 && value.length <= 500)
+                    ? Promise.resolve()
+                    : Promise.reject(
+                        new Error("Ghi chú chỉ chứa tối đa 500 kí tự")
+                      ),
+              },
+            ]}
+          >
+            <TextArea placeholder="Ghi chú" rows={3} />
           </Form.Item>
 
           <Form.Item {...tailLayout}>
@@ -211,7 +255,7 @@ const DocGroupForm = ({ type, data, saveData, loadingSave, isSuccess }) => {
               </Col>
               <Col offset={4} span={16}>
                 <Button
-                  loading={loadingSave}
+                  loading={loading}
                   icon={<i className="fe fe-save mr-2" />}
                   type="primary"
                   htmlType="submit"
@@ -227,4 +271,4 @@ const DocGroupForm = ({ type, data, saveData, loadingSave, isSuccess }) => {
   );
 };
 
-export default DocGroupForm;
+export default TenantForm;

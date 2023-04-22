@@ -2,7 +2,6 @@
 /* eslint-disable no-unreachable */
 /* eslint-disable react/jsx-indent */
 import { CheckOutlined, CloseOutlined, EditOutlined } from "@ant-design/icons";
-import { useGetDocgroupsDepartment } from "@api/manage";
 import {
   Button,
   Checkbox,
@@ -19,11 +18,14 @@ import {
 } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import {
   removeVietnameseTones,
+  ValidateEmail,
   ValidatePassword,
   ValidateUserName,
 } from "services/utils/validates";
+import { selectUser } from "store/userSlice";
 // import ValidateUserName from '../../../services/utils/validates'
 
 const tailLayout = {
@@ -35,78 +37,18 @@ const tailLayout = {
 
 const { SHOW_PARENT } = TreeSelect;
 
-const AccountForm = ({
-  type,
-  data,
-  saveData,
-  loadingSave,
-  isSuccess,
-  dataAgents,
-}) => {
+const AccountForm = ({ type, data }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
-  const [visiableDocGroup, setVisiableDocGroup] = useState(false);
-  // const [docGroups, setDocGroups] = useState(['0-0-0'])
-
-  // const onChange = newValue => {
-  //   console.log('onChange ', newValue)
-  //   setDocGroups(newValue)
-  // }
-
-  const {
-    refetch: refetchGetDocGroupDepartment,
-    data: dataGetDocGroupDepartment,
-  } = useGetDocgroupsDepartment(
-    {
-      its: false,
-    },
-    {
-      query: {
-        enabled: false,
-      },
-    }
-  );
-  const tProps = {
-    treeData: dataGetDocGroupDepartment || [],
-    // docGroups,
-    // onChange,
-    maxTagCount: 2,
-    treeCheckable: true,
-    allowClear: true,
-    filterTreeNode: (inputValue, treeNode) => {
-      return (
-        removeVietnameseTones(treeNode.title.toLowerCase()).indexOf(
-          removeVietnameseTones(inputValue.toLowerCase())
-        ) >= 0
-      );
-    },
-    showCheckedStrategy: SHOW_PARENT,
-    placeholder: "Nhóm văn bản",
-  };
+  const { role: roleUser } = useSelector(selectUser);
   const showModal = () => {
-    // group all object with same deparment
-    // const dataAgentsGroup = dataAgents.reduce((r, a) => {
-    //   r[a.department] = [...(r[a.department] || []), a]
-    //   return r
-    // }, {})
     form.resetFields();
+    console.log("data", data);
     form.setFieldsValue({
       ...data,
-      status: data?.status.toString() || undefined,
-      agent: data?.agents ? data.agents.id : undefined,
-      groups: data?.groups
-        ? data.groups.map((item) => item.id.toString())
-        : undefined,
-      roles: data?.roles ? data.roles.map((item) => item.name) : undefined,
-      twoFactorAuth: data.twoFactorAuth ? data.twoFactorAuth : false,
+      role: data?.role,
     });
-    if (
-      data?.roles &&
-      (data?.roles?.map((item) => item.name).includes("A1") ||
-        data?.roles?.map((item) => item.name).includes("USER"))
-    ) {
-      setVisiableDocGroup(true);
-    }
+
     setIsModalOpen(true);
   };
 
@@ -119,19 +61,6 @@ const AccountForm = ({
   };
 
   const onFinish = (values) => {
-    values.id = data.id;
-    values.twoFactorAuth = values.twoFactorAuth ? 1 : 0;
-    // setup docgroup if user is A1 or USER
-    if (
-      values.roles &&
-      (values.roles.includes("A1") || values.roles.includes("USER"))
-    ) {
-      values.groups =
-        values.groups?.map((item) => item.split(";")).flat() || [];
-    } else {
-      values.groups = [];
-    }
-    saveData(type, values);
     // values.id = data.id
     // saveData({ ...values })
   };
@@ -139,15 +68,8 @@ const AccountForm = ({
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
-  useEffect(() => {
-    if (isSuccess) {
-      handleOk();
-    }
-  }, [isSuccess]);
 
-  useEffect(() => {
-    refetchGetDocGroupDepartment();
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <>
@@ -219,34 +141,17 @@ const AccountForm = ({
 
           <Form.Item
             style={{ marginBottom: 0 }}
-            label="Tên đăng nhập:"
-            name="userName"
+            label="Email:"
+            name="email"
             rules={[
               {
                 required: true,
-                message: "Tên đăng nhập không được bỏ trống",
+                message: "Email không được bỏ trống",
               },
-              {
-                validator: (_, value) =>
-                  !value || ValidateUserName(value)
-                    ? Promise.resolve()
-                    : Promise.reject(
-                        new Error(
-                          "Tên đăng nhập chỉ chứa kí tự 0-9, A-Z và một số ký tự khác"
-                        )
-                      ),
-              },
-              {
-                validator: (_, value) =>
-                  !value || (value.length >= 0 && value.length <= 256)
-                    ? Promise.resolve()
-                    : Promise.reject(
-                        new Error("Tên đăng nhập chỉ chứa tối đa 256 kí tự")
-                      ),
-              },
+              ValidateEmail,
             ]}
           >
-            <Input type="text" placeholder="Tên đăng nhập" />
+            <Input type="email" placeholder="Email" />
           </Form.Item>
 
           <Form.Item
@@ -277,72 +182,8 @@ const AccountForm = ({
 
           <Form.Item
             style={{ marginBottom: 0 }}
-            label="Email:"
-            name="email"
-            rules={[
-              {
-                required: true,
-                message: "Email không được bỏ trống",
-              },
-              {
-                validator: (_, value) =>
-                  !value || (value.length >= 0 && value.length <= 256)
-                    ? Promise.resolve()
-                    : Promise.reject(
-                        new Error("Email chỉ chứa tối đa 256 kí tự")
-                      ),
-              },
-            ]}
-          >
-            <Input type="email" placeholder="Email" />
-          </Form.Item>
-
-          <Form.Item
-            style={{ marginBottom: 0 }}
-            label="Đơn vị:"
-            name="agent"
-            rules={[
-              {
-                required: true,
-                message: "Đơn vị không được bỏ trống",
-              },
-            ]}
-          >
-            <Select
-              placeholder="Đơn vị"
-              showSearch
-              filterOption={(input, option) =>
-                removeVietnameseTones(
-                  option?.children?.toLowerCase()
-                )?.includes(removeVietnameseTones(input?.toLowerCase()))
-              }
-            >
-              <Select.OptGroup key="A1" label="A1">
-                {dataAgents?.searchAgentA1.length
-                  ? dataAgents.searchAgentA1.map((item) => (
-                      <Select.Option key={item.id} value={item.id}>
-                        {item.name}
-                      </Select.Option>
-                    ))
-                  : null}
-              </Select.OptGroup>
-
-              <Select.OptGroup key="User" label="Đơn vị">
-                {dataAgents?.searchAgentUser.length
-                  ? dataAgents.searchAgentUser.map((item) => (
-                      <Select.Option key={item.id} value={item.id}>
-                        {item.name}
-                      </Select.Option>
-                    ))
-                  : null}
-              </Select.OptGroup>
-            </Select>
-          </Form.Item>
-
-          <Form.Item
-            style={{ marginBottom: 0 }}
             label="Quyền:"
-            name="roles"
+            name="role"
             rules={[
               {
                 required: true,
@@ -350,52 +191,24 @@ const AccountForm = ({
               },
             ]}
           >
-            <Checkbox.Group
-              onChange={(e) => {
-                if (e && (e.includes("A1") || e.includes("USER"))) {
-                  setVisiableDocGroup(true);
-                } else {
-                  setVisiableDocGroup(false);
-                }
-              }}
-            >
-              <Checkbox key="ADMIN" value="ADMIN">
-                ADMIN
-              </Checkbox>
-              <br />
-              <Checkbox key="A1" value="A1">
-                A1
-              </Checkbox>
-              <br />
-              <Checkbox key="USER" value="USER">
-                USER
-              </Checkbox>
-              <br />
-              <Checkbox key="DOC_KEEPER" value="DOC_KEEPER">
-                DOC_KEEPER
-              </Checkbox>
-            </Checkbox.Group>
+            <Select placeholder="Phân quyền">
+              {roleUser === "SUPER ADMIN" && (
+                <Select.Option key="super_admin" value="super_admin">
+                  Quản trị hệ thống
+                </Select.Option>
+              )}
+              <Select.Option key="admin" value="admin">
+                Quản trị viên
+              </Select.Option>
+              <Select.Option key="operator" value="operator">
+                Điều hành
+              </Select.Option>
+            </Select>
           </Form.Item>
 
           <Form.Item
             style={{ marginBottom: 0 }}
-            // set role is array
-            hidden={!visiableDocGroup}
-            label="Nhóm văn bản:"
-            name="groups"
-            rules={[
-              {
-                required: visiableDocGroup,
-                message: "Nhóm văn bản không được để trống",
-              },
-            ]}
-          >
-            <TreeSelect {...tProps} />
-          </Form.Item>
-
-          <Form.Item
-            style={{ marginBottom: 0 }}
-            label="Trạng thái:"
+            label="Trạng thái tài khoản:"
             name="status"
             rules={[
               {
@@ -405,27 +218,38 @@ const AccountForm = ({
             ]}
           >
             <Select placeholder="Trạng thái">
-              <Select.Option key="1">Hoạt động</Select.Option>
-              <Select.Option key="0">Ngừng hoạt động</Select.Option>
+              <Select.Option key={1} value={1}>
+                Hoạt động
+              </Select.Option>
+              <Select.Option key={0} value={0}>
+                Ngừng hoạt động
+              </Select.Option>
+            </Select>
+          </Form.Item>
+          <Form.Item
+            style={{ marginBottom: 0 }}
+            label="Trạng thái tài khoản:"
+            name="isWorking"
+            rules={[
+              {
+                required: true,
+                message: "Trạng thái hoạt động không được để trống",
+              },
+            ]}
+          >
+            <Select placeholder="Trạng thái hoạt động">
+              <Select.Option key="1" value={true}>
+                Đang làm việc
+              </Select.Option>
+              <Select.Option key="0" value={false}>
+                Không làm việc
+              </Select.Option>
             </Select>
           </Form.Item>
 
           <Form.Item
-            label="Xác thực hai lớp:"
-            name="twoFactorAuth"
-            help="*Mặc định mã xác thực sẽ gửi qua email"
-            valuePropName="checked"
-          >
-            <Switch
-              style={{ color: "green" }}
-              checkedChildren={<CheckOutlined />}
-              unCheckedChildren={<CloseOutlined />}
-            />
-          </Form.Item>
-
-          <Form.Item
-            label="Mô tả"
-            name="description"
+            label="Ghi chú"
+            name="note"
             rules={[
               {
                 validator: (_, value) =>
@@ -437,7 +261,7 @@ const AccountForm = ({
               },
             ]}
           >
-            <TextArea placeholder="Mô tả" rows={3} />
+            <TextArea placeholder="Ghi chú" rows={3} />
           </Form.Item>
 
           <Form.Item {...tailLayout}>
@@ -453,7 +277,7 @@ const AccountForm = ({
               </Col>
               <Col offset={4} span={16}>
                 <Button
-                  loading={loadingSave}
+                  // loading={loadingSave}
                   icon={<i className="fe fe-save mr-2" />}
                   type="primary"
                   htmlType="submit"
