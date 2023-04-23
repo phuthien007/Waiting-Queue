@@ -1,3 +1,8 @@
+type Operator = (value: string) => any;
+interface Obj {
+  [key: string]: Obj | Operator;
+}
+
 // export deepstring to object like: 'a.b.c:d' => {a: {b: {c: operator('d')}}}
 /**
  * transform deep string to object
@@ -13,16 +18,19 @@
 export function deepStringToObject(
   str: string,
   operator: (value: string) => any,
-): { [key: string]: any } {
-  const [key, value] = str.split(':');
-  const keys = key.split('.');
+) {
+  const [arrKey, value] = str.split(':');
+  const obj: Obj = {};
+  let currentObj = obj;
+  const keys = arrKey.split('.');
   const lastKey = keys.pop();
-  const lastObj = keys.reduce((obj, key) => {
-    if (!obj[key]) {
-      obj[key] = {};
-    }
-    return obj[key];
-  }, {});
-  lastObj[lastKey] = operator(value);
-  return lastObj;
+
+  for (const key of keys) {
+    currentObj[key] = {};
+    currentObj = currentObj[key] as Obj;
+  }
+
+  currentObj[lastKey!] = operator(value);
+
+  return obj;
 }
