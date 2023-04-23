@@ -5,10 +5,10 @@ const Footer = () => {
     <div className={style.footer}>
       <div className={style.footerInner}>
         <p className="font-weight-bold">
-          TRUNG TÂM ĐIỀU ĐỘ HỆ THỐNG ĐIỆN MIỀN BẮC
+          ĐẠI HỌC BÁCH KHOA HÀ NỘI - TRƯỜNG CNTT & TT | SOICT
         </p>
-        <p>Địa chỉ: 11 Cửa Bắc, Quận Ba Đình, Hà Nội</p>
-        <p>Tel: +84-24-39276151 - Fax: +84-24-39276150</p>
+        <p>Địa chỉ: số 1 Đại Cồ Việt</p>
+        <p>Tel: </p>
       </div>
     </div>
   );
