@@ -11,6 +11,7 @@ import {
   UseGuards,
   Req,
   BadRequestException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { TenantsService } from './tenants.service';
 import { CreateTenantDto } from './dto/create-tenant.dto';
@@ -27,6 +28,7 @@ import { TenantDto } from './dto/tenant.dto';
 import { FilterOperator } from 'src/common/filters.vm';
 import { RoleGuard } from 'src/auth/role.guard';
 import { RoleEnum } from 'src/common/enum';
+import { HasRole } from 'src/common/decorators';
 
 /**
  * TenantsController class for tenants controller with CRUD operations for tenants and other controller methods
@@ -63,6 +65,7 @@ export class TenantsController {
    * @throws {NotFoundException} - if event with id from createTenantDto.eventId not found
    */
   @Post('/register/tenant')
+  @HasRole()
   @ApiCreatedResponse({ type: TenantDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   async registerTenant(
