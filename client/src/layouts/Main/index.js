@@ -1,4 +1,4 @@
-import { Layout } from "antd";
+import { Layout, Row } from "antd";
 import { useSelector } from "react-redux";
 import classNames from "classnames";
 // import TopBar from 'components/cleanui/layout/TopBar'
@@ -10,8 +10,11 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { selectUser } from "store/userSlice";
 import IdleTimer from "components/system/IdleTimer";
+import Sidebar from "components/cleanui/layout/Sidebar";
 // import Sidebar from 'components/cleanui/layout/Sidebar'
 // import SupportChat from 'components/cleanui/layout/SupportChat'
+import UserMenu from "components/cleanui/layout/TopBar/UserMenu";
+import TopBar from "components/cleanui/layout/TopBar";
 
 const MainLayout = ({ children }) => {
   const {
@@ -40,10 +43,13 @@ const MainLayout = ({ children }) => {
           cui__layout__borderless: isBorderless,
         })}
       >
-        {/* <Sidebar />
-        <SupportChat /> */}
+        {/* <Sidebar /> */}
+        {/* <SupportChat /> */}
         <Menu />
         <Layout>
+          <Row justify="end">
+            <TopBar />
+          </Row>
           <Breadcrumbs />
           <Layout.Content style={{ height: "100%", position: "relative" }}>
             <div className="cui__utils__content">{children}</div>

@@ -182,6 +182,40 @@
         ]
       }
     },
+    "/api/tenants/register/tenant": {
+      "post": {
+        "operationId": "TenantsController_registerTenant",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTenantDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TenantDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        },
+        "tags": [
+          "tenants"
+        ]
+      }
+    },
     "/api/tenants/{id}": {
       "get": {
         "operationId": "TenantsController_findOneTenant",
@@ -273,6 +307,36 @@
             }
           }
         ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "tags": [
+          "tenants"
+        ]
+      }
+    },
+    "/api/tenants/profile/myTenant": {
+      "patch": {
+        "operationId": "TenantsController_updateMyTenant",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTenantDto"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK"
@@ -611,7 +675,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserDto"
+                  "$ref": "#/components/schemas/UserMeDto"
                 }
               }
             }
@@ -820,6 +884,33 @@
         "responses": {
           "201": {
             "description": "Logout success"
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/change-password": {
+      "post": {
+        "operationId": "AuthController_changePassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Change password success"
+          },
+          "401": {
+            "description": "Change password failed"
           }
         },
         "tags": [
@@ -1678,12 +1769,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-21T00:43:20.756Z"
+            "default": "2023-04-23T01:20:45.413Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-21T00:43:20.756Z"
+            "default": "2023-04-23T01:20:45.413Z"
           },
           "name": {
             "type": "string"
@@ -1724,12 +1815,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-21T00:43:20.756Z"
+            "default": "2023-04-23T01:20:45.413Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-21T00:43:20.756Z"
+            "default": "2023-04-23T01:20:45.413Z"
           },
           "name": {
             "type": "string"
@@ -1769,12 +1860,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-21T00:43:20.756Z"
+            "default": "2023-04-23T01:20:45.413Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-21T00:43:20.756Z"
+            "default": "2023-04-23T01:20:45.413Z"
           },
           "name": {
             "type": "string"
@@ -1815,12 +1906,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-21T00:43:20.756Z"
+            "default": "2023-04-23T01:20:45.413Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-21T00:43:20.756Z"
+            "default": "2023-04-23T01:20:45.413Z"
           },
           "email": {
             "type": "string"
@@ -1868,12 +1959,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-21T00:43:20.756Z"
+            "default": "2023-04-23T01:20:45.413Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-21T00:43:20.756Z"
+            "default": "2023-04-23T01:20:45.413Z"
           },
           "email": {
             "type": "string"
@@ -1919,12 +2010,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-21T00:43:20.756Z"
+            "default": "2023-04-23T01:20:45.413Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-21T00:43:20.756Z"
+            "default": "2023-04-23T01:20:45.413Z"
           },
           "email": {
             "type": "string"
@@ -1976,6 +2067,57 @@
           }
         }
       },
+      "UserMeDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "default": "2023-04-23T01:20:45.413Z"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "default": "2023-04-23T01:20:45.413Z"
+          },
+          "email": {
+            "type": "string"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "super_admin",
+              "admin",
+              "operator"
+            ],
+            "default": "operator"
+          },
+          "note": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "super_admin",
+              "admin",
+              "operator"
+            ],
+            "default": "operator"
+          },
+          "isWorking": {
+            "type": "boolean"
+          },
+          "tenant": {
+            "$ref": "#/components/schemas/TenantDto"
+          }
+        }
+      },
       "CreateSessionDto": {
         "type": "object",
         "properties": {
@@ -1985,12 +2127,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-21T00:43:20.756Z"
+            "default": "2023-04-23T01:20:45.413Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-21T00:43:20.756Z"
+            "default": "2023-04-23T01:20:45.413Z"
           }
         }
       },
@@ -2003,12 +2145,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-21T00:43:20.756Z"
+            "default": "2023-04-23T01:20:45.413Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-21T00:43:20.756Z"
+            "default": "2023-04-23T01:20:45.413Z"
           }
         }
       },
@@ -2050,6 +2192,25 @@
           }
         }
       },
+      "ChangePasswordDto": {
+        "type": "object",
+        "properties": {
+          "oldPassword": {
+            "type": "string"
+          },
+          "newPassword": {
+            "type": "string"
+          },
+          "confirmPassword": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "oldPassword",
+          "newPassword",
+          "confirmPassword"
+        ]
+      },
       "CreateEventDto": {
         "type": "object",
         "properties": {
@@ -2059,12 +2220,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-21T00:43:20.756Z"
+            "default": "2023-04-23T01:20:45.413Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-21T00:43:20.756Z"
+            "default": "2023-04-23T01:20:45.413Z"
           },
           "name": {
             "type": "string"
@@ -2112,12 +2273,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-21T00:43:20.756Z"
+            "default": "2023-04-23T01:20:45.413Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-21T00:43:20.756Z"
+            "default": "2023-04-23T01:20:45.413Z"
           },
           "name": {
             "type": "string"
@@ -2165,12 +2326,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-21T00:43:20.756Z"
+            "default": "2023-04-23T01:20:45.413Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-21T00:43:20.756Z"
+            "default": "2023-04-23T01:20:45.413Z"
           },
           "name": {
             "type": "string"
@@ -2218,12 +2379,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-21T00:43:20.756Z"
+            "default": "2023-04-23T01:20:45.413Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-21T00:43:20.756Z"
+            "default": "2023-04-23T01:20:45.413Z"
           },
           "name": {
             "type": "string"
@@ -2257,12 +2418,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-21T00:43:20.756Z"
+            "default": "2023-04-23T01:20:45.413Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-21T00:43:20.756Z"
+            "default": "2023-04-23T01:20:45.413Z"
           },
           "name": {
             "type": "string"
@@ -2296,12 +2457,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-21T00:43:20.756Z"
+            "default": "2023-04-23T01:20:45.413Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-21T00:43:20.756Z"
+            "default": "2023-04-23T01:20:45.413Z"
           },
           "name": {
             "type": "string"

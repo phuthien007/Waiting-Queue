@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -14,6 +15,9 @@ import { Event } from './entities/event.entity';
 import { FilterOperator } from 'src/common/filters.vm';
 import { ERROR_TYPE, transformError } from 'src/common/constant.error';
 import { partialMapping } from 'src/common/algorithm';
+import { OperatorQueryEnum } from 'src/common/enum';
+import { REQUEST } from '@nestjs/core';
+import { Request } from 'express';
 
 /**
  * Events service class for events endpoints (create, update, delete, etc.)
@@ -23,6 +27,7 @@ export class EventsService {
   constructor(
     private readonly eventRepository: EventsRepository,
     private readonly log: LoggerService,
+    @Inject(REQUEST) private readonly request: Request,
   ) {}
 
   /**
@@ -51,6 +56,14 @@ export class EventsService {
   async findAll(search: any) {
     // start create search
     const filterObj = new FilterOperator();
+
+    // add tenant code of current user to search event
+    const userInReq = this.request?.user as any;
+    filterObj.addOperator(
+      OperatorQueryEnum.eq,
+      `tenant.tenantCode:${userInReq.tenantCode as string}`,
+    );
+
     // transform to filter
     Object.keys(search).forEach((key) => {
       if (search[key] instanceof Array) {
@@ -61,7 +74,6 @@ export class EventsService {
         filterObj.addOperator(key, search[key]);
       }
     });
-
     let events: Event[] = [];
     try {
       events = await this.eventRepository.find({

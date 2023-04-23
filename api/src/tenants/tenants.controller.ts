@@ -9,6 +9,9 @@ import {
   ParseIntPipe,
   Query,
   UseGuards,
+  Req,
+  BadRequestException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { TenantsService } from './tenants.service';
 import { CreateTenantDto } from './dto/create-tenant.dto';
@@ -24,6 +27,8 @@ import {
 import { TenantDto } from './dto/tenant.dto';
 import { FilterOperator } from 'src/common/filters.vm';
 import { RoleGuard } from 'src/auth/role.guard';
+import { RoleEnum } from 'src/common/enum';
+import { HasRole } from 'src/common/decorators';
 
 /**
  * TenantsController class for tenants controller with CRUD operations for tenants and other controller methods
@@ -46,6 +51,24 @@ export class TenantsController {
   @ApiCreatedResponse({ type: TenantDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   async createTenant(
+    @Body() createTenantDto: CreateTenantDto,
+  ): Promise<TenantDto> {
+    return this.tenantsService.create(createTenantDto);
+  }
+
+  /**
+   * Create a new tenant with createTenantDto
+   * @param createTenantDto - CreateTenantDto object from request body
+   * @returns TenantDto object with created tenant data
+   * @throws {BadRequestException} - if createTenantDto is invalid
+   * @throws {InternalServerErrorException} - if error occurs during creating tenant
+   * @throws {NotFoundException} - if event with id from createTenantDto.eventId not found
+   */
+  @Post('/register/tenant')
+  @HasRole()
+  @ApiCreatedResponse({ type: TenantDto })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  async registerTenant(
     @Body() createTenantDto: CreateTenantDto,
   ): Promise<TenantDto> {
     return this.tenantsService.create(createTenantDto);
@@ -128,5 +151,25 @@ export class TenantsController {
   @ApiOkResponse({ description: 'OK' })
   removeTenant(@Param('id', ParseIntPipe) id: number) {
     return this.tenantsService.remove(+id);
+  }
+
+  /**
+   * update my tenant
+   * @param req - request object from request
+   */
+  @Patch('/profile/myTenant')
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  @ApiNotFoundResponse({ description: 'Not Found' })
+  @ApiOkResponse({ description: 'OK' })
+  updateMyTenant(@Req() req: any, @Body() updateTenantDto: UpdateTenantDto) {
+    if (!updateTenantDto.id) {
+      throw new BadRequestException('Thiếu id của tenant');
+    }
+    if (req.user.role === RoleEnum.OPERATOR) {
+      throw new BadRequestException(
+        'Bạn không có quyền cập nhật thông tin này',
+      );
+    }
+    return this.tenantsService.updateMyTenant(req.user.id, updateTenantDto);
   }
 }

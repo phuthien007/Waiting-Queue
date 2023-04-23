@@ -41,7 +41,7 @@
     "@tanstack/react-query-devtools": "^4.7.2",
     "@types/qs": "^6.9.7",
     "@types/store": "^2.0.2",
-    "antd": "^4.23.0",
+    "antd": "4.23.0",
     "axios": "^0.27.0",
     "axios-mock-adapter": "^1.18.1",
     "bootstrap": "^4.5.2",
@@ -85,6 +85,7 @@
     "redux-saga": "^1.1.3",
     "sass": "^1.51.0",
     "store": "^2.0.12",
+    "swiper": "^9.2.4",
     "ua-parser-js": "^1.0.33"
   },
   "devDependencies": {
@@ -93,8 +94,13 @@
     "@babel/node": "^7.17.10",
     "@babel/preset-env": "^7.17.10",
     "@babel/preset-react": "^7.18.6",
-    "@typescript-eslint/eslint-plugin": "^5.47.1",
-    "@typescript-eslint/parser": "^5.47.1",
+    "@types/lodash": "^4.14.194",
+    "@types/react": "^18.0.38",
+    "@types/react-dom": "^18.0.11",
+    "@types/react-router-dom": "^5.3.3",
+    "@types/swiper": "^6.0.0",
+    "@typescript-eslint/eslint-plugin": "5.5.0",
+    "@typescript-eslint/parser": "5.5.0",
     "cross-env": "^7.0.3",
     "customize-cra": "^1.0.0",
     "customize-cra-less-loader": "^2.0.0",
@@ -121,7 +127,7 @@
     "stylelint": "^14.14.0",
     "stylelint-config-prettier": "^9.0.3",
     "stylelint-config-standard": "^29.0.0",
-    "typescript": "^4.9.4"
+    "typescript": "^5.0.4"
   },
   "eslintConfig": {
     "extends": "react-app"

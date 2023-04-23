@@ -27,7 +27,7 @@ const initialState = {
     menuColor: "white", // white, dark, gray
     theme: "default", // default, dark
     authPagesColor: "image", // white, gray, image
-    primaryColor: "#4b7cf3",
+    primaryColor: "#4bbdf3",
     leftMenuWidth: 256,
     isMenuUnfixed: false,
     isMenuShadow: false,

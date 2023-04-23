@@ -24,7 +24,6 @@ const MenuLeft = () => {
   } = useSelector(selectSettings);
   const { role } = useSelector(selectUser);
   const { pathname } = useLocation();
-
   const [selectedKeys, setSelectedKeys] = useState(
     store.get("app.menu.selectedKeys") || []
   );
@@ -77,34 +76,26 @@ const MenuLeft = () => {
     const generateItem = (item) => {
       const { key, title, url, icon, disabled, count } = item;
       if (item.category) {
-        return <Menu.ItemGroup key={Math.random()} title={item.title} />;
+        return null;
       }
       if (item.url) {
         return (
           <Menu.Item key={key} disabled={disabled}>
             {item.target && (
               <a href={url} target={item.target} rel="noopener noreferrer">
+                {icon && <span className={`${icon} ${style.icon}`} />}
                 <span className={style.title}>{title}</span>
                 {count && (
                   <span className="badge badge-success ml-2">{count}</span>
-                )}
-                {icon && (
-                  <span
-                    className={`${icon} ${style.icon} icon-collapsed-hidden`}
-                  />
                 )}
               </a>
             )}
             {!item.target && (
               <Link to={url}>
+                {icon && <span className={`${icon} ${style.icon}`} />}
                 <span className={style.title}>{title}</span>
                 {count && (
                   <span className="badge badge-success ml-2">{count}</span>
-                )}
-                {icon && (
-                  <span
-                    className={`${icon} ${style.icon} icon-collapsed-hidden`}
-                  />
                 )}
               </Link>
             )}
@@ -113,28 +104,25 @@ const MenuLeft = () => {
       }
       return (
         <Menu.Item key={key} disabled={disabled}>
+          {icon && <span className={`${icon} ${style.icon}`} />}
           <span className={style.title}>{title}</span>
           {count && <span className="badge badge-success ml-2">{count}</span>}
-          {icon && (
-            <span className={`${icon} ${style.icon} icon-collapsed-hidden`} />
-          )}
         </Menu.Item>
       );
     };
-
     const generateSubmenu = (items) =>
       items.map((menuItem) => {
         if (menuItem.children) {
           const subMenuTitle = (
             <span key={menuItem.key}>
+              {menuItem.icon && (
+                <span className={`${menuItem.icon} ${style.icon}`} />
+              )}
               <span className={style.title}>{menuItem.title}</span>
               {menuItem.count && (
                 <span className="badge badge-success ml-2">
                   {menuItem.count}
                 </span>
-              )}
-              {menuItem.icon && (
-                <span className={`${menuItem.icon} ${style.icon}`} />
               )}
             </span>
           );
@@ -146,20 +134,23 @@ const MenuLeft = () => {
         }
         return generateItem(menuItem);
       });
-
     return menuData.map((menuItem) => {
-      if (menuItem.roles && !menuItem.roles.includes(role)) {
-        return null;
+      if (menuItem.roles && role) {
+        const checkArr = menuItem.roles.includes(role);
+        if (!checkArr) {
+          return null;
+        }
       }
+
       if (menuItem.children) {
         const subMenuTitle = (
           <span key={menuItem.key}>
+            {menuItem.icon && (
+              <span className={`${menuItem.icon} ${style.icon}`} />
+            )}
             <span className={style.title}>{menuItem.title}</span>
             {menuItem.count && (
               <span className="badge badge-success ml-2">{menuItem.count}</span>
-            )}
-            {menuItem.icon && (
-              <span className={`${menuItem.icon} ${style.icon}`} />
             )}
           </span>
         );
@@ -212,14 +203,17 @@ const MenuLeft = () => {
         <div className={style.logoContainer}>
           <div className={style.logo}>
             <img
-              src="/resources/images/logo.svg"
+              src="/resources/images/tf-logo.jpg"
               className="mr-2"
               alt="Waiting Queue"
             />
-            <div className={style.name}>{logo}</div>
-            {logo === "Waiting" && <div className={style.descr}>QUEUE</div>}
+            {/* <div className={style.name}>{logo}</div> */}
+            {/* {logo === "Waiting" && <div className={style.descr}>QUEUE</div>} */}
           </div>
         </div>
+        {/* <div className="mr-4" style={{ marginTop: "0.8rem" }}>
+        <Actions />
+      </div> */}
         <PerfectScrollbar>
           <Menu
             onClick={handleClick}
@@ -232,19 +226,6 @@ const MenuLeft = () => {
           >
             {generateMenuItems()}
           </Menu>
-          <div className={style.banner}>
-            <p>
-              More components, more style, more themes, and premium support!
-            </p>
-            <a
-              href="https://themeforest.net/item/clean-ui-react-admin-template/21938700"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-sm btn-success btn-rounded px-3"
-            >
-              Buy Bundle
-            </a>
-          </div>
         </PerfectScrollbar>
       </div>
     </Layout.Sider>

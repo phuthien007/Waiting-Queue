@@ -57,4 +57,51 @@ export class MailService {
       console.log('error when send mail', error);
     }
   }
+
+  async sendChangePasswordSuccess(user: User) {
+    try {
+      this.mailerService.sendMail({
+        to: user.email,
+        from: 'Support Team <support@gmail.com>',
+        subject: 'Đổi mật khẩu thành công ✔',
+        template: './changePasswordSuccess', // `.hbs` extension is appended automatically
+        context: {
+          // ✏️ filling curly brackets with content
+          name: user.fullName,
+          email: user.email,
+          tenant: user.tenant.name,
+        },
+      });
+    } catch (error) {
+      console.log('error when send mail', error);
+    }
+  }
+  async sendRegisterTenantSuccess(
+    user: User,
+    password: string,
+    tenantCode: string,
+  ) {
+    try {
+      const url = `${
+        process.env.CLIENT_URL || 'http://localhost:80'
+      }/auth/login`;
+      this.mailerService.sendMail({
+        to: user.email,
+        from: 'Support Team <support@gmail.com>',
+        subject: 'Đăng ký thành công ✔',
+        template: './registerTenantSuccess', // `.hbs` extension is appended automatically
+        context: {
+          // ✏️ filling curly brackets with content
+          url,
+          name: user.fullName,
+          email: user.email,
+          password: password,
+          tenant: user.tenant.name,
+          tenantCode: tenantCode,
+        },
+      });
+    } catch (error) {
+      console.log('error when send mail', error);
+    }
+  }
 }

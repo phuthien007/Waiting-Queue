@@ -399,7 +399,14 @@ const NOTIFICATION_ERROR_MESSAGE = {
   TICKET_IS_NULL: "Ticket này không tồn tại hoặc đã bị xóa",
   TICKET_COMMENT_IS_NULL: "Phản hồi này không tồn tại hoặc đã bị xóa",
 };
+
+const ROLE_ENUM = {
+  ADMIN: "admin",
+  SUPER_ADMIN: "super_admin",
+  OPERATOR: "operator",
+};
 module.exports = {
+  ROLE_ENUM,
   NOTIFICATION_ERROR_MESSAGE,
   NOTIFICATION_TYPE,
   DB_DOCUMENT_STATUS_NEW,

@@ -38,7 +38,7 @@ export class User extends BaseEntity {
   fullName: string;
 
   @Column({ type: 'enum', enum: commonEnum, default: commonEnum.ACTIVE })
-  status: boolean;
+  status: number;
 
   @Column({
     nullable: true,

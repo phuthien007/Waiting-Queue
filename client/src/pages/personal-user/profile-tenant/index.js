@@ -1,4 +1,5 @@
 import { SaveOutlined, UserOutlined } from "@ant-design/icons";
+import { useTenantsControllerUpdateMyTenant } from "@api/waitingQueue";
 // import { useUpdateProfile } from "@api/auth";
 import { Button, Card, Form, Input, notification } from "antd";
 import { useEffect } from "react";
@@ -26,40 +27,54 @@ const tailLayout = {
 
 const ProfileTenant = () => {
   const dispatch = useDispatch();
-  const user = useSelector(selectUser);
-  // const { isLoading, mutateAsync } = useUpdateProfile();
+  const { tenant, isOwnerTenant, userLoading } = useSelector(selectUser);
+  const { isLoading, mutateAsync } = useTenantsControllerUpdateMyTenant();
   const [form] = Form.useForm();
   useEffect(() => {
     form.setFieldsValue({
-      fullName: user.fullName || "Họ và tên",
-      username: user.username || "Tên đăng nhập",
-      email: user.email || "Email",
-      agent: user.agent || "Đơn vị",
-      // disableEmailNotification: user.disableEmailNotification,
+      contactEmail: tenant?.contactEmail || "Email",
+      address: tenant?.address || "Địa chỉ",
+      contactPhone: tenant?.contactPhone || "Số điện thoại",
+      description: tenant?.description || "Mô tả",
+      name: tenant?.name || "Tên công ty",
+      website: tenant?.website || "Website",
+      note: tenant?.note || "Ghi chú",
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onFinish = async (values) => {
-    // await mutateAsync({
-    //   data: {
-    //     fullName: values.fullName,
-    //     disableEmailNotification: undefined,
-    //   },
-    // });
-    // if (isLoading === false) {
-    //   notification.success({
-    //     message: "Thành công",
-    //     description: "Cập nhật thông tin thành công!",
-    //   });
-    //   dispatch(loadCurrentAccount());
-    // }
+    await mutateAsync({
+      data: {
+        ...tenant,
+        ...values,
+      },
+    });
+    if (isLoading === false) {
+      notification.success({
+        message: "Thành công",
+        description: "Cập nhật thông tin thành công!",
+      });
+      dispatch(loadCurrentAccount());
+    }
+  };
+
+  const renderOptionInput = () => {
+    if (isOwnerTenant) {
+      return {
+        readOnly: false,
+        bordered: true,
+      };
+    } else {
+      return { readOnly: true, bordered: false };
+    }
   };
 
   return (
     <>
       <Helmet title="Thông tin cá nhân" />
       <Card
+        loading={userLoading}
         title={
           <>
             <UserOutlined className="mr-2" /> <strong>Thông tin cá nhân</strong>
@@ -73,40 +88,49 @@ const ProfileTenant = () => {
           name="control-hooks"
           onFinish={onFinish}
         >
+          <Form.Item name="contactEmail" label="Email">
+            <Input readOnly bordered={false} />
+          </Form.Item>
           <Form.Item
-            style={{ marginBottom: 0 }}
-            name="fullName"
-            label="Họ và tên:"
+            name="name"
+            label="Tên công ty"
+            rules={[
+              {
+                required: true,
+                message: "Vui lòng nhập tên công ty",
+              },
+            ]}
           >
-            <Input type="text" />
+            <Input {...renderOptionInput} placeholder="Tên công ty" />
           </Form.Item>
 
-          <Form.Item
-            style={{ marginBottom: 0 }}
-            name="username"
-            label="Tên đăng nhập:"
-          >
-            <Input bordered={false} readOnly />
+          <Form.Item name="contactPhone" label="Số điện thoại">
+            <Input {...renderOptionInput} placeholder="Số điện thoại" />
           </Form.Item>
 
-          <Form.Item style={{ marginBottom: 0 }} name="email" label="Email:">
-            <Input bordered={false} readOnly />
+          <Form.Item name="address" label="Địa chỉ">
+            <Input {...renderOptionInput} placeholder="Địa chỉ" />
           </Form.Item>
 
-          <Form.Item style={{ marginBottom: 0 }} name="agent" label="Đơn vị:">
-            <Input bordered={false} readOnly />
+          <Form.Item name="website" label="Website">
+            <Input {...renderOptionInput} placeholder="Website" />
           </Form.Item>
 
-          {/* <Form.Item
-          name="disableEmailNotification"
-          wrapperCol={{ span: 16, offset: 4 }}
-          valuePropName="checked"
-        >
-          <Checkbox>Không nhận email thông báo từ hệ thống </Checkbox>
-        </Form.Item> */}
+          <Form.Item name="description" label="Mô tả">
+            <Input {...renderOptionInput} placeholder="Mô tả" />
+          </Form.Item>
+
+          <Form.Item name="note" label="Ghi chú">
+            <Input.TextArea {...renderOptionInput} placeholder="Ghi chú" />
+          </Form.Item>
 
           <Form.Item {...tailLayout}>
-            <Button type="primary" icon={<SaveOutlined />} htmlType="submit">
+            <Button
+              loading={isLoading}
+              type="primary"
+              icon={<SaveOutlined />}
+              htmlType="submit"
+            >
               Lưu
             </Button>
           </Form.Item>

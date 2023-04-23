@@ -43,6 +43,7 @@ import {
   LABEL_DOCUMENT_STATUS_DELETED,
   DOCUMENT_LABEL_COLOR,
   FORMAT_DATE,
+  ROLE_ENUM,
 } from "../constants";
 
 export const AgentStatusRender = (status = 0) => {
@@ -295,4 +296,23 @@ export const DueDateStatusRender = (date) => {
       {date.format(FORMAT_DATE)}
     </Tag>
   );
+};
+
+export const StatusRender = (status) => {
+  if (status) {
+    return <Tag>Hoạt động</Tag>;
+  } else {
+    return <Tag>Ngừng hoạt động</Tag>;
+  }
+};
+
+export const RoleRender = (role) => {
+  switch (role) {
+    case ROLE_ENUM.ADMIN:
+      return <Tag color="blue">Quản trị viên</Tag>;
+    case ROLE_ENUM.SUPER_ADMIN:
+      return <Tag color="blue">Quản trị hệ thống</Tag>;
+    default:
+      return <Tag color="blue">Người điều hành </Tag>;
+  }
 };

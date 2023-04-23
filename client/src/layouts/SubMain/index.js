@@ -10,6 +10,7 @@ import { LogoutOutlined, UserOutlined } from "@ant-design/icons";
 import { selectSettings } from "store/settingSlice";
 import { logoutUser, selectUser } from "store/userSlice";
 import IdleTimer from "components/system/IdleTimer";
+import TopBar from "components/cleanui/layout/TopBar";
 
 const SubMainLayout = ({ children }) => {
   const dispatch = useDispatch();
@@ -106,6 +107,9 @@ const SubMainLayout = ({ children }) => {
         {/* <SupportChat /> */}
         <MenuMain />
         <Layout>
+          <Row justify="end">
+            <TopBar />
+          </Row>
           <Breadcrumbs />
           <Layout.Content style={{ height: "100%", position: "relative" }}>
             <div className="cui__utils__content">
@@ -116,7 +120,10 @@ const SubMainLayout = ({ children }) => {
                       <Avatar size={128} icon={<UserOutlined />} />
                     </Row>
                     <p style={{ textAlign: "center" }}>
-                      <b>{user.fullName || "Họ và tên"}</b>
+                      <b>
+                        {user.fullName || "Họ và tên"} -{" "}
+                        {user.tenant.name || "Công ty"}
+                      </b>
                     </p>
                     <Menu
                       style={{

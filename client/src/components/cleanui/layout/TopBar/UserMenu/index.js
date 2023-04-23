@@ -54,7 +54,8 @@ const ProfileMenu = () => {
             icon={<UserOutlined />}
           />
           <span style={{ fontWeight: "bold", fontSize: "1.1rem" }}>
-            {user.fullName || "Annonymous"}
+            {user.fullName || "Annonymous"} -{" "}
+            {user.tenant.name || "Tên công ty"}
           </span>
         </Space>
       </div>

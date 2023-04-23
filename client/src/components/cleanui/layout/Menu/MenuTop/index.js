@@ -110,7 +110,7 @@ const MenuTop = () => {
       });
     return menuData.map((menuItem) => {
       if (menuItem.roles && role) {
-        const checkArr = role.filter((x) => menuItem.roles.includes(x));
+        const checkArr = menuItem.roles.includes(role);
         if (checkArr.length === 0) {
           return null;
         }

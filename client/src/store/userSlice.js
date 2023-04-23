@@ -39,7 +39,7 @@ export const loadCurrentAccount = createAsyncThunk(
 const initialState = {
   id: "",
   name: "",
-  role: [],
+  role: "",
   email: "",
   avatar: "",
   authorized: false, // false is default value
@@ -64,9 +64,7 @@ const userSlice = createSlice({
       return {
         ...state,
         ...action.payload,
-        role:
-          action.payload?.roles?.map((item) => item.name.split("ROLE_")[0]) ||
-          [],
+        role: action.payload?.role.split("_").join(" ").toUpperCase() || "ROLE",
         loading: false,
       };
     },

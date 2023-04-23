@@ -23,10 +23,12 @@ import type {
   CreateUserDto,
   UsersControllerFindAllUserParams,
   UpdateUserDto,
+  UserMeDto,
   CreateSessionDto,
   UpdateSessionDto,
   LoginDto,
   ResetPasswordDto,
+  ChangePasswordDto,
   EventDto,
   CreateEventDto,
   EventsControllerFindAllEventParams,
@@ -198,6 +200,57 @@ export const useTenantsControllerFindAllTenant = <TData = Awaited<ReturnType<Ret
 }
 
 
+export const useTenantsControllerRegisterTenantHook = () => {
+        const tenantsControllerRegisterTenant = useCustomInstance<TenantDto>();
+
+        return (
+    createTenantDto: CreateTenantDto,
+ ) => {
+        return tenantsControllerRegisterTenant(
+          {url: `/api/tenants/register/tenant`, method: 'post',
+      headers: {'Content-Type': 'application/json', },
+      data: createTenantDto
+    },
+          );
+        }
+      }
+    
+
+
+export const useTenantsControllerRegisterTenantMutationOptions = <TError = void,
+    
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useTenantsControllerRegisterTenantHook>>>, TError,{data: CreateTenantDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useTenantsControllerRegisterTenantHook>>>, TError,{data: CreateTenantDto}, TContext> => {
+ const {mutation: mutationOptions} = options ?? {};
+
+      const tenantsControllerRegisterTenant =  useTenantsControllerRegisterTenantHook()
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<ReturnType<typeof useTenantsControllerRegisterTenantHook>>>, {data: CreateTenantDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  tenantsControllerRegisterTenant(data,)
+        }
+
+        
+
+ 
+   return  { mutationFn, ...mutationOptions }}
+
+    export type TenantsControllerRegisterTenantMutationResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useTenantsControllerRegisterTenantHook>>>>
+    export type TenantsControllerRegisterTenantMutationBody = CreateTenantDto
+    export type TenantsControllerRegisterTenantMutationError = void
+
+    export const useTenantsControllerRegisterTenant = <TError = void,
+    
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useTenantsControllerRegisterTenantHook>>>, TError,{data: CreateTenantDto}, TContext>, }
+) => {
+    
+      const mutationOptions = useTenantsControllerRegisterTenantMutationOptions(options);
+     
+      return useMutation(mutationOptions);
+    }
+    
 export const useTenantsControllerFindOneTenantHook = () => {
         const tenantsControllerFindOneTenant = useCustomInstance<TenantDto>();
 
@@ -346,6 +399,57 @@ export const useTenantsControllerRemoveTenantMutationOptions = <TError = unknown
 ) => {
     
       const mutationOptions = useTenantsControllerRemoveTenantMutationOptions(options);
+     
+      return useMutation(mutationOptions);
+    }
+    
+export const useTenantsControllerUpdateMyTenantHook = () => {
+        const tenantsControllerUpdateMyTenant = useCustomInstance<void>();
+
+        return (
+    updateTenantDto: UpdateTenantDto,
+ ) => {
+        return tenantsControllerUpdateMyTenant(
+          {url: `/api/tenants/profile/myTenant`, method: 'patch',
+      headers: {'Content-Type': 'application/json', },
+      data: updateTenantDto
+    },
+          );
+        }
+      }
+    
+
+
+export const useTenantsControllerUpdateMyTenantMutationOptions = <TError = unknown,
+    
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useTenantsControllerUpdateMyTenantHook>>>, TError,{data: UpdateTenantDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useTenantsControllerUpdateMyTenantHook>>>, TError,{data: UpdateTenantDto}, TContext> => {
+ const {mutation: mutationOptions} = options ?? {};
+
+      const tenantsControllerUpdateMyTenant =  useTenantsControllerUpdateMyTenantHook()
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<ReturnType<typeof useTenantsControllerUpdateMyTenantHook>>>, {data: UpdateTenantDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  tenantsControllerUpdateMyTenant(data,)
+        }
+
+        
+
+ 
+   return  { mutationFn, ...mutationOptions }}
+
+    export type TenantsControllerUpdateMyTenantMutationResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useTenantsControllerUpdateMyTenantHook>>>>
+    export type TenantsControllerUpdateMyTenantMutationBody = UpdateTenantDto
+    export type TenantsControllerUpdateMyTenantMutationError = unknown
+
+    export const useTenantsControllerUpdateMyTenant = <TError = unknown,
+    
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useTenantsControllerUpdateMyTenantHook>>>, TError,{data: UpdateTenantDto}, TContext>, }
+) => {
+    
+      const mutationOptions = useTenantsControllerUpdateMyTenantMutationOptions(options);
      
       return useMutation(mutationOptions);
     }
@@ -657,7 +761,7 @@ export const useUsersControllerGetMe = <TData = Awaited<ReturnType<ReturnType<ty
 
 
 export const useUsersControllerUpdateMeHook = () => {
-        const usersControllerUpdateMe = useCustomInstance<UserDto>();
+        const usersControllerUpdateMe = useCustomInstance<UserMeDto>();
 
         return (
     updateUserDto: UpdateUserDto,
@@ -1157,6 +1261,57 @@ export const useAuthControllerLogoutMutationOptions = <TError = unknown,
 ) => {
     
       const mutationOptions = useAuthControllerLogoutMutationOptions(options);
+     
+      return useMutation(mutationOptions);
+    }
+    
+export const useAuthControllerChangePasswordHook = () => {
+        const authControllerChangePassword = useCustomInstance<void>();
+
+        return (
+    changePasswordDto: ChangePasswordDto,
+ ) => {
+        return authControllerChangePassword(
+          {url: `/api/auth/change-password`, method: 'post',
+      headers: {'Content-Type': 'application/json', },
+      data: changePasswordDto
+    },
+          );
+        }
+      }
+    
+
+
+export const useAuthControllerChangePasswordMutationOptions = <TError = unknown,
+    
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useAuthControllerChangePasswordHook>>>, TError,{data: ChangePasswordDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useAuthControllerChangePasswordHook>>>, TError,{data: ChangePasswordDto}, TContext> => {
+ const {mutation: mutationOptions} = options ?? {};
+
+      const authControllerChangePassword =  useAuthControllerChangePasswordHook()
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<ReturnType<typeof useAuthControllerChangePasswordHook>>>, {data: ChangePasswordDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  authControllerChangePassword(data,)
+        }
+
+        
+
+ 
+   return  { mutationFn, ...mutationOptions }}
+
+    export type AuthControllerChangePasswordMutationResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useAuthControllerChangePasswordHook>>>>
+    export type AuthControllerChangePasswordMutationBody = ChangePasswordDto
+    export type AuthControllerChangePasswordMutationError = unknown
+
+    export const useAuthControllerChangePassword = <TError = unknown,
+    
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useAuthControllerChangePasswordHook>>>, TError,{data: ChangePasswordDto}, TContext>, }
+) => {
+    
+      const mutationOptions = useAuthControllerChangePasswordMutationOptions(options);
      
       return useMutation(mutationOptions);
     }

@@ -67,68 +67,38 @@ const routes = [
   // },
 
   // administration
-  // {
-  //   path: "manage/doc-types",
-  //   Component: lazy(() => import("pages/administration/doc-types")),
-  //   exact: true,
-  // },
-  // {
-  //   path: "manage/doc-groups",
-  //   Component: lazy(() => import("pages/administration/doc-groups")),
-  //   exact: true,
-  // },
-  // {
-  //   path: "manage/agents",
-  //   Component: lazy(() => import("pages/administration/agents")),
-  //   exact: true,
-  // },
-  // {
-  //   path: "manage/users",
-  //   Component: lazy(() => import("pages/administration/accounts")),
-  //   exact: true,
-  // },
+  {
+    path: "/manage/account",
+    Component: lazy(() => import("pages/administration/management-accounts")),
+    exact: true,
+  },
+  {
+    path: "/manage/tenant",
+    Component: lazy(() => import("pages/administration/management-tenants")),
+    exact: true,
+  },
+  {
+    path: "/manage/event",
+    Component: lazy(() => import("pages/administration/management-events")),
+    exact: true,
+  },
 
-  // {
-  //   path: "manage/files",
-  //   Component: lazy(() => import("pages/administration/files")),
-  //   exact: true,
-  // },
-  // {
-  //   path: "manage/configurations",
-  //   Component: lazy(() => import("pages/administration/configurations")),
-  //   exact: true,
-  // },
-  // {
-  //   path: "manage/e-ticket/systems",
-  //   Component: lazy(() => import("pages/administration/e-tickets/systems")),
-  //   exact: true,
-  // },
-  // {
-  //   path: "manage/e-ticket/sub-systems",
-  //   Component: lazy(() => import("pages/administration/e-tickets/sub-systems")),
-  //   exact: true,
-  // },
-  // manage ticket
-  // {
-  //   path: "e-ticket",
-  //   Component: lazy(() => import("pages/tickets")),
-  //   exact: true,
-  // },
-  // {
-  //   path: "e-ticket/:id/view",
-  //   Component: lazy(() => import("pages/tickets/detail")),
-  //   exact: true,
-  // },
-  // {
-  //   path: "my-eticket",
-  //   Component: lazy(() => import("pages/tickets")),
-  //   exact: true,
-  // },
-  // {
-  //   path: "my-eticket/:id/view",
-  //   Component: lazy(() => import("pages/tickets/detail")),
-  //   exact: true,
-  // },
+  // detail event
+  {
+    path: "/event/:id",
+    Component: lazy(() =>
+      import("pages/administration/management-events/detail-event")
+    ),
+    exact: true,
+  },
+  // detail event
+  {
+    path: "/event/:eventId/queue/:queueID",
+    Component: lazy(() =>
+      import("pages/administration/management-events/detail-event/detail-queue")
+    ),
+    exact: true,
+  },
 
   // statistic
   // {
@@ -180,11 +150,11 @@ const routes = [
     Component: lazy(() => import("pages/auth/login")),
     exact: true,
   },
-  // {
-  //   path: "auth/login/AD",
-  //   Component: lazy(() => import("pages/auth/login/AD")),
-  //   exact: true,
-  // },
+  {
+    path: "auth/register",
+    Component: lazy(() => import("pages/auth/register")),
+    exact: true,
+  },
   {
     path: "auth/forgot-password",
     Component: lazy(() => import("pages/auth/forgot-password")),
