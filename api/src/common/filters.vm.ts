@@ -14,6 +14,7 @@ import { OperatorQueryEnum } from './enum';
 import { IsNotIn, NotEquals } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Optional } from '@nestjs/common';
+import { deepStringToObject } from './common';
 
 /**
  * Filter operator class for filter operator in query string
@@ -119,48 +120,54 @@ export class FilterOperator {
     if (this.eq.length > 0) {
       this.eq.forEach((item) => {
         // split value to key and value with the first character is ':'
-        const [key, value] = item.split(':');
-        query[key] = Equal(value);
+        const valuesTransform = deepStringToObject(item, Equal);
+        query[Object.keys(valuesTransform)[0]] =
+          Object.values(valuesTransform)[0];
       });
     }
 
     // check if ne operator has value then transform to query object
     if (this.ne.length > 0) {
       this.ne.forEach((item) => {
-        const [key, value] = item.split(':');
-        query[key] = NotEquals(value);
+        const valuesTransform = deepStringToObject(item, NotEquals);
+        query[Object.keys(valuesTransform)[0]] =
+          Object.values(valuesTransform)[0];
       });
     }
 
     // check if gt operator has value then transform to query object
     if (this.gt.length > 0) {
       this.gt.forEach((item) => {
-        const [key, value] = item.split(':');
-        query[key] = MoreThan(value);
+        const valuesTransform = deepStringToObject(item, MoreThan);
+        query[Object.keys(valuesTransform)[0]] =
+          Object.values(valuesTransform)[0];
       });
     }
 
     // check if gte operator has value then transform to query object
     if (this.gte.length > 0) {
       this.gte.forEach((item) => {
-        const [key, value] = item.split(':');
-        query[key] = MoreThanOrEqual(value);
+        const valuesTransform = deepStringToObject(item, MoreThanOrEqual);
+        query[Object.keys(valuesTransform)[0]] =
+          Object.values(valuesTransform)[0];
       });
     }
 
     // check if lt operator has value then transform to query object
     if (this.lt.length > 0) {
       this.lt.forEach((item) => {
-        const [key, value] = item.split(':');
-        query[key] = LessThan(value);
+        const valuesTransform = deepStringToObject(item, LessThan);
+        query[Object.keys(valuesTransform)[0]] =
+          Object.values(valuesTransform)[0];
       });
     }
 
     // check if lte operator has value then transform to query object
     if (this.lte.length > 0) {
       this.lte.forEach((item) => {
-        const [key, value] = item.split(':');
-        query[key] = LessThanOrEqual(value);
+        const valuesTransform = deepStringToObject(item, LessThanOrEqual);
+        query[Object.keys(valuesTransform)[0]] =
+          Object.values(valuesTransform)[0];
       });
     }
 
