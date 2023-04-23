@@ -128,11 +128,11 @@ const routes = [
     Component: lazy(() => import("pages/auth/login")),
     exact: true,
   },
-  // {
-  //   path: "auth/login/AD",
-  //   Component: lazy(() => import("pages/auth/login/AD")),
-  //   exact: true,
-  // },
+  {
+    path: "auth/register",
+    Component: lazy(() => import("pages/auth/register")),
+    exact: true,
+  },
   {
     path: "auth/forgot-password",
     Component: lazy(() => import("pages/auth/forgot-password")),

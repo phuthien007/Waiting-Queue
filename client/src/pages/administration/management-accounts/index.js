@@ -68,11 +68,7 @@ function ManagementAccounts() {
       dataIndex: "email",
       key: (text, record) => `email_${text}_${record.id}`,
     },
-    {
-      title: "Số điện thoại",
-      dataIndex: "phone",
-      key: (text, record) => `phone_${text}_${record.id}`,
-    },
+
     {
       title: "Trạng thái tài khoản",
       dataIndex: "status",

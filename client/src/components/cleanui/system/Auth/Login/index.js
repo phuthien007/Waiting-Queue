@@ -123,6 +123,12 @@ const Login = () => {
           Quên mật khẩu?
         </Link>
       </Form>
+      <div className="text-center pt-2 mb-auto">
+        <span className="mr-2">Bạn muốn trở thành đối tác của chúng tôi?</span>
+        <Link to="/auth/register" className="kit__utils__link font-size-16">
+          Đăng ký
+        </Link>
+      </div>
     </div>
   );
 };
