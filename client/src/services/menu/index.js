@@ -10,7 +10,7 @@ export default [
   {
     title: "Danh sách sự kiện",
     key: "management-event",
-    url: "/event",
+    url: "/manage/event",
     icon: "fa fa-calendar",
     roles: ["ADMIN"],
   },

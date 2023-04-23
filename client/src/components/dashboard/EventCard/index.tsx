@@ -21,7 +21,7 @@ const EventCard: React.FC<Props> = ({ title }) => {
         <p>Ngày 1/1/2021</p>
         <p>Địa điểm: 123 đường 1</p>
         <p>Thời gian: 12:00</p>
-        <Divider />
+        {/* <Divider />
         <Row justify="space-between">
           <Button
             style={{ color: "red !important" }}
@@ -40,7 +40,7 @@ const EventCard: React.FC<Props> = ({ title }) => {
           >
             Sửa
           </Button>
-        </Row>
+        </Row> */}
       </Card>
     </>
   );

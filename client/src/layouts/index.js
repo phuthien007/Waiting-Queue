@@ -14,12 +14,14 @@ import PublicLayout from "./Public";
 import AuthLayout from "./Auth";
 import MainLayout from "./Main";
 import SubMainLayout from "./SubMain";
+import DetailMainLayout from "./DetailMain";
 
 const Layouts = {
   public: PublicLayout,
   auth: AuthLayout,
   main: MainLayout,
   submain: SubMainLayout,
+  detailmain: DetailMainLayout,
 };
 
 let previousPath = "";
@@ -61,6 +63,9 @@ const Layout = ({ children }) => {
 
   // Layout Rendering
   const getLayout = () => {
+    if (pathname.startsWith("/event")) {
+      return "detailmain";
+    }
     if (/^\/error(?=\/|$)/i.test(pathname) || pathname.startsWith("/public")) {
       return "public";
     }
@@ -78,6 +83,7 @@ const Layout = ({ children }) => {
   const isUserLoading = user.loading;
   const isAuthLayout = getLayout() === "auth";
   const isPublicLayout = getLayout() === "public";
+
   console.log("isAuthLayout", isAuthLayout);
   console.log("isUserAuthorized", isUserAuthorized);
   console.log("isUserLoading", isUserLoading);

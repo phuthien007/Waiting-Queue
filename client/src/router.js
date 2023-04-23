@@ -77,6 +77,28 @@ const routes = [
     Component: lazy(() => import("pages/administration/management-tenants")),
     exact: true,
   },
+  {
+    path: "/manage/event",
+    Component: lazy(() => import("pages/administration/management-events")),
+    exact: true,
+  },
+
+  // detail event
+  {
+    path: "/event/:id",
+    Component: lazy(() =>
+      import("pages/administration/management-events/detail-event")
+    ),
+    exact: true,
+  },
+  // detail event
+  {
+    path: "/event/:eventId/queue/:queueID",
+    Component: lazy(() =>
+      import("pages/administration/management-events/detail-event/detail-queue")
+    ),
+    exact: true,
+  },
 
   // statistic
   // {
