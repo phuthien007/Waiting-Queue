@@ -16,6 +16,13 @@
 @import "components/kit/core/style"; // Clean UI KIT styles
 @import "components/cleanui/styles/style"; // Clean UI styles
 
+
+// Import Swiper styles
+@import 'swiper/css';
+@import 'swiper/scss';
+@import 'swiper/scss/navigation';
+@import 'swiper/scss/pagination';
+
 .display-more .ant-tag,
 .display-more .showless {
   display: none;
