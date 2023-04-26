@@ -1,23 +1,42 @@
+import { useEventsControllerFindOneEvent } from "@api/waitingQueue";
 import { Breadcrumb, Card, Descriptions, Divider, Menu } from "antd";
 import InformationEventCard from "components/administration/EventForm/InformationEventCard";
 import ManagementQueues from "components/administration/EventForm/QueueDataTable";
 import React from "react";
 import { Helmet } from "react-helmet";
-import { Link } from "react-router-dom";
+import _ from "lodash";
+import { Link, useParams } from "react-router-dom";
 
 const DetailEvent = () => {
+  const params = useParams();
+  const { id } = params;
+
+  const {
+    refetch: getDataEvent,
+    isFetching,
+    data,
+  } = useEventsControllerFindOneEvent(_.parseInt(id) || 0, {
+    query: {
+      enabled: false,
+    },
+  });
+
+  React.useEffect(() => {
+    getDataEvent();
+  }, [id]);
+
   return (
     <>
       <Helmet title="Chi tiết sự kiện" />
       <Breadcrumb>
         <Breadcrumb.Item>
-          <a href="/home">Home</a>
+          <Link to="/home">Home</Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>Chi tiết sự kiện</Breadcrumb.Item>
       </Breadcrumb>
 
-      <Card title="" className="mt-2">
-        <InformationEventCard />
+      <Card loading={isFetching} title="" className="mt-2">
+        <InformationEventCard data={data} />
       </Card>
 
       <Divider />

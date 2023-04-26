@@ -17,7 +17,7 @@ import Search from "antd/lib/input/Search";
 import QueueForm from "components/administration/QueueForm";
 import TenantForm from "components/administration/TenantForm";
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 interface DataType {
   key: string;
@@ -52,6 +52,9 @@ const data: DataType[] = [
 ];
 
 const ManagementQueues: React.FC = () => {
+  const params = useParams();
+  const { id } = params;
+
   const { refetch: getAllEvent, isFetching: loadingData } =
     useEventsControllerFindAllEvent({});
 
@@ -60,7 +63,7 @@ const ManagementQueues: React.FC = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      render: (text) => <Link to="/event/1/queue/1">{text}</Link>,
+      render: (text) => <Link to={`/event/${id}/queue/1`}>{text}</Link>,
     },
     {
       title: "Age",

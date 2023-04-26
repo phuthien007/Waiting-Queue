@@ -1,7 +1,14 @@
+import { EventDto } from "@api/waitingQueue.schemas";
 import { Descriptions } from "antd";
+import moment from "moment";
 import React from "react";
+import { FORMAT_DATE_MINUTE } from "services/utils/constants";
 
-const InformationEventCard = () => {
+interface Props {
+  data?: EventDto;
+}
+
+const InformationEventCard: React.FC<Props> = ({ data }) => {
   return (
     <Descriptions
       title="Chi tiết sự kiện"
@@ -14,15 +21,17 @@ const InformationEventCard = () => {
         xs: 1,
       }}
     >
-      <Descriptions.Item label="Tên sự kiện">Sự kiện A</Descriptions.Item>
-      <Descriptions.Item label="Địa điểm">1810000000</Descriptions.Item>
+      <Descriptions.Item label="Tên sự kiện">{data?.name}</Descriptions.Item>
+      <Descriptions.Item label="Địa điểm">{data?.place}</Descriptions.Item>
       <Descriptions.Item label="Thời gian">
-        Hangzhou, Zhejiang
+        {data?.daily
+          ? "Hàng ngày"
+          : `Từ ${moment(data?.from).format(FORMAT_DATE_MINUTE)} đến ${moment(
+              data?.to
+            ).format(FORMAT_DATE_MINUTE)}`}
       </Descriptions.Item>
-      <Descriptions.Item label="Mô tả">empty</Descriptions.Item>
-      <Descriptions.Item label="Ghi chú">
-        No. 18, Wantang Road, Xihu District, Hangzhou, Zhejiang, China
-      </Descriptions.Item>
+      <Descriptions.Item label="Mô tả">{data?.description}</Descriptions.Item>
+      <Descriptions.Item label="Ghi chú">{data?.note}</Descriptions.Item>
     </Descriptions>
   );
 };

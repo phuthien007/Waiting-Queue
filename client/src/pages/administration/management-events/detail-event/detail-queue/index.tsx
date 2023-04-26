@@ -1,3 +1,4 @@
+import { useEventsControllerFindOneEvent } from "@api/waitingQueue";
 import {
   Breadcrumb,
   Button,
@@ -13,28 +14,45 @@ import InformationEventCard from "components/administration/EventForm/Informatio
 import ManagementQueues from "components/administration/EventForm/QueueDataTable";
 import ManagementEnrollQueues from "components/administration/QueueForm/EnrollQueueDataTable";
 import InformationQueueCard from "components/administration/QueueForm/InformationQueueCard";
+import _ from "lodash";
 import React from "react";
 import { Helmet } from "react-helmet";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 const DetailEvent = () => {
+  const params = useParams();
+  const { eventId } = params;
+
+  const {
+    refetch: getDataEvent,
+    isFetching: loadingDataEvent,
+    data: dataEvent,
+  } = useEventsControllerFindOneEvent(_.parseInt(eventId) || 0, {
+    query: {
+      enabled: false,
+    },
+  });
+
+  React.useEffect(() => {
+    getDataEvent();
+  }, [eventId]);
   return (
     <>
       <Helmet title="Chi tiết sự kiện" />
       <Breadcrumb>
         <Breadcrumb.Item>
-          <a href="/home">Home</a>
+          <Link to="/home">Home</Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>
-          <a href="/event/1">Chi tiết sự kiện</a>
+          <Link to={`/event/${eventId}`}>Chi tiết sự kiện</Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>Chi tiết hàng đợi</Breadcrumb.Item>
       </Breadcrumb>
 
       <Row>
         <Col sm={24} md={12} xl={12}>
-          <Card title="" className="mt-2">
-            <InformationEventCard />
+          <Card loading={loadingDataEvent} title="" className="mt-2">
+            <InformationEventCard data={dataEvent} />
           </Card>
         </Col>
         <Col sm={24} md={12} xl={12}>

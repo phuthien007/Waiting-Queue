@@ -101,7 +101,7 @@ const EventForm: React.FC<Props> = ({
     // TODO: validate data
     saveData({
       id: values.id,
-      data: { ...values, place: "test", status: values.status ? 1 : 0 },
+      data: { ...values, status: values.status ? 1 : 0 },
     }).then((res) => {
       if (res) {
         notification.success({
@@ -188,6 +188,27 @@ const EventForm: React.FC<Props> = ({
             <Input type="text" placeholder="Tên sự kiện" />
           </Form.Item>
           <Form.Item
+            style={{ marginBottom: 0 }}
+            label="Địa điểm:"
+            name="place"
+            rules={[
+              {
+                required: true,
+                message: "Địa điểm không được bỏ trống",
+              },
+              {
+                validator: (_, value) =>
+                  !value || (value.length >= 0 && value.length <= 256)
+                    ? Promise.resolve()
+                    : Promise.reject(
+                        new Error("Địa điểm chỉ chứa tối đa 256 kí tự")
+                      ),
+              },
+            ]}
+          >
+            <Input type="text" placeholder="Địa điểm" />
+          </Form.Item>
+          <Form.Item
             style={{ marginBottom: 0, width: "100%" }}
             label="Ngày bắt đầu:"
             name="from"
@@ -267,7 +288,11 @@ const EventForm: React.FC<Props> = ({
             <Checkbox />
           </Form.Item>
 
-          <Form.Item style={{ marginBottom: 0 }} label="Địa điểm:" name="place">
+          <Form.Item
+            style={{ marginBottom: 0 }}
+            label="Địa điểm:"
+            name="drawImagePath"
+          >
             <Upload
               action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
               listType="picture"
