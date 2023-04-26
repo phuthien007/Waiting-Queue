@@ -28,6 +28,19 @@ like?: string[];
 notLike?: string[];
 };
 
+export type EventsControllerFindAllEventUseCanSeeParams = {
+eq?: string[];
+ne?: string[];
+gt?: string[];
+gte?: string[];
+lt?: string[];
+lte?: string[];
+in?: string[];
+notIn?: string[];
+like?: string[];
+notLike?: string[];
+};
+
 export type EventsControllerFindAllEventParams = {
 eq?: string[];
 ne?: string[];

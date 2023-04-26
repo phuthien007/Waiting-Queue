@@ -18,6 +18,8 @@ import { partialMapping } from 'src/common/algorithm';
 import { OperatorQueryEnum } from 'src/common/enum';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
+import { UsersRepository } from 'src/users/users.repository';
+import { TenantsRepository } from 'src/tenants/tenants.repository';
 
 /**
  * Events service class for events endpoints (create, update, delete, etc.)
@@ -28,6 +30,8 @@ export class EventsService {
     private readonly eventRepository: EventsRepository,
     private readonly log: LoggerService,
     @Inject(REQUEST) private readonly request: Request,
+    private readonly userRepository: UsersRepository,
+    private readonly tenantRepository: TenantsRepository,
   ) {}
 
   /**
@@ -36,11 +40,17 @@ export class EventsService {
    * @returns created event DTO object
    */
   async create(createEventDto: CreateEventDto) {
-    // TODO: get user from request, tenant from user
     // create event
+    // get current user
+    const tenantInReq = await this.tenantRepository.findOne({
+      where: { tenantCode: (this.request?.user as any)?.tenantCode },
+    });
+
     const event = plainToInstance(Event, {
       ...createEventDto,
     });
+
+    event.tenant = tenantInReq;
 
     const savedEvent = await this.eventRepository.save(event);
     return plainToInstance(EventDto, savedEvent, {

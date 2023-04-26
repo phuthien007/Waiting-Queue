@@ -62,6 +62,24 @@ export class EventsController {
   }
 
   /**
+   * Find all events endpoint (GET /events) with search query
+   * @param search Search query from request query
+   * @returns Array of event DTO objects
+   */
+  @Get('/my-events')
+  @ApiQuery({
+    name: 'search',
+    required: false,
+    type: FilterOperator,
+    description: 'Search query',
+  })
+  @ApiOkResponse({ type: [EventDto] })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  findAllEventUseCanSee(@Query() search: any) {
+    return this.eventsService.findAll(search);
+  }
+
+  /**
    * Find one event endpoint (GET /events/:id) with id param
    * @param id Event id from request param (id)
    * @returns Event DTO object with id

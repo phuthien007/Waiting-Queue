@@ -1088,6 +1088,144 @@
         ]
       }
     },
+    "/api/events/my-events": {
+      "get": {
+        "operationId": "EventsController_findAllEventUseCanSee",
+        "parameters": [
+          {
+            "required": false,
+            "name": "eq",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "required": false,
+            "name": "ne",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "required": false,
+            "name": "gt",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "required": false,
+            "name": "gte",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "required": false,
+            "name": "lt",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "required": false,
+            "name": "lte",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "required": false,
+            "name": "in",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "required": false,
+            "name": "notIn",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "required": false,
+            "name": "like",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "required": false,
+            "name": "notLike",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        },
+        "tags": [
+          "events"
+        ]
+      }
+    },
     "/api/events/{id}": {
       "get": {
         "operationId": "EventsController_findOneEvent",
@@ -1769,12 +1907,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-04-26T14:16:27.242Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-04-26T14:16:27.242Z"
           },
           "name": {
             "type": "string"
@@ -1815,12 +1953,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-04-26T14:16:27.242Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-04-26T14:16:27.242Z"
           },
           "name": {
             "type": "string"
@@ -1860,12 +1998,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-04-26T14:16:27.242Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-04-26T14:16:27.242Z"
           },
           "name": {
             "type": "string"
@@ -1906,12 +2044,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-04-26T14:16:27.242Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-04-26T14:16:27.242Z"
           },
           "email": {
             "type": "string"
@@ -1959,12 +2097,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-04-26T14:16:27.242Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-04-26T14:16:27.242Z"
           },
           "email": {
             "type": "string"
@@ -2010,12 +2148,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-04-26T14:16:27.242Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-04-26T14:16:27.242Z"
           },
           "email": {
             "type": "string"
@@ -2076,12 +2214,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-04-26T14:16:27.242Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-04-26T14:16:27.242Z"
           },
           "email": {
             "type": "string"
@@ -2127,12 +2265,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-04-26T14:16:27.242Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-04-26T14:16:27.242Z"
           }
         }
       },
@@ -2145,12 +2283,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-04-26T14:16:27.242Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-04-26T14:16:27.242Z"
           }
         }
       },
@@ -2220,12 +2358,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-04-26T14:16:27.242Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-04-26T14:16:27.242Z"
           },
           "name": {
             "type": "string"
@@ -2273,12 +2411,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-04-26T14:16:27.242Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-04-26T14:16:27.242Z"
           },
           "name": {
             "type": "string"
@@ -2326,12 +2464,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-04-26T14:16:27.242Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-04-26T14:16:27.242Z"
           },
           "name": {
             "type": "string"
@@ -2379,12 +2517,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-04-26T14:16:27.242Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-04-26T14:16:27.242Z"
           },
           "name": {
             "type": "string"
@@ -2418,12 +2556,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-04-26T14:16:27.242Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-04-26T14:16:27.242Z"
           },
           "name": {
             "type": "string"
@@ -2457,12 +2595,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-04-26T14:16:27.242Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-04-26T14:16:27.242Z"
           },
           "name": {
             "type": "string"

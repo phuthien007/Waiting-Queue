@@ -7,6 +7,7 @@ import {
   EditOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
+import { EventDto } from "@api/waitingQueue.schemas";
 import {
   Button,
   Checkbox,
@@ -25,8 +26,10 @@ import {
   notification,
 } from "antd";
 import TextArea from "antd/lib/input/TextArea";
+import moment from "moment";
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { FORMAT_DATE_MINUTE } from "services/utils/constants";
 import {
   removeVietnameseTones,
   ValidateEmail,
@@ -35,6 +38,7 @@ import {
 } from "services/utils/validates";
 import { selectUser } from "store/userSlice";
 // import ValidateUserName from '../../../services/utils/validates'
+import type { RangePickerProps } from "antd/es/date-picker";
 
 const tailLayout = {
   wrapperCol: {
@@ -47,11 +51,19 @@ const { SHOW_PARENT } = TreeSelect;
 
 interface Props {
   type: "add" | "edit";
-  data: any;
+  data: EventDto;
   saveData?: (data: any) => Promise<any>;
   loading?: boolean;
   reloadData?: () => void;
 }
+
+const range = (start: number, end: number) => {
+  const result = [];
+  for (let i = start; i < end; i++) {
+    result.push(i);
+  }
+  return result;
+};
 
 const EventForm: React.FC<Props> = ({
   type,
@@ -68,7 +80,8 @@ const EventForm: React.FC<Props> = ({
     form.resetFields();
     form.setFieldsValue({
       ...data,
-      role: data?.role,
+      from: moment(data.from),
+      to: moment(data.to),
     });
 
     setIsModalOpen(true);
@@ -82,13 +95,13 @@ const EventForm: React.FC<Props> = ({
     setIsModalOpen(false);
   };
 
-  const onFinish = (values) => {
+  const onFinish = (values: EventDto) => {
     values.id = data.id;
     // saveData({ ...values })
-    console.log("values", values);
+    // TODO: validate data
     saveData({
       id: values.id,
-      data: { ...values },
+      data: { ...values, place: "test", status: values.status ? 1 : 0 },
     }).then((res) => {
       if (res) {
         notification.success({
@@ -132,7 +145,7 @@ const EventForm: React.FC<Props> = ({
       <Modal
         title={type === "add" ? "Thêm mới" : "Chỉnh sửa"}
         okText="Lưu"
-        width="50%"
+        width="80%"
         cancelText="Hủy"
         closeIcon={<CloseOutlined style={{ color: "red" }} />}
         footer={null}
@@ -177,11 +190,30 @@ const EventForm: React.FC<Props> = ({
           <Form.Item
             style={{ marginBottom: 0, width: "100%" }}
             label="Ngày bắt đầu:"
-            name="startDate"
+            name="from"
+            rules={[
+              // validate time start must be greater than time now
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || moment().isBefore(value)) {
+                    return Promise.resolve();
+                  }
+                  if (!moment().isBefore(value)) {
+                    return Promise.reject(
+                      new Error("Ngày bắt đầu phải lớn hơn ngày hiện tại")
+                    );
+                  }
+
+                  return Promise.reject(new Error("Ngày bắt đầu không hợp lệ"));
+                },
+              }),
+            ]}
           >
             <DatePicker
+              showTime
               allowClear
               style={{ width: "100%" }}
+              format={(value) => moment(value).format(FORMAT_DATE_MINUTE)}
               placeholder="Ngày bắt đầu"
             />
           </Form.Item>
@@ -189,11 +221,32 @@ const EventForm: React.FC<Props> = ({
           <Form.Item
             style={{ marginBottom: 0, width: "100%" }}
             label="Ngày kết thúc:"
-            name="endDate"
+            name="to"
+            rules={[
+              // validate time start must be greater than time now
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || moment().isBefore(value)) {
+                    return Promise.resolve();
+                  }
+                  if (!moment().isBefore(value)) {
+                    return Promise.reject(
+                      new Error("Ngày kết thúc phải lớn hơn ngày hiện tại")
+                    );
+                  }
+
+                  return Promise.reject(
+                    new Error("Ngày kết thúc không hợp lệ")
+                  );
+                },
+              }),
+            ]}
           >
             <DatePicker
+              showTime
               allowClear
               style={{ width: "100%" }}
+              format={(value) => moment(value).format(FORMAT_DATE_MINUTE)}
               placeholder="Ngày kết thúc"
             />
           </Form.Item>
@@ -201,6 +254,7 @@ const EventForm: React.FC<Props> = ({
             style={{ marginBottom: 0 }}
             label="Hằng ngày:"
             name="daily"
+            valuePropName="checked"
           >
             <Checkbox />
           </Form.Item>
@@ -208,19 +262,18 @@ const EventForm: React.FC<Props> = ({
             style={{ marginBottom: 0 }}
             label="Trạng thái:"
             name="status"
+            valuePropName="checked"
           >
             <Checkbox />
           </Form.Item>
-          <Form.Item style={{ marginBottom: 0 }} label="Địa điểm:" name="place">
-            <Input type="text" placeholder="Địa điểm" />
-          </Form.Item>
+
           <Form.Item style={{ marginBottom: 0 }} label="Địa điểm:" name="place">
             <Upload
               action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
               listType="picture"
               maxCount={1}
             >
-              <Button icon={<UploadOutlined />}>Click to upload</Button>
+              <Button icon={<UploadOutlined />}>Tải ảnh lên</Button>
             </Upload>
           </Form.Item>
 

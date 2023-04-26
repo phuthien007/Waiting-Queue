@@ -1,5 +1,10 @@
 import { DeleteOutlined, QuestionCircleOutlined } from "@ant-design/icons";
-import { useEventsControllerFindAllEvent } from "@api/waitingQueue";
+import {
+  useEventsControllerCreateEvent,
+  useEventsControllerFindAllEventUseCanSee,
+  useEventsControllerUpdateEvent,
+} from "@api/waitingQueue";
+import { EventDto } from "@api/waitingQueue.schemas";
 import {
   Button,
   Card,
@@ -16,81 +21,64 @@ import type { ColumnsType } from "antd/es/table";
 import Search from "antd/lib/input/Search";
 import EventForm from "components/administration/EventForm";
 import TenantForm from "components/administration/TenantForm";
+import moment from "moment";
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-
-interface DataType {
-  key: string;
-  name: string;
-  age: number;
-  address: string;
-  tags: string[];
-}
-
-const data: DataType[] = [
-  {
-    key: "1",
-    name: "John Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park",
-    tags: ["nice", "developer"],
-  },
-  {
-    key: "2",
-    name: "Jim Green",
-    age: 42,
-    address: "London No. 1 Lake Park",
-    tags: ["loser"],
-  },
-  {
-    key: "3",
-    name: "Joe Black",
-    age: 32,
-    address: "Sidney No. 1 Lake Park",
-    tags: ["cool", "teacher"],
-  },
-];
+import { FORMAT_DATE_MINUTE } from "services/utils/constants";
 
 const ManagementEvents: React.FC = () => {
-  const { refetch: getAllEvent, isFetching: loadingData } =
-    useEventsControllerFindAllEvent({});
+  const [searchText, setSearchText] = React.useState("");
 
-  const columns: ColumnsType<DataType> = [
+  const {
+    refetch: getAllEvent,
+    isFetching: loadingData,
+    data,
+  } = useEventsControllerFindAllEventUseCanSee({
+    like: [`name:${searchText}`],
+  });
+
+  const { isLoading: loadingUpdate, mutateAsync: updateEvent } =
+    useEventsControllerUpdateEvent();
+  const { isLoading: loadingCreate, mutateAsync: createEvent } =
+    useEventsControllerCreateEvent();
+
+  const columns: ColumnsType<EventDto> = [
     {
-      title: "Name",
+      title: "Tên sự kiện",
       dataIndex: "name",
       key: "name",
-      render: (text) => <Link to="/event/1">{text}</Link>,
+      render: (text, record) => <Link to={`/event/${record.id}`}>{text}</Link>,
     },
     {
-      title: "Age",
-      dataIndex: "age",
-      key: "age",
+      title: "Trạng thái",
+      dataIndex: "status",
+      key: "status",
+      render: (text) => {
+        return text === 1 ? (
+          <Tag color="green">Hoạt động</Tag>
+        ) : (
+          <Tag color="red">Đã đóng</Tag>
+        );
+      },
     },
     {
-      title: "Address",
-      dataIndex: "address",
-      key: "address",
+      title: "Mô tả",
+      dataIndex: "description",
+      key: "description",
     },
     {
-      title: "Tags",
-      key: "tags",
-      dataIndex: "tags",
-      render: (_, { tags }) => (
-        <>
-          {tags.map((tag) => {
-            let color = tag.length > 5 ? "geekblue" : "green";
-            if (tag === "loser") {
-              color = "volcano";
-            }
-            return (
-              <Tag color={color} key={tag}>
-                {tag.toUpperCase()}
-              </Tag>
-            );
-          })}
-        </>
-      ),
+      title: "Thời gian",
+      key: "time",
+      render: (record) => {
+        if (record.daily) return <Tag color="blue">Hàng ngày</Tag>;
+
+        return (
+          <>
+            Từ {moment(record.from).format(FORMAT_DATE_MINUTE)} đến{" "}
+            {moment(record.to).format(FORMAT_DATE_MINUTE)}
+          </>
+        );
+      },
     },
     {
       title: "Hành động",
@@ -102,9 +90,9 @@ const ManagementEvents: React.FC = () => {
           <>
             <Space>
               <EventForm
-                // reloadData={refetch}
-                // saveData={updateUser}
-                // loading={loadingUpdate}
+                reloadData={getAllEvent}
+                saveData={updateEvent}
+                loading={loadingUpdate}
                 type="edit"
                 data={record}
               />
@@ -144,7 +132,7 @@ const ManagementEvents: React.FC = () => {
 
   useEffect(() => {
     getAllEvent();
-  }, []);
+  }, [searchText]);
 
   return (
     <>
@@ -159,27 +147,26 @@ const ManagementEvents: React.FC = () => {
           <Search
             allowClear
             placeholder="Tìm kiếm theo tên"
-            // onSearch={onSearch}
+            onSearch={(e) => setSearchText(e)}
             style={{ width: "100%" }}
           />
         </Col>
         <Col span={12} style={{ display: "flex", justifyContent: "end" }}>
           {" "}
           <EventForm
-            // saveData={createTenant}
-            // loading={loadingCreate}
+            saveData={createEvent}
+            loading={loadingCreate}
             type="add"
-            // reloadData={refetch}
+            reloadData={getAllEvent}
             data={{
-              status: 1,
-              isWorking: true,
+              status: true,
             }}
           />
         </Col>
       </Row>
       <Row>
         <Card style={{ width: "100%" }}>
-          <Table columns={columns} dataSource={data} />
+          <Table columns={columns} dataSource={data} scroll={{ x: 1000 }} />
         </Card>
       </Row>
     </>
