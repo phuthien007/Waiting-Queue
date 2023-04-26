@@ -41,14 +41,14 @@ jobs:
         with:
           name: build-client
           path: client/build
-      - name: Copy files to server
-        uses: appleboy/scp-action@master
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.0
         with:
-          host: xephang.online
-          username: ${{ secrets.SERVER_USER }}
-          password: ${{ secrets.SERVER_PASS }}
-          source: "client/build"
-          target: "/home/dev/thienphu/test"
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
+
+      - name: Deploy to server
+        run: ssh -p 26022 dev@xephang.online  "pwd"
       # - name: Test
       #   run: npm test
       # - name: Lint
