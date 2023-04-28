@@ -6,10 +6,11 @@ import { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { useDispatch, useSelector } from "react-redux";
 import { loadCurrentAccount, selectUser } from "store/userSlice";
+import React from "react";
 
 const layout = {
   labelCol: {
-    span: 4,
+    span: 6,
   },
   wrapperCol: {
     span: 16,
@@ -29,6 +30,8 @@ const ProfileTenant = () => {
   const dispatch = useDispatch();
   const { tenant, isOwnerTenant, userLoading } = useSelector(selectUser);
   const { isLoading, mutateAsync } = useTenantsControllerUpdateMyTenant();
+  const [renderOptionInput, setRenderOptionInput] = React.useState();
+
   const [form] = Form.useForm();
   useEffect(() => {
     form.setFieldsValue({
@@ -40,6 +43,11 @@ const ProfileTenant = () => {
       website: tenant?.website || "Website",
       note: tenant?.note || "Ghi chú",
     });
+    if (isOwnerTenant) {
+      setRenderOptionInput({ readOnly: false, bordered: true });
+    } else {
+      setRenderOptionInput({ readOnly: true, bordered: false });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -59,20 +67,9 @@ const ProfileTenant = () => {
     }
   };
 
-  const renderOptionInput = () => {
-    if (isOwnerTenant) {
-      return {
-        readOnly: false,
-        bordered: true,
-      };
-    } else {
-      return { readOnly: true, bordered: false };
-    }
-  };
-
   return (
     <>
-      <Helmet title="Thông tin cá nhân" />
+      <Helmet title="Thông tin công ty" />
       <Card
         loading={userLoading}
         title={
@@ -86,6 +83,7 @@ const ProfileTenant = () => {
           style={{ marginBottom: 0 }}
           form={form}
           name="control-hooks"
+          labelWrap
           onFinish={onFinish}
         >
           <Form.Item name="contactEmail" label="Email">
@@ -124,16 +122,18 @@ const ProfileTenant = () => {
             <Input.TextArea {...renderOptionInput} placeholder="Ghi chú" />
           </Form.Item>
 
-          <Form.Item {...tailLayout}>
-            <Button
-              loading={isLoading}
-              type="primary"
-              icon={<SaveOutlined />}
-              htmlType="submit"
-            >
-              Lưu
-            </Button>
-          </Form.Item>
+          {isOwnerTenant && (
+            <Form.Item {...tailLayout}>
+              <Button
+                loading={isLoading}
+                type="primary"
+                icon={<SaveOutlined />}
+                htmlType="submit"
+              >
+                Lưu
+              </Button>
+            </Form.Item>
+          )}
         </Form>
       </Card>
     </>

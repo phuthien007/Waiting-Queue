@@ -1,5 +1,15 @@
 import { useEffect, useState } from "react";
-import { Avatar, Button, Card, Col, Layout, Menu, Row, Tooltip } from "antd";
+import {
+  Affix,
+  Avatar,
+  Button,
+  Card,
+  Col,
+  Layout,
+  Menu,
+  Row,
+  Tooltip,
+} from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import classNames from "classnames";
@@ -130,29 +140,21 @@ const SubMainLayout = ({ children }) => {
                   xl={0}
                   xxl={0}
                 >
-                  {/* <Button
-                    type="primary"
-                    onClick={toggleCollapsed}
-                    style={{
-                      marginBottom: 16,
-                    }}
+                  <Affix
+                    offsetTop={120}
+                    onChange={(affixed) => console.log(affixed)}
                   >
-                    {isCollapsed ? (
-                      <MenuUnfoldOutlined />
-                    ) : (
-                      <MenuFoldOutlined />
-                    )}
-                  </Button> */}
-                  <Menu
-                    style={{
-                      width: "100%",
-                      borderRight: 0,
-                    }}
-                    inlineCollapsed={!isCollapsed}
-                    onClick={(e) => handleChangeMenu(e)}
-                    selectedKeys={selectedMenu}
-                    items={items}
-                  />
+                    <Menu
+                      style={{
+                        width: "100%",
+                        borderRight: 0,
+                      }}
+                      inlineCollapsed={!isCollapsed}
+                      onClick={(e) => handleChangeMenu(e)}
+                      selectedKeys={selectedMenu}
+                      items={items}
+                    />
+                  </Affix>
                 </Col>
                 <Col
                   className="mt-2"
