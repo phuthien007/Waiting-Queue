@@ -64,7 +64,7 @@ const PublicLayout = ({ children }) => {
       >
         {/* <Sidebar /> */}
         {/* <SupportChat /> */}
-        <MenuMain />
+        {/* <MenuMain /> */}
         <Layout>
           <Breadcrumbs />
           <Layout.Content style={{ height: "100%", position: "relative" }}>
