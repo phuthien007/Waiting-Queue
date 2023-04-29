@@ -48,6 +48,16 @@ export class QueuesController {
     return this.queuesService.create(createQueueDto);
   }
 
+  @Post('/:id/assign-member')
+  @ApiCreatedResponse({ type: QueueDto })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  assignMember(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() memberIds: number[],
+  ) {
+    return this.queuesService.assignMemberIntoQueue(id, memberIds);
+  }
+
   /**
    * Find all queues with search query params
    * @param search - search query params

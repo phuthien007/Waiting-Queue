@@ -33,12 +33,8 @@ export class QueuesService {
    */
   async create(createQueueDto: CreateQueueDto) {
     // check event exist
-    if (!createQueueDto.eventId) {
-      this.log.error('Event ID is required');
-      throw new BadRequestException(
-        transformError('Sự kiện', ERROR_TYPE.REQUIRED),
-      );
-    }
+    console.log('createQueueDto', createQueueDto);
+
     // check event exist in database
     const eventExist = await this.eventRepository.findOne({
       where: { id: createQueueDto.eventId },
@@ -174,5 +170,9 @@ export class QueuesService {
    */
   remove(id: number) {
     return this.eventRepository.delete(id);
+  }
+
+  assignMemberIntoQueue(queueId: number, memberIds: number[]) {
+    return this.queueRepository.assignMemberIntoQueue(queueId, memberIds);
   }
 }

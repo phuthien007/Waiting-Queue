@@ -81,7 +81,7 @@ export class User extends BaseEntity {
   events: Promise<Event[]>;
 
   @ManyToMany(() => Queue, (queue) => queue.users)
-  queues: Promise<Queue[]>;
+  queues: Queue[];
 
   // hash password
   @BeforeInsert()
