@@ -44,4 +44,34 @@ export class QueuesRepository extends Repository<Queue> {
       await queryRunner.release();
     }
   }
+
+  /**
+   *
+   * @param query text query name
+   * @param userId query user id
+   * @param eventId query event id
+   * @returns queue user can see
+   */
+  async queueUserCanSee(query: string, userId: number, eventId: number) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    const queryBuilder = queryRunner.manager
+      .createQueryBuilder()
+      .select('q.*')
+      // .addSelect('e.*')
+      .from(Queue, 'q')
+      .leftJoin('Events', 'e', 'e.id = q.event_id')
+      .leftJoin('RelQueuesUsers', 'rqu', 'rqu.queue_id = q.id')
+      .leftJoin(User, 'u', 'u.id = rqu.user_id')
+      .where('u.id = :userId', { userId });
+
+    if (eventId) {
+      queryBuilder.andWhere('q.event_id = :eventId', { eventId });
+    }
+    if (query) {
+      queryBuilder.andWhere('e.name LIKE :query', { query: `%${query}%` });
+    }
+    // .andWhere('e.name LIKE :query', { query: `%${query}%` });
+    const result = await queryBuilder.getRawMany();
+    return result;
+  }
 }

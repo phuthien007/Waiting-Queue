@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { QueuesService } from './queues.service';
 import { QueuesController } from './queues.controller';
 import { Queue } from './entities/queue.entity';
@@ -8,8 +8,13 @@ import { QueuesRepository } from './queues.repository';
 import { EventsModule } from 'src/events/events.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Queue]), LoggerModule, EventsModule],
+  imports: [
+    TypeOrmModule.forFeature([Queue]),
+    LoggerModule,
+    forwardRef(() => EventsModule),
+  ],
   controllers: [QueuesController],
   providers: [QueuesService, QueuesRepository],
+  exports: [QueuesRepository],
 })
 export class QueuesModule {}

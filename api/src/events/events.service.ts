@@ -20,6 +20,7 @@ import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 import { UsersRepository } from 'src/users/users.repository';
 import { TenantsRepository } from 'src/tenants/tenants.repository';
+import { QueuesRepository } from 'src/queues/queues.repository';
 
 /**
  * Events service class for events endpoints (create, update, delete, etc.)
@@ -32,6 +33,7 @@ export class EventsService {
     @Inject(REQUEST) private readonly request: Request,
     private readonly userRepository: UsersRepository,
     private readonly tenantRepository: TenantsRepository,
+    private readonly queueRepository: QueuesRepository,
   ) {}
 
   /**
@@ -90,6 +92,32 @@ export class EventsService {
         relations: ['tenant'],
         where: filterObj.transformToQuery(),
       });
+    } catch (error) {
+      this.log.error(error);
+
+      throw new BadRequestException(
+        transformError(
+          `Search: ${JSON.stringify(search)}`,
+          ERROR_TYPE.IN_VALID,
+        ),
+      );
+    }
+
+    return events.map((event: Event) =>
+      plainToInstance(EventDto, event, {
+        excludeExtraneousValues: true,
+      }),
+    );
+  }
+
+  async findAllEventUserCanSee(search: string, userId: number) {
+    // start create search
+
+    const userInReq = this.request?.user as any;
+
+    let events: Event[] = [];
+    try {
+      events = await this.eventRepository.queryEventUserCanSee('', userId);
     } catch (error) {
       this.log.error(error);
 

@@ -8,6 +8,7 @@ import {
   Delete,
   Query,
   ParseIntPipe,
+  Req,
 } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
@@ -22,6 +23,7 @@ import {
 } from '@nestjs/swagger';
 import { EventDto } from './dto/event.dto';
 import { FilterOperator } from 'src/common/filters.vm';
+import { RoleEnum } from 'src/common/enum';
 
 /**
  * Events controller class for events endpoints (create, update, delete, etc.)
@@ -70,16 +72,13 @@ export class EventsController {
   @ApiQuery({
     name: 'search',
     required: false,
-    type: FilterOperator,
-    description: 'Search query',
+    type: String,
   })
   @ApiOkResponse({ type: [EventDto] })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  findAllEventUseCanSee(@Query() search: any) {
-    return this.eventsService.findAll(search);
+  findAllEventUserCanSee(@Req() req: any, @Query('search') search?: string) {
+    return this.eventsService.findAllEventUserCanSee(search, req.user.id);
   }
-
-  // TODO: add new api get only event can see of current user
 
   // TODO: api upload image place
 

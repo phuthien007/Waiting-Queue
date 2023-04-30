@@ -9,6 +9,7 @@ import {
   Query,
   ParseIntPipe,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { QueuesService } from './queues.service';
 import { CreateQueueDto } from './dto/create-queue.dto';
@@ -87,6 +88,36 @@ export class QueuesController {
   @ApiBadRequestResponse({ description: 'Bad Request' })
   findAllQueue(@Query() search: any) {
     return this.queuesService.findAll(search);
+  }
+
+  /**
+   * Find all queues endpoint (GET /my-queues) with search query
+   * @param search Search query from request query
+   * @returns Array of event DTO objects
+   */
+  @Get('/my-queues')
+  @ApiQuery({
+    name: 'search',
+    required: false,
+    type: String,
+  })
+  @ApiQuery({
+    name: 'eventId',
+    required: false,
+    type: Number,
+  })
+  @ApiOkResponse({ type: [QueueDto] })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  findAllQueueUserCanSee(
+    @Req() req: any,
+    @Query('search') search?: string,
+    @Query('eventId', ParseIntPipe) eventId?: number,
+  ) {
+    return this.queuesService.findAllQueueUserCanSee(
+      search,
+      req.user.id,
+      eventId,
+    );
   }
 
   // TODO: get all queue status active for member have filter by event

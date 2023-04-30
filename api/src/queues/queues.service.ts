@@ -222,4 +222,43 @@ export class QueuesService {
     );
     return listUser;
   }
+
+  /**
+   * get all queue user can see
+   * @param search - search query params
+   * @param userId - id of user
+   * @param eventId - id of event
+   * @returns array of QueueDto objects with queues data
+   * @throws BadRequestException if search query params is invalid
+   * @throws NotFoundException if event not found
+   */
+  async findAllQueueUserCanSee(
+    search: string,
+    userId: number,
+    eventId: number,
+  ) {
+    let queues: Queue[] = [];
+    try {
+      queues = await this.queueRepository.queueUserCanSee(
+        search,
+        userId,
+        eventId,
+      );
+    } catch (error) {
+      this.log.error(error);
+
+      throw new BadRequestException(
+        transformError(
+          `Search: ${JSON.stringify(search)}`,
+          ERROR_TYPE.IN_VALID,
+        ),
+      );
+    }
+
+    return queues.map((queue: Queue) =>
+      plainToInstance(QueueDto, queue, {
+        excludeExtraneousValues: true,
+      }),
+    );
+  }
 }
