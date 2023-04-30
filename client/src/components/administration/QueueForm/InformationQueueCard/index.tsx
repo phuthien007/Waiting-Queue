@@ -1,8 +1,14 @@
 import { QrcodeOutlined } from "@ant-design/icons";
+import { QueueDto } from "@api/waitingQueue.schemas";
 import { Button, Col, Descriptions, Row } from "antd";
 import React from "react";
+import { StatusQueueRender } from "services/utils/format";
 
-const InformationQueueCard = () => {
+type Props = {
+  data: QueueDto;
+};
+
+const InformationQueueCard: React.FC<Props> = ({ data }) => {
   return (
     <Descriptions
       title={
@@ -24,15 +30,13 @@ const InformationQueueCard = () => {
         xs: 1,
       }}
     >
-      <Descriptions.Item label="Tên hàng đợi">Hàng đợi A</Descriptions.Item>
-      <Descriptions.Item label="Địa điểm">1810000000</Descriptions.Item>
+      <Descriptions.Item label="Tên hàng đợi">{data?.name}</Descriptions.Item>
+      <Descriptions.Item label="Địa điểm">{data?.coord}</Descriptions.Item>
       <Descriptions.Item label="Trạng thái">
-        Hangzhou, Zhejiang
+        {StatusQueueRender(data?.status)}
       </Descriptions.Item>
-      <Descriptions.Item label="Mô tả">empty</Descriptions.Item>
-      <Descriptions.Item label="Ghi chú">
-        No. 18, Wantang Road, Xihu District, Hangzhou, Zhejiang, China
-      </Descriptions.Item>
+      <Descriptions.Item label="Mô tả">{data?.description}</Descriptions.Item>
+      <Descriptions.Item label="Ghi chú">{data?.note}</Descriptions.Item>
     </Descriptions>
   );
 };

@@ -1731,6 +1731,58 @@ export const useQueuesControllerFindAllQueue = <TData = Awaited<ReturnType<Retur
 }
 
 
+export const useQueuesControllerAssignMemberHook = () => {
+        const queuesControllerAssignMember = useCustomInstance<void>();
+
+        return (
+    id: number,
+    queuesControllerAssignMemberBody: string[],
+ ) => {
+        return queuesControllerAssignMember(
+          {url: `/api/queues/${id}/assign-member`, method: 'post',
+      headers: {'Content-Type': 'application/json', },
+      data: queuesControllerAssignMemberBody
+    },
+          );
+        }
+      }
+    
+
+
+export const useQueuesControllerAssignMemberMutationOptions = <TError = unknown,
+    
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerAssignMemberHook>>>, TError,{id: number;data: string[]}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerAssignMemberHook>>>, TError,{id: number;data: string[]}, TContext> => {
+ const {mutation: mutationOptions} = options ?? {};
+
+      const queuesControllerAssignMember =  useQueuesControllerAssignMemberHook()
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<ReturnType<typeof useQueuesControllerAssignMemberHook>>>, {id: number;data: string[]}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  queuesControllerAssignMember(id,data,)
+        }
+
+        
+
+ 
+   return  { mutationFn, ...mutationOptions }}
+
+    export type QueuesControllerAssignMemberMutationResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useQueuesControllerAssignMemberHook>>>>
+    export type QueuesControllerAssignMemberMutationBody = string[]
+    export type QueuesControllerAssignMemberMutationError = unknown
+
+    export const useQueuesControllerAssignMember = <TError = unknown,
+    
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerAssignMemberHook>>>, TError,{id: number;data: string[]}, TContext>, }
+) => {
+    
+      const mutationOptions = useQueuesControllerAssignMemberMutationOptions(options);
+     
+      return useMutation(mutationOptions);
+    }
+    
 export const useQueuesControllerFindOneQueueHook = () => {
         const queuesControllerFindOneQueue = useCustomInstance<QueueDto>();
 

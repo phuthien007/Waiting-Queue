@@ -27,6 +27,8 @@ import {
 import TextArea from "antd/lib/input/TextArea";
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { STATUS_QUEUE_ENUM } from "services/utils/constants";
+import { StatusQueueRender } from "services/utils/format";
 import {
   removeVietnameseTones,
   ValidateEmail,
@@ -43,15 +45,13 @@ const tailLayout = {
   },
 };
 
-const { SHOW_PARENT } = TreeSelect;
-
-interface Props {
+type Props = {
   type: "add" | "edit";
   data: any;
   saveData?: (data: any) => Promise<any>;
   loading?: boolean;
   reloadData?: () => void;
-}
+};
 
 const QueueForm: React.FC<Props> = ({
   type,
@@ -68,7 +68,6 @@ const QueueForm: React.FC<Props> = ({
     form.resetFields();
     form.setFieldsValue({
       ...data,
-      role: data?.role,
     });
 
     setIsModalOpen(true);
@@ -85,7 +84,6 @@ const QueueForm: React.FC<Props> = ({
   const onFinish = (values) => {
     values.id = data.id;
     // saveData({ ...values })
-    console.log("values", values);
     saveData({
       id: values.id,
       data: { ...values },
@@ -175,7 +173,11 @@ const QueueForm: React.FC<Props> = ({
             <Input type="text" placeholder="Tên hàng đợi" />
           </Form.Item>
 
-          <Form.Item style={{ marginBottom: 0 }} label="Vị trí mã:" name="cood">
+          <Form.Item
+            style={{ marginBottom: 0 }}
+            label="Vị trí mã:"
+            name="coord"
+          >
             <Input />
           </Form.Item>
           <Form.Item
@@ -183,19 +185,13 @@ const QueueForm: React.FC<Props> = ({
             label="Trạng thái:"
             name="status"
           >
-            <Checkbox />
-          </Form.Item>
-          <Form.Item style={{ marginBottom: 0 }} label="Địa điểm:" name="place">
-            <Input type="text" placeholder="Địa điểm" />
-          </Form.Item>
-          <Form.Item style={{ marginBottom: 0 }} label="Địa điểm:" name="place">
-            <Upload
-              action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-              listType="picture"
-              maxCount={1}
-            >
-              <Button icon={<UploadOutlined />}>Click to upload</Button>
-            </Upload>
+            <Select>
+              {Object.keys(STATUS_QUEUE_ENUM).map((key) => (
+                <Select.Option value={STATUS_QUEUE_ENUM[key]}>
+                  {StatusQueueRender(STATUS_QUEUE_ENUM[key])}
+                </Select.Option>
+              ))}
+            </Select>
           </Form.Item>
 
           <Form.Item

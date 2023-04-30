@@ -32,6 +32,9 @@ const DetailEvent = () => {
         <Breadcrumb.Item>
           <Link to="/home">Home</Link>
         </Breadcrumb.Item>
+        <Breadcrumb.Item>
+          <Link to="/manage/event">Sự kiện</Link>
+        </Breadcrumb.Item>
         <Breadcrumb.Item>Chi tiết sự kiện</Breadcrumb.Item>
       </Breadcrumb>
 

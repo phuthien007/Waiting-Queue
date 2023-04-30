@@ -4,9 +4,9 @@ import moment from "moment";
 import React from "react";
 import { FORMAT_DATE_MINUTE } from "services/utils/constants";
 
-interface Props {
+type Props = {
   data?: EventDto;
-}
+};
 
 const InformationEventCard: React.FC<Props> = ({ data }) => {
   return (

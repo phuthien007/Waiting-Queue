@@ -44,6 +44,7 @@ import {
   DOCUMENT_LABEL_COLOR,
   FORMAT_DATE,
   ROLE_ENUM,
+  STATUS_QUEUE_ENUM,
 } from "../constants";
 
 export const AgentStatusRender = (status = 0) => {
@@ -314,5 +315,20 @@ export const RoleRender = (role) => {
       return <Tag color="blue">Quản trị hệ thống</Tag>;
     default:
       return <Tag color="blue">Người điều hành </Tag>;
+  }
+};
+
+export const StatusQueueRender = (status) => {
+  switch (status) {
+    case STATUS_QUEUE_ENUM.PENDING:
+      return <Tag>Chờ phục vụ</Tag>;
+    case STATUS_QUEUE_ENUM.SERVING:
+      return <Tag>Đang phục vụ</Tag>;
+    case STATUS_QUEUE_ENUM.WAITING:
+      return <Tag>Đang chờ người mới</Tag>;
+    case STATUS_QUEUE_ENUM.IS_CLOSED:
+      return <Tag>Đã đóng</Tag>;
+    default:
+      return <Tag>Đã đóng</Tag>;
   }
 };

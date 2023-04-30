@@ -49,13 +49,13 @@ const tailLayout = {
 
 const { SHOW_PARENT } = TreeSelect;
 
-interface Props {
+type Props = {
   type: "add" | "edit";
   data: EventDto;
   saveData?: (data: any) => Promise<any>;
   loading?: boolean;
   reloadData?: () => void;
-}
+};
 
 const range = (start: number, end: number) => {
   const result = [];

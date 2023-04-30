@@ -114,6 +114,17 @@ export interface CreateEnrollQueueDto {
   sessionId?: number;
 }
 
+export type UpdateQueueDtoStatus = typeof UpdateQueueDtoStatus[keyof typeof UpdateQueueDtoStatus];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const UpdateQueueDtoStatus = {
+  pending: 'pending',
+  serving: 'serving',
+  waiting: 'waiting',
+  is_closed: 'is_closed',
+} as const;
+
 export interface UpdateQueueDto {
   id?: number;
   createdAt?: string;
@@ -123,22 +134,20 @@ export interface UpdateQueueDto {
   coord?: string;
   code?: string;
   description?: string;
-  status?: string;
+  status?: UpdateQueueDtoStatus;
   eventId?: number;
 }
 
-export interface QueueDto {
-  id?: number;
-  createdAt?: string;
-  updatedAt?: string;
-  name?: string;
-  note?: string;
-  coord?: string;
-  code?: string;
-  description?: string;
-  status?: string;
-  event?: EventDto;
-}
+export type CreateQueueDtoStatus = typeof CreateQueueDtoStatus[keyof typeof CreateQueueDtoStatus];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const CreateQueueDtoStatus = {
+  pending: 'pending',
+  serving: 'serving',
+  waiting: 'waiting',
+  is_closed: 'is_closed',
+} as const;
 
 export interface CreateQueueDto {
   id?: number;
@@ -149,7 +158,7 @@ export interface CreateQueueDto {
   coord?: string;
   code?: string;
   description?: string;
-  status?: string;
+  status?: CreateQueueDtoStatus;
   eventId?: number;
 }
 
@@ -185,6 +194,19 @@ export interface EventDto {
   status?: boolean;
   tenant?: TenantDto;
   user?: UserDto;
+}
+
+export interface QueueDto {
+  id?: number;
+  createdAt?: string;
+  updatedAt?: string;
+  name?: string;
+  note?: string;
+  coord?: string;
+  code?: string;
+  description?: string;
+  status?: string;
+  event?: EventDto;
 }
 
 export interface CreateEventDto {
