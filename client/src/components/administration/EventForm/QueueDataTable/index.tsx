@@ -3,6 +3,7 @@ import {
   useEventsControllerFindAllEvent,
   useQueuesControllerCreateQueue,
   useQueuesControllerFindAllQueue,
+  useQueuesControllerFindAllQueueUserCanSee,
   useQueuesControllerRemoveQueue,
   useQueuesControllerUpdateQueue,
 } from "@api/waitingQueue";
@@ -30,12 +31,15 @@ import React, { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { STATUS_QUEUE_ENUM } from "services/utils/constants";
 import { StatusQueueRender } from "services/utils/format";
+import { selectUser } from "store/userSlice";
+import { useSelector } from "react-redux";
 
 const ManagementQueues: React.FC = () => {
   const params = useParams();
   const { id } = params;
   const [searchText, setSearchText] = React.useState("");
   const onSearch = (value: string) => setSearchText(value);
+  const { role } = useSelector(selectUser);
   const {
     refetch: getAllQueueByEventId,
     isFetching: loadingQueue,
@@ -43,6 +47,15 @@ const ManagementQueues: React.FC = () => {
   } = useQueuesControllerFindAllQueue({
     eq: [`event.id:${id}`],
     like: [`name:${searchText}`],
+  });
+
+  const {
+    refetch: getAllMyQueueByEventId,
+    isFetching: loadingMyQueue,
+    data: queueMyData,
+  } = useQueuesControllerFindAllQueueUserCanSee({
+    eventId: _.toSafeInteger(id),
+    search: `${searchText}`,
   });
 
   const { isLoading: loadingCreate, mutateAsync: createQueue } =
@@ -94,40 +107,51 @@ const ManagementQueues: React.FC = () => {
       render: (record) => {
         return (
           <>
-            <Space>
+            {role === "ADMIN" && (
+              <Space>
+                <QueueForm
+                  reloadData={getAllQueueByEventId}
+                  saveData={updateQueue}
+                  loading={loadingUpdate}
+                  type="edit"
+                  data={record}
+                />
+
+                <Tooltip title="Xóa">
+                  <Popconfirm
+                    title="XÁC NHẬN XÓA"
+                    onConfirm={() => handleDelete(record.id)}
+                    okText="Xóa"
+                    okButtonProps={{
+                      loading: loadingDelete,
+                    }}
+                    cancelText="Hủy"
+                    icon={
+                      <QuestionCircleOutlined
+                        style={{
+                          color: "red",
+                        }}
+                      />
+                    }
+                  >
+                    <Button
+                      className="ant-btn-danger"
+                      shape="circle"
+                      icon={<DeleteOutlined />}
+                    />
+                  </Popconfirm>
+                </Tooltip>
+              </Space>
+            )}
+            {role === "OPERATOR" && (
               <QueueForm
                 reloadData={getAllQueueByEventId}
                 saveData={updateQueue}
                 loading={loadingUpdate}
-                type="edit"
+                type="view"
                 data={record}
               />
-
-              <Tooltip title="Xóa">
-                <Popconfirm
-                  title="XÁC NHẬN XÓA"
-                  onConfirm={() => handleDelete(record.id)}
-                  okText="Xóa"
-                  okButtonProps={{
-                    loading: loadingDelete,
-                  }}
-                  cancelText="Hủy"
-                  icon={
-                    <QuestionCircleOutlined
-                      style={{
-                        color: "red",
-                      }}
-                    />
-                  }
-                >
-                  <Button
-                    className="ant-btn-danger"
-                    shape="circle"
-                    icon={<DeleteOutlined />}
-                  />
-                </Popconfirm>
-              </Tooltip>
-            </Space>
+            )}
           </>
         );
       },
@@ -149,7 +173,11 @@ const ManagementQueues: React.FC = () => {
   };
 
   useEffect(() => {
-    getAllQueueByEventId();
+    if (role === "ADMIN") {
+      getAllQueueByEventId();
+    } else if (role === "OPERATOR") {
+      getAllMyQueueByEventId();
+    }
   }, [searchText]);
 
   return (
@@ -171,24 +199,26 @@ const ManagementQueues: React.FC = () => {
         </Col>
         <Col span={12} style={{ display: "flex", justifyContent: "end" }}>
           {" "}
-          <QueueForm
-            saveData={createQueue}
-            loading={loadingCreate}
-            type="add"
-            reloadData={getAllQueueByEventId}
-            data={{
-              status: STATUS_QUEUE_ENUM.PENDING,
-            }}
-          />
+          {role === "ADMIN" && (
+            <QueueForm
+              saveData={createQueue}
+              loading={loadingCreate}
+              type="add"
+              reloadData={getAllQueueByEventId}
+              data={{
+                status: STATUS_QUEUE_ENUM.PENDING,
+              }}
+            />
+          )}
         </Col>
       </Row>
       <Row>
         <Card style={{ width: "100%" }}>
           <Table
             scroll={{ x: 1000 }}
-            loading={loadingQueue}
+            loading={loadingQueue || loadingMyQueue}
             columns={columns}
-            dataSource={queueData}
+            dataSource={role === "ADMIN" ? queueData : queueMyData}
           />
         </Card>
       </Row>

@@ -49,7 +49,7 @@ const tailLayout = {
 };
 
 type Props = {
-  type: "add" | "edit";
+  type: "add" | "edit" | "view";
   data: any;
   saveData?: (data: any) => Promise<any>;
   loading?: boolean;

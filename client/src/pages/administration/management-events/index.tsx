@@ -1,8 +1,9 @@
 import { DeleteOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import {
   useEventsControllerCreateEvent,
-  useEventsControllerFindAllEventUseCanSee,
+  useEventsControllerFindAllEventUserCanSee,
   useEventsControllerUpdateEvent,
+  useEventsControllerFindAllEvent,
 } from "@api/waitingQueue";
 import { EventDto } from "@api/waitingQueue.schemas";
 import {
@@ -21,19 +22,29 @@ import type { ColumnsType } from "antd/es/table";
 import Search from "antd/lib/input/Search";
 import EventForm from "components/administration/EventForm";
 import TenantForm from "components/administration/TenantForm";
+import _ from "lodash";
 import moment from "moment";
 import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { FORMAT_DATE_MINUTE } from "services/utils/constants";
+import { selectUser } from "store/userSlice";
 
 const ManagementEvents: React.FC = () => {
   const [searchText, setSearchText] = React.useState("");
-
+  const { role } = useSelector(selectUser);
+  const {
+    refetch: getAllMyEvent,
+    isFetching: loadingMyData,
+    data: myEvent,
+  } = useEventsControllerFindAllEventUserCanSee({
+    search: `${searchText}`,
+  });
   const {
     refetch: getAllEvent,
     isFetching: loadingData,
-    data,
-  } = useEventsControllerFindAllEventUseCanSee({
+    data: dataEvent,
+  } = useEventsControllerFindAllEvent({
     like: [`name:${searchText}`],
   });
 
@@ -54,7 +65,7 @@ const ManagementEvents: React.FC = () => {
       dataIndex: "status",
       key: "status",
       render: (text) => {
-        return text === 1 ? (
+        return _.toString(text) === "1" ? (
           <Tag color="green">Hoạt động</Tag>
         ) : (
           <Tag color="red">Đã đóng</Tag>
@@ -88,42 +99,53 @@ const ManagementEvents: React.FC = () => {
       render: (record) => {
         return (
           <>
-            <Space>
+            {role === "ADMIN" && (
+              <Space>
+                <EventForm
+                  reloadData={getAllEvent}
+                  saveData={updateEvent}
+                  loading={loadingUpdate}
+                  type="edit"
+                  data={record}
+                />
+
+                <Tooltip title="Xóa">
+                  <Popconfirm
+                    title="XÁC NHẬN XÓA"
+                    // onConfirm={() => handleDelete(record.id)}
+                    okText="Xóa"
+                    okButtonProps={
+                      {
+                        // loading: loadingDelete,
+                      }
+                    }
+                    cancelText="Hủy"
+                    icon={
+                      <QuestionCircleOutlined
+                        style={{
+                          color: "red",
+                        }}
+                      />
+                    }
+                  >
+                    <Button
+                      className="ant-btn-danger"
+                      shape="circle"
+                      icon={<DeleteOutlined />}
+                    />
+                  </Popconfirm>
+                </Tooltip>
+              </Space>
+            )}
+            {role === "OPERATOR" && (
               <EventForm
                 reloadData={getAllEvent}
                 saveData={updateEvent}
                 loading={loadingUpdate}
-                type="edit"
+                type="view"
                 data={record}
               />
-
-              <Tooltip title="Xóa">
-                <Popconfirm
-                  title="XÁC NHẬN XÓA"
-                  // onConfirm={() => handleDelete(record.id)}
-                  okText="Xóa"
-                  okButtonProps={
-                    {
-                      // loading: loadingDelete,
-                    }
-                  }
-                  cancelText="Hủy"
-                  icon={
-                    <QuestionCircleOutlined
-                      style={{
-                        color: "red",
-                      }}
-                    />
-                  }
-                >
-                  <Button
-                    className="ant-btn-danger"
-                    shape="circle"
-                    icon={<DeleteOutlined />}
-                  />
-                </Popconfirm>
-              </Tooltip>
-            </Space>
+            )}
           </>
         );
       },
@@ -131,7 +153,9 @@ const ManagementEvents: React.FC = () => {
   ];
 
   useEffect(() => {
-    getAllEvent();
+    console.log(role);
+    if (role === "ADMIN") getAllEvent();
+    else if (role === "OPERATOR") getAllMyEvent();
   }, [searchText]);
 
   return (
@@ -153,20 +177,27 @@ const ManagementEvents: React.FC = () => {
         </Col>
         <Col span={12} style={{ display: "flex", justifyContent: "end" }}>
           {" "}
-          <EventForm
-            saveData={createEvent}
-            loading={loadingCreate}
-            type="add"
-            reloadData={getAllEvent}
-            data={{
-              status: true,
-            }}
-          />
+          {role === "ADMIN" && (
+            <EventForm
+              saveData={createEvent}
+              loading={loadingCreate}
+              type="add"
+              reloadData={getAllEvent}
+              data={{
+                status: true,
+              }}
+            />
+          )}
         </Col>
       </Row>
       <Row>
         <Card style={{ width: "100%" }}>
-          <Table columns={columns} dataSource={data} scroll={{ x: 1000 }} />
+          <Table
+            loading={loadingData || loadingMyData}
+            columns={columns}
+            dataSource={role === "ADMIN" ? dataEvent : myEvent}
+            scroll={{ x: 1000 }}
+          />
         </Card>
       </Row>
     </>

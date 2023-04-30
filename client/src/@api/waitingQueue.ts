@@ -32,11 +32,12 @@ import type {
   EventDto,
   CreateEventDto,
   EventsControllerFindAllEventParams,
-  EventsControllerFindAllEventUseCanSeeParams,
+  EventsControllerFindAllEventUserCanSeeParams,
   UpdateEventDto,
   QueueDto,
   CreateQueueDto,
   QueuesControllerFindAllQueueParams,
+  QueuesControllerFindAllQueueUserCanSeeParams,
   UpdateQueueDto,
   EnrollQueueDto,
   CreateEnrollQueueDto,
@@ -1424,14 +1425,14 @@ export const useEventsControllerFindAllEvent = <TData = Awaited<ReturnType<Retur
 }
 
 
-export const useEventsControllerFindAllEventUseCanSeeHook = () => {
-        const eventsControllerFindAllEventUseCanSee = useCustomInstance<EventDto[]>();
+export const useEventsControllerFindAllEventUserCanSeeHook = () => {
+        const eventsControllerFindAllEventUserCanSee = useCustomInstance<EventDto[]>();
 
         return (
-    params?: EventsControllerFindAllEventUseCanSeeParams,
+    params?: EventsControllerFindAllEventUserCanSeeParams,
  signal?: AbortSignal
 ) => {
-        return eventsControllerFindAllEventUseCanSee(
+        return eventsControllerFindAllEventUserCanSee(
           {url: `/api/events/my-events`, method: 'get',
         params, signal
     },
@@ -1440,33 +1441,33 @@ export const useEventsControllerFindAllEventUseCanSeeHook = () => {
       }
     
 
-export const getEventsControllerFindAllEventUseCanSeeQueryKey = (params?: EventsControllerFindAllEventUseCanSeeParams,) => [`/api/events/my-events`, ...(params ? [params]: [])] as const;
+export const getEventsControllerFindAllEventUserCanSeeQueryKey = (params?: EventsControllerFindAllEventUserCanSeeParams,) => [`/api/events/my-events`, ...(params ? [params]: [])] as const;
   
 
     
-export const useEventsControllerFindAllEventUseCanSeeQueryOptions = <TData = Awaited<ReturnType<ReturnType<typeof useEventsControllerFindAllEventUseCanSeeHook>>>, TError = void>(params?: EventsControllerFindAllEventUseCanSeeParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useEventsControllerFindAllEventUseCanSeeHook>>>, TError, TData>, }
-): UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useEventsControllerFindAllEventUseCanSeeHook>>>, TError, TData> & { queryKey: QueryKey } => {
+export const useEventsControllerFindAllEventUserCanSeeQueryOptions = <TData = Awaited<ReturnType<ReturnType<typeof useEventsControllerFindAllEventUserCanSeeHook>>>, TError = void>(params?: EventsControllerFindAllEventUserCanSeeParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useEventsControllerFindAllEventUserCanSeeHook>>>, TError, TData>, }
+): UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useEventsControllerFindAllEventUserCanSeeHook>>>, TError, TData> & { queryKey: QueryKey } => {
 const {query: queryOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getEventsControllerFindAllEventUseCanSeeQueryKey(params);
+  const queryKey =  queryOptions?.queryKey ?? getEventsControllerFindAllEventUserCanSeeQueryKey(params);
 
-  const eventsControllerFindAllEventUseCanSee =  useEventsControllerFindAllEventUseCanSeeHook();
+  const eventsControllerFindAllEventUserCanSee =  useEventsControllerFindAllEventUserCanSeeHook();
   
-    const queryFn: QueryFunction<Awaited<ReturnType<ReturnType<typeof useEventsControllerFindAllEventUseCanSeeHook>>>> = ({ signal }) => eventsControllerFindAllEventUseCanSee(params, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<ReturnType<typeof useEventsControllerFindAllEventUserCanSeeHook>>>> = ({ signal }) => eventsControllerFindAllEventUserCanSee(params, signal);
     
       
       
    return  { queryKey, queryFn, ...queryOptions}}
 
-export type EventsControllerFindAllEventUseCanSeeQueryResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useEventsControllerFindAllEventUseCanSeeHook>>>>
-export type EventsControllerFindAllEventUseCanSeeQueryError = void
+export type EventsControllerFindAllEventUserCanSeeQueryResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useEventsControllerFindAllEventUserCanSeeHook>>>>
+export type EventsControllerFindAllEventUserCanSeeQueryError = void
 
-export const useEventsControllerFindAllEventUseCanSee = <TData = Awaited<ReturnType<ReturnType<typeof useEventsControllerFindAllEventUseCanSeeHook>>>, TError = void>(
- params?: EventsControllerFindAllEventUseCanSeeParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useEventsControllerFindAllEventUseCanSeeHook>>>, TError, TData>, }
+export const useEventsControllerFindAllEventUserCanSee = <TData = Awaited<ReturnType<ReturnType<typeof useEventsControllerFindAllEventUserCanSeeHook>>>, TError = void>(
+ params?: EventsControllerFindAllEventUserCanSeeParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useEventsControllerFindAllEventUserCanSeeHook>>>, TError, TData>, }
 
   ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
 
-  const queryOptions = useEventsControllerFindAllEventUseCanSeeQueryOptions(params,options)
+  const queryOptions = useEventsControllerFindAllEventUserCanSeeQueryOptions(params,options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 
@@ -1783,6 +1784,58 @@ export const useQueuesControllerAssignMemberMutationOptions = <TError = unknown,
       return useMutation(mutationOptions);
     }
     
+export const useQueuesControllerFindAllQueueUserCanSeeHook = () => {
+        const queuesControllerFindAllQueueUserCanSee = useCustomInstance<QueueDto[]>();
+
+        return (
+    params?: QueuesControllerFindAllQueueUserCanSeeParams,
+ signal?: AbortSignal
+) => {
+        return queuesControllerFindAllQueueUserCanSee(
+          {url: `/api/queues/my-queues`, method: 'get',
+        params, signal
+    },
+          );
+        }
+      }
+    
+
+export const getQueuesControllerFindAllQueueUserCanSeeQueryKey = (params?: QueuesControllerFindAllQueueUserCanSeeParams,) => [`/api/queues/my-queues`, ...(params ? [params]: [])] as const;
+  
+
+    
+export const useQueuesControllerFindAllQueueUserCanSeeQueryOptions = <TData = Awaited<ReturnType<ReturnType<typeof useQueuesControllerFindAllQueueUserCanSeeHook>>>, TError = void>(params?: QueuesControllerFindAllQueueUserCanSeeParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerFindAllQueueUserCanSeeHook>>>, TError, TData>, }
+): UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerFindAllQueueUserCanSeeHook>>>, TError, TData> & { queryKey: QueryKey } => {
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getQueuesControllerFindAllQueueUserCanSeeQueryKey(params);
+
+  const queuesControllerFindAllQueueUserCanSee =  useQueuesControllerFindAllQueueUserCanSeeHook();
+  
+    const queryFn: QueryFunction<Awaited<ReturnType<ReturnType<typeof useQueuesControllerFindAllQueueUserCanSeeHook>>>> = ({ signal }) => queuesControllerFindAllQueueUserCanSee(params, signal);
+    
+      
+      
+   return  { queryKey, queryFn, ...queryOptions}}
+
+export type QueuesControllerFindAllQueueUserCanSeeQueryResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useQueuesControllerFindAllQueueUserCanSeeHook>>>>
+export type QueuesControllerFindAllQueueUserCanSeeQueryError = void
+
+export const useQueuesControllerFindAllQueueUserCanSee = <TData = Awaited<ReturnType<ReturnType<typeof useQueuesControllerFindAllQueueUserCanSeeHook>>>, TError = void>(
+ params?: QueuesControllerFindAllQueueUserCanSeeParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerFindAllQueueUserCanSeeHook>>>, TError, TData>, }
+
+  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+
+  const queryOptions = useQueuesControllerFindAllQueueUserCanSeeQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+
 export const useQueuesControllerFindOneQueueHook = () => {
         const queuesControllerFindOneQueue = useCustomInstance<QueueDto>();
 

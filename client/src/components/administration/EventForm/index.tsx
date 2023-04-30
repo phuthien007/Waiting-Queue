@@ -50,7 +50,7 @@ const tailLayout = {
 const { SHOW_PARENT } = TreeSelect;
 
 type Props = {
-  type: "add" | "edit";
+  type: "add" | "edit" | "view";
   data: EventDto;
   saveData?: (data: any) => Promise<any>;
   loading?: boolean;

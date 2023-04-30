@@ -1090,116 +1090,14 @@
     },
     "/api/events/my-events": {
       "get": {
-        "operationId": "EventsController_findAllEventUseCanSee",
+        "operationId": "EventsController_findAllEventUserCanSee",
         "parameters": [
           {
+            "name": "search",
             "required": false,
-            "name": "eq",
             "in": "query",
             "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "required": false,
-            "name": "ne",
-            "in": "query",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "required": false,
-            "name": "gt",
-            "in": "query",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "required": false,
-            "name": "gte",
-            "in": "query",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "required": false,
-            "name": "lt",
-            "in": "query",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "required": false,
-            "name": "lte",
-            "in": "query",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "required": false,
-            "name": "in",
-            "in": "query",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "required": false,
-            "name": "notIn",
-            "in": "query",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "required": false,
-            "name": "like",
-            "in": "query",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "required": false,
-            "name": "notLike",
-            "in": "query",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
+              "type": "string"
             }
           }
         ],
@@ -1532,6 +1430,50 @@
         "responses": {
           "201": {
             "description": "Assign member into queue successfully"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        },
+        "tags": [
+          "queues"
+        ]
+      }
+    },
+    "/api/queues/my-queues": {
+      "get": {
+        "operationId": "QueuesController_findAllQueueUserCanSee",
+        "parameters": [
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "eventId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/QueueDto"
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Bad Request"
@@ -1982,12 +1924,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T14:56:01.968Z"
+            "default": "2023-04-30T17:51:09.100Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T14:56:01.968Z"
+            "default": "2023-04-30T17:51:09.101Z"
           },
           "name": {
             "type": "string"
@@ -2028,12 +1970,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T14:56:01.968Z"
+            "default": "2023-04-30T17:51:09.100Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T14:56:01.968Z"
+            "default": "2023-04-30T17:51:09.101Z"
           },
           "name": {
             "type": "string"
@@ -2073,12 +2015,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T14:56:01.968Z"
+            "default": "2023-04-30T17:51:09.100Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T14:56:01.968Z"
+            "default": "2023-04-30T17:51:09.101Z"
           },
           "name": {
             "type": "string"
@@ -2119,12 +2061,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T14:56:01.968Z"
+            "default": "2023-04-30T17:51:09.100Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T14:56:01.968Z"
+            "default": "2023-04-30T17:51:09.101Z"
           },
           "email": {
             "type": "string"
@@ -2172,12 +2114,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T14:56:01.968Z"
+            "default": "2023-04-30T17:51:09.100Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T14:56:01.968Z"
+            "default": "2023-04-30T17:51:09.101Z"
           },
           "email": {
             "type": "string"
@@ -2223,12 +2165,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T14:56:01.968Z"
+            "default": "2023-04-30T17:51:09.100Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T14:56:01.968Z"
+            "default": "2023-04-30T17:51:09.101Z"
           },
           "email": {
             "type": "string"
@@ -2289,12 +2231,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T14:56:01.968Z"
+            "default": "2023-04-30T17:51:09.100Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T14:56:01.968Z"
+            "default": "2023-04-30T17:51:09.101Z"
           },
           "email": {
             "type": "string"
@@ -2340,12 +2282,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T14:56:01.968Z"
+            "default": "2023-04-30T17:51:09.100Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T14:56:01.968Z"
+            "default": "2023-04-30T17:51:09.101Z"
           }
         }
       },
@@ -2358,12 +2300,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T14:56:01.968Z"
+            "default": "2023-04-30T17:51:09.100Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T14:56:01.968Z"
+            "default": "2023-04-30T17:51:09.101Z"
           }
         }
       },
@@ -2433,12 +2375,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T14:56:01.968Z"
+            "default": "2023-04-30T17:51:09.100Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T14:56:01.968Z"
+            "default": "2023-04-30T17:51:09.101Z"
           },
           "name": {
             "type": "string"
@@ -2486,12 +2428,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T14:56:01.968Z"
+            "default": "2023-04-30T17:51:09.100Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T14:56:01.968Z"
+            "default": "2023-04-30T17:51:09.101Z"
           },
           "name": {
             "type": "string"
@@ -2539,12 +2481,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T14:56:01.968Z"
+            "default": "2023-04-30T17:51:09.100Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T14:56:01.968Z"
+            "default": "2023-04-30T17:51:09.101Z"
           },
           "name": {
             "type": "string"
@@ -2592,12 +2534,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T14:56:01.968Z"
+            "default": "2023-04-30T17:51:09.100Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T14:56:01.968Z"
+            "default": "2023-04-30T17:51:09.101Z"
           },
           "name": {
             "type": "string"
@@ -2638,12 +2580,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T14:56:01.968Z"
+            "default": "2023-04-30T17:51:09.100Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T14:56:01.968Z"
+            "default": "2023-04-30T17:51:09.101Z"
           },
           "name": {
             "type": "string"
@@ -2677,12 +2619,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T14:56:01.968Z"
+            "default": "2023-04-30T17:51:09.100Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T14:56:01.968Z"
+            "default": "2023-04-30T17:51:09.101Z"
           },
           "name": {
             "type": "string"

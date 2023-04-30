@@ -20,6 +20,8 @@ import {
 } from "antd";
 import _ from "lodash";
 import React from "react";
+import { useSelector } from "react-redux";
+import { selectUser } from "store/userSlice";
 
 type Props = {
   id: number;
@@ -27,7 +29,7 @@ type Props = {
 
 const UserOperateQueue: React.FC<Props> = ({ id }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
-
+  const { role } = useSelector(selectUser);
   const [data, setData] = React.useState<UserDto[]>([]);
 
   const {
@@ -49,9 +51,10 @@ const UserOperateQueue: React.FC<Props> = ({ id }) => {
     useQueuesControllerAssignMember();
 
   const showModal = () => {
-    console.log("show modal", id);
+    if (role === "ADMIN") {
+      getAllUser();
+    }
     setIsModalOpen(true);
-    getAllUser();
     getAllUserInQueue();
   };
 
@@ -83,6 +86,21 @@ const UserOperateQueue: React.FC<Props> = ({ id }) => {
         open={isModalOpen}
         onCancel={handleCancel}
         onOk={handleOk}
+        footer={
+          role === "ADMIN" && [
+            <Button key="back" onClick={handleCancel}>
+              Hủy
+            </Button>,
+            <Button
+              key="submit"
+              type="primary"
+              loading={loadingAssignMember}
+              onClick={handleOk}
+            >
+              Lưu
+            </Button>,
+          ]
+        }
         confirmLoading={loadingAssignMember}
         title="Danh sách người điều hành"
       >
@@ -118,46 +136,51 @@ const UserOperateQueue: React.FC<Props> = ({ id }) => {
             );
           })}
         </Row>
-        <Divider />
         {/* Render select button to admin can choose new user operate this queue */}
-        <Row>
-          <Col span={24}>
-            <Descriptions title="Chọn người điều hành mới">
-              <Descriptions.Item label="Người điều hành">
-                <Select
-                  loading={loadingGetAllUser}
-                  maxTagCount={3}
-                  mode="multiple"
-                  style={{ width: "100%" }}
-                  placeholder="Chọn người điều hành"
-                  value={data?.map((user: UserDto) => user.id)}
-                  clearIcon={<i className="fe fe-x" />}
-                  filterOption={(input, option) => {
-                    const user = _.toString(option?.children);
-                    return (
-                      user?.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    );
-                  }}
-                  onChange={(value: number[]) => {
-                    setData(
-                      dataUser?.filter((user: UserDto) =>
-                        value.includes(user.id)
-                      )
-                    );
-                  }}
-                >
-                  {dataUser?.map((user: UserDto) => {
-                    return (
-                      <Select.Option key={user.id} value={user.id}>
-                        {user.fullName}
-                      </Select.Option>
-                    );
-                  })}
-                </Select>
-              </Descriptions.Item>
-            </Descriptions>
-          </Col>
-        </Row>
+        {role === "ADMIN" && (
+          <>
+            <Divider />
+
+            <Row>
+              <Col span={24}>
+                <Descriptions title="Chọn người điều hành mới">
+                  <Descriptions.Item label="Người điều hành">
+                    <Select
+                      loading={loadingGetAllUser}
+                      maxTagCount={3}
+                      mode="multiple"
+                      style={{ width: "100%" }}
+                      placeholder="Chọn người điều hành"
+                      value={data?.map((user: UserDto) => user.id)}
+                      clearIcon={<i className="fe fe-x" />}
+                      filterOption={(input, option) => {
+                        const user = _.toString(option?.children);
+                        return (
+                          user?.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
+                      onChange={(value: number[]) => {
+                        setData(
+                          dataUser?.filter((user: UserDto) =>
+                            value.includes(user.id)
+                          )
+                        );
+                      }}
+                    >
+                      {dataUser?.map((user: UserDto) => {
+                        return (
+                          <Select.Option key={user.id} value={user.id}>
+                            {user.fullName}
+                          </Select.Option>
+                        );
+                      })}
+                    </Select>
+                  </Descriptions.Item>
+                </Descriptions>
+              </Col>
+            </Row>
+          </>
+        )}
       </Modal>
     </>
   );
