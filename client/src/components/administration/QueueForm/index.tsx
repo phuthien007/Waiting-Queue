@@ -7,6 +7,7 @@ import {
   EditOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
+
 import {
   Button,
   Checkbox,
@@ -25,9 +26,11 @@ import {
   notification,
 } from "antd";
 import TextArea from "antd/lib/input/TextArea";
+import _ from "lodash";
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { STATUS_QUEUE_ENUM } from "services/utils/constants";
+import { useParams } from "react-router-dom";
+import { ROLE_ENUM, STATUS_QUEUE_ENUM } from "services/utils/constants";
 import { StatusQueueRender } from "services/utils/format";
 import {
   removeVietnameseTones,
@@ -63,12 +66,19 @@ const QueueForm: React.FC<Props> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
   const { role: roleUser } = useSelector(selectUser);
-
+  const { id } = useParams();
   const showModal = () => {
     form.resetFields();
-    form.setFieldsValue({
-      ...data,
-    });
+
+    if (roleUser?.toLowerCase() === ROLE_ENUM.ADMIN) {
+      form.setFieldsValue({
+        ...data,
+      });
+    } else {
+      form.setFieldsValue({
+        ...data,
+      });
+    }
 
     setIsModalOpen(true);
   };
@@ -86,7 +96,7 @@ const QueueForm: React.FC<Props> = ({
     // saveData({ ...values })
     saveData({
       id: values.id,
-      data: { ...values },
+      data: { ...values, eventId: id },
     }).then((res) => {
       if (res) {
         notification.success({

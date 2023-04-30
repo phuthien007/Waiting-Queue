@@ -20,6 +20,7 @@ import {
   Tooltip,
   notification,
 } from "antd";
+import UserOperateQueue from "components/administration/QueueForm/UserOperateQueue";
 import type { ColumnsType } from "antd/es/table";
 import Search from "antd/lib/input/Search";
 import QueueForm from "components/administration/QueueForm";
@@ -33,13 +34,15 @@ import { StatusQueueRender } from "services/utils/format";
 const ManagementQueues: React.FC = () => {
   const params = useParams();
   const { id } = params;
-
+  const [searchText, setSearchText] = React.useState("");
+  const onSearch = (value: string) => setSearchText(value);
   const {
     refetch: getAllQueueByEventId,
     isFetching: loadingQueue,
     data: queueData,
   } = useQueuesControllerFindAllQueue({
     eq: [`event.id:${id}`],
+    like: [`name:${searchText}`],
   });
 
   const { isLoading: loadingCreate, mutateAsync: createQueue } =
@@ -76,6 +79,11 @@ const ManagementQueues: React.FC = () => {
       dataIndex: "status",
       key: "status",
       render: (status: string) => StatusQueueRender(status),
+    },
+    {
+      title: "Người điều hành",
+      key: "operateUser",
+      render: (record: QueueDto) => <UserOperateQueue id={record.id} />,
     },
 
     {
@@ -142,7 +150,7 @@ const ManagementQueues: React.FC = () => {
 
   useEffect(() => {
     getAllQueueByEventId();
-  }, []);
+  }, [searchText]);
 
   return (
     <>
@@ -157,7 +165,7 @@ const ManagementQueues: React.FC = () => {
           <Search
             allowClear
             placeholder="Tìm kiếm theo tên"
-            // onSearch={onSearch}
+            onSearch={onSearch}
             style={{ width: "100%" }}
           />
         </Col>
@@ -177,6 +185,7 @@ const ManagementQueues: React.FC = () => {
       <Row>
         <Card style={{ width: "100%" }}>
           <Table
+            scroll={{ x: 1000 }}
             loading={loadingQueue}
             columns={columns}
             dataSource={queueData}

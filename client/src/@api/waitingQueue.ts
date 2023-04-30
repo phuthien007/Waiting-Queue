@@ -1736,7 +1736,7 @@ export const useQueuesControllerAssignMemberHook = () => {
 
         return (
     id: number,
-    queuesControllerAssignMemberBody: string[],
+    queuesControllerAssignMemberBody: number[],
  ) => {
         return queuesControllerAssignMember(
           {url: `/api/queues/${id}/assign-member`, method: 'post',
@@ -1751,14 +1751,14 @@ export const useQueuesControllerAssignMemberHook = () => {
 
 export const useQueuesControllerAssignMemberMutationOptions = <TError = unknown,
     
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerAssignMemberHook>>>, TError,{id: number;data: string[]}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerAssignMemberHook>>>, TError,{id: number;data: string[]}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerAssignMemberHook>>>, TError,{id: number;data: number[]}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerAssignMemberHook>>>, TError,{id: number;data: number[]}, TContext> => {
  const {mutation: mutationOptions} = options ?? {};
 
       const queuesControllerAssignMember =  useQueuesControllerAssignMemberHook()
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<ReturnType<typeof useQueuesControllerAssignMemberHook>>>, {id: number;data: string[]}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<ReturnType<typeof useQueuesControllerAssignMemberHook>>>, {id: number;data: number[]}> = (props) => {
           const {id,data} = props ?? {};
 
           return  queuesControllerAssignMember(id,data,)
@@ -1770,12 +1770,12 @@ export const useQueuesControllerAssignMemberMutationOptions = <TError = unknown,
    return  { mutationFn, ...mutationOptions }}
 
     export type QueuesControllerAssignMemberMutationResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useQueuesControllerAssignMemberHook>>>>
-    export type QueuesControllerAssignMemberMutationBody = string[]
+    export type QueuesControllerAssignMemberMutationBody = number[]
     export type QueuesControllerAssignMemberMutationError = unknown
 
     export const useQueuesControllerAssignMember = <TError = unknown,
     
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerAssignMemberHook>>>, TError,{id: number;data: string[]}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerAssignMemberHook>>>, TError,{id: number;data: number[]}, TContext>, }
 ) => {
     
       const mutationOptions = useQueuesControllerAssignMemberMutationOptions(options);
@@ -1935,6 +1935,57 @@ export const useQueuesControllerRemoveQueueMutationOptions = <TError = unknown,
       return useMutation(mutationOptions);
     }
     
+export const useQueuesControllerGetAllUserOperateQueueHook = () => {
+        const queuesControllerGetAllUserOperateQueue = useCustomInstance<UserDto[]>();
+
+        return (
+    id: number,
+ signal?: AbortSignal
+) => {
+        return queuesControllerGetAllUserOperateQueue(
+          {url: `/api/queues/${id}/user-operate-queue`, method: 'get', signal
+    },
+          );
+        }
+      }
+    
+
+export const getQueuesControllerGetAllUserOperateQueueQueryKey = (id: number,) => [`/api/queues/${id}/user-operate-queue`] as const;
+  
+
+    
+export const useQueuesControllerGetAllUserOperateQueueQueryOptions = <TData = Awaited<ReturnType<ReturnType<typeof useQueuesControllerGetAllUserOperateQueueHook>>>, TError = void>(id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerGetAllUserOperateQueueHook>>>, TError, TData>, }
+): UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerGetAllUserOperateQueueHook>>>, TError, TData> & { queryKey: QueryKey } => {
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getQueuesControllerGetAllUserOperateQueueQueryKey(id);
+
+  const queuesControllerGetAllUserOperateQueue =  useQueuesControllerGetAllUserOperateQueueHook();
+  
+    const queryFn: QueryFunction<Awaited<ReturnType<ReturnType<typeof useQueuesControllerGetAllUserOperateQueueHook>>>> = ({ signal }) => queuesControllerGetAllUserOperateQueue(id, signal);
+    
+      
+      
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions}}
+
+export type QueuesControllerGetAllUserOperateQueueQueryResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useQueuesControllerGetAllUserOperateQueueHook>>>>
+export type QueuesControllerGetAllUserOperateQueueQueryError = void
+
+export const useQueuesControllerGetAllUserOperateQueue = <TData = Awaited<ReturnType<ReturnType<typeof useQueuesControllerGetAllUserOperateQueueHook>>>, TError = void>(
+ id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerGetAllUserOperateQueueHook>>>, TError, TData>, }
+
+  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+
+  const queryOptions = useQueuesControllerGetAllUserOperateQueueQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+
 export const useEnrollQueuesControllerCreateEnrollQueueHook = () => {
         const enrollQueuesControllerCreateEnrollQueue = useCustomInstance<EnrollQueueDto>();
 

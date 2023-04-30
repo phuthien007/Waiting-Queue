@@ -1523,14 +1523,14 @@
               "schema": {
                 "type": "array",
                 "items": {
-                  "type": "string"
+                  "type": "number"
                 }
               }
             }
           }
         },
         "responses": {
-          "200": {
+          "201": {
             "description": "Assign member into queue successfully"
           },
           "400": {
@@ -1642,6 +1642,42 @@
           },
           "404": {
             "description": "Not Found"
+          }
+        },
+        "tags": [
+          "queues"
+        ]
+      }
+    },
+    "/api/queues/{id}/user-operate-queue": {
+      "get": {
+        "operationId": "QueuesController_getAllUserOperateQueue",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
           }
         },
         "tags": [
@@ -1946,12 +1982,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T02:26:25.286Z"
+            "default": "2023-04-30T14:56:01.968Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T02:26:25.286Z"
+            "default": "2023-04-30T14:56:01.968Z"
           },
           "name": {
             "type": "string"
@@ -1992,12 +2028,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T02:26:25.286Z"
+            "default": "2023-04-30T14:56:01.968Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T02:26:25.286Z"
+            "default": "2023-04-30T14:56:01.968Z"
           },
           "name": {
             "type": "string"
@@ -2037,12 +2073,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T02:26:25.286Z"
+            "default": "2023-04-30T14:56:01.968Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T02:26:25.286Z"
+            "default": "2023-04-30T14:56:01.968Z"
           },
           "name": {
             "type": "string"
@@ -2083,12 +2119,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T02:26:25.286Z"
+            "default": "2023-04-30T14:56:01.968Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T02:26:25.286Z"
+            "default": "2023-04-30T14:56:01.968Z"
           },
           "email": {
             "type": "string"
@@ -2136,12 +2172,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T02:26:25.286Z"
+            "default": "2023-04-30T14:56:01.968Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T02:26:25.286Z"
+            "default": "2023-04-30T14:56:01.968Z"
           },
           "email": {
             "type": "string"
@@ -2187,12 +2223,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T02:26:25.286Z"
+            "default": "2023-04-30T14:56:01.968Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T02:26:25.286Z"
+            "default": "2023-04-30T14:56:01.968Z"
           },
           "email": {
             "type": "string"
@@ -2253,12 +2289,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T02:26:25.286Z"
+            "default": "2023-04-30T14:56:01.968Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T02:26:25.286Z"
+            "default": "2023-04-30T14:56:01.968Z"
           },
           "email": {
             "type": "string"
@@ -2304,12 +2340,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T02:26:25.286Z"
+            "default": "2023-04-30T14:56:01.968Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T02:26:25.286Z"
+            "default": "2023-04-30T14:56:01.968Z"
           }
         }
       },
@@ -2322,12 +2358,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T02:26:25.286Z"
+            "default": "2023-04-30T14:56:01.968Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T02:26:25.286Z"
+            "default": "2023-04-30T14:56:01.968Z"
           }
         }
       },
@@ -2397,12 +2433,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T02:26:25.286Z"
+            "default": "2023-04-30T14:56:01.968Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T02:26:25.286Z"
+            "default": "2023-04-30T14:56:01.968Z"
           },
           "name": {
             "type": "string"
@@ -2450,12 +2486,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T02:26:25.286Z"
+            "default": "2023-04-30T14:56:01.968Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T02:26:25.286Z"
+            "default": "2023-04-30T14:56:01.968Z"
           },
           "name": {
             "type": "string"
@@ -2503,12 +2539,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T02:26:25.286Z"
+            "default": "2023-04-30T14:56:01.968Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T02:26:25.286Z"
+            "default": "2023-04-30T14:56:01.968Z"
           },
           "name": {
             "type": "string"
@@ -2556,12 +2592,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T02:26:25.286Z"
+            "default": "2023-04-30T14:56:01.968Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T02:26:25.286Z"
+            "default": "2023-04-30T14:56:01.968Z"
           },
           "name": {
             "type": "string"
@@ -2602,12 +2638,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T02:26:25.286Z"
+            "default": "2023-04-30T14:56:01.968Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T02:26:25.286Z"
+            "default": "2023-04-30T14:56:01.968Z"
           },
           "name": {
             "type": "string"
@@ -2641,12 +2677,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T02:26:25.286Z"
+            "default": "2023-04-30T14:56:01.968Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-30T02:26:25.286Z"
+            "default": "2023-04-30T14:56:01.968Z"
           },
           "name": {
             "type": "string"
