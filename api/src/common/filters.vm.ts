@@ -16,6 +16,7 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Optional } from '@nestjs/common';
 import { deepStringToObject } from './common';
 
+// TODO: add pagination
 /**
  * Filter operator class for filter operator in query string
  */

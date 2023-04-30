@@ -79,6 +79,10 @@ export class EventsController {
     return this.eventsService.findAll(search);
   }
 
+  // TODO: add new api get only event can see of current user
+
+  // TODO: api upload image place
+
   /**
    * Find one event endpoint (GET /events/:id) with id param
    * @param id Event id from request param (id)

@@ -48,8 +48,16 @@ export class QueuesController {
     return this.queuesService.create(createQueueDto);
   }
 
+  /**
+   *  Assign member into queue by id
+   * @param id - id of queue to assign member
+   * @param memberIds - array of member id to assign into queue
+   * @returns QueueDto object with queue data after assign member
+   */
   @Post('/:id/assign-member')
-  @ApiCreatedResponse({ type: QueueDto })
+  @ApiOkResponse({
+    description: 'Assign member into queue successfully',
+  })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   assignMember(
     @Param('id', ParseIntPipe) id: number,
@@ -77,6 +85,8 @@ export class QueuesController {
   findAllQueue(@Query() search: any) {
     return this.queuesService.findAll(search);
   }
+
+  // TODO: get all queue status active for member have filter by event
 
   /**
    * Find queue by id

@@ -13,7 +13,9 @@ import { plainToInstance } from 'class-transformer';
 import { Queue } from './entities/queue.entity';
 import { QueueDto } from './dto/queue.dto';
 import { FilterOperator } from 'src/common/filters.vm';
-import { partialMapping } from 'src/common/algorithm';
+import { createCodeQueue, partialMapping } from 'src/common/algorithm';
+import { QueueEnum, commonEnum } from 'src/common/enum';
+import { Equal, Not } from 'typeorm';
 
 /**
  * QueuesService class for queues service with CRUD operations for queues and other operations
@@ -32,12 +34,9 @@ export class QueuesService {
    * @returns QueueDto object with created queue data
    */
   async create(createQueueDto: CreateQueueDto) {
-    // check event exist
-    console.log('createQueueDto', createQueueDto);
-
     // check event exist in database
     const eventExist = await this.eventRepository.findOne({
-      where: { id: createQueueDto.eventId },
+      where: { id: createQueueDto.eventId, status: true },
     });
 
     if (!eventExist) {
@@ -54,6 +53,8 @@ export class QueuesService {
     });
 
     queue.event = eventExist;
+
+    queue.code = createCodeQueue();
 
     const savedQueue = await this.queueRepository.save(queue);
     return plainToInstance(QueueDto, savedQueue, {
@@ -169,10 +170,28 @@ export class QueuesService {
    * @returns  QueueDto object with removed queue data
    */
   remove(id: number) {
-    return this.eventRepository.delete(id);
+    return this.queueRepository.delete(id);
   }
 
-  assignMemberIntoQueue(queueId: number, memberIds: number[]) {
+  /**
+   * assign member into queue by queueId and memberIds
+   * @param queueId - id of queue want to assign
+   * @param memberIds - array of member id want to assign
+   * @returns void
+   */
+  async assignMemberIntoQueue(queueId: number, memberIds: number[]) {
+    // check exist queue isClose in database
+    const queueExist = await this.queueRepository.findOne({
+      where: { id: queueId },
+    });
+
+    if (!queueExist || queueExist.status === QueueEnum.IS_CLOSED) {
+      this.log.error('Queue not found');
+      throw new BadRequestException(
+        transformError('Hàng đợi', ERROR_TYPE.NOT_FOUND),
+      );
+    }
+
     return this.queueRepository.assignMemberIntoQueue(queueId, memberIds);
   }
 }

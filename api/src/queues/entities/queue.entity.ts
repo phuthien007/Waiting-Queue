@@ -33,7 +33,10 @@ export class Queue extends BaseEntity {
     nullable: true,
   })
   coord: string;
-  @Column({})
+
+  @Column({
+    unique: true,
+  })
   code: string;
 
   @Column({
