@@ -21,7 +21,7 @@ import { FilterOperator } from 'src/common/filters.vm';
 import { LoggerService } from 'src/logger/logger.service';
 import { TenantDto } from 'src/tenants/dto/tenant.dto';
 import { MailService } from 'src/mail/mail.service';
-
+import * as bcrypt from 'bcrypt';
 /**
  * UsersService class for users service with CRUD operations for users and other operations
  */
@@ -247,6 +247,10 @@ export class UsersService {
     }
 
     data = partialMapping(data, updateUserDto) as User;
+
+    if (updateUserDto.password && updateUserDto.password.length > 0) {
+      data.password = bcrypt.hashSync(updateUserDto.password, 10);
+    }
 
     return plainToInstance(UserDto, this.userRepository.save(data), {
       excludeExtraneousValues: true,
