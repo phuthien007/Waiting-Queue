@@ -16,6 +16,8 @@ import { FilterOperator } from 'src/common/filters.vm';
 import { createCodeQueue, partialMapping } from 'src/common/algorithm';
 import { QueueEnum, commonEnum } from 'src/common/enum';
 import { Equal, Not } from 'typeorm';
+import { UserDto } from 'src/users/dto/user.dto';
+import { User } from 'src/users/entities/user.entity';
 
 /**
  * QueuesService class for queues service with CRUD operations for queues and other operations
@@ -193,5 +195,31 @@ export class QueuesService {
     }
 
     return this.queueRepository.assignMemberIntoQueue(queueId, memberIds);
+  }
+
+  /**
+   * get user operate queue by queueId
+   * @param queueId - id of queue want to get user operate
+   * @returns array of UserDto objects with user data
+   * @throws NotFoundException if queue not found
+   * @throws BadRequestException if queue is closed
+   */
+  async getAllUserOperateQueue(queueId: number): Promise<UserDto[]> {
+    const queue = await this.queueRepository.findOne({
+      where: { id: queueId },
+      relations: ['users'],
+    });
+
+    if (!queue) {
+      throw new NotFoundException(
+        transformError(`Id: ${queueId}`, ERROR_TYPE.NOT_FOUND),
+      );
+    }
+    const listUser: UserDto[] = queue.users.map((user: User) =>
+      plainToInstance(UserDto, user, {
+        excludeExtraneousValues: true,
+      }),
+    );
+    return listUser;
   }
 }

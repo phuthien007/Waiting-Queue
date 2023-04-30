@@ -15,6 +15,7 @@ import { CreateQueueDto } from './dto/create-queue.dto';
 import { UpdateQueueDto } from './dto/update-queue.dto';
 import {
   ApiBadRequestResponse,
+  ApiBody,
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -24,6 +25,7 @@ import {
 import { QueueDto } from './dto/queue.dto';
 import { FilterOperator } from 'src/common/filters.vm';
 import { RoleGuard } from 'src/auth/role.guard';
+import { UserDto } from 'src/users/dto/user.dto';
 /**
  * QueuesController class for queues controller with CRUD operations for queues
  */
@@ -55,7 +57,8 @@ export class QueuesController {
    * @returns QueueDto object with queue data after assign member
    */
   @Post('/:id/assign-member')
-  @ApiOkResponse({
+  @ApiBody({ type: [Number] })
+  @ApiCreatedResponse({
     description: 'Assign member into queue successfully',
   })
   @ApiBadRequestResponse({ description: 'Bad Request' })
@@ -138,5 +141,22 @@ export class QueuesController {
   @ApiNotFoundResponse({ description: 'Not Found' })
   removeQueue(@Param('id', ParseIntPipe) id: number) {
     return this.queuesService.remove(+id);
+  }
+
+  // api get all user operate queue
+  /**
+   * Get all user operate queue
+   * @param id  - id of queue to get all user operate queue
+   * @returns  array of UserDto objects with user data
+   * @throws {BadRequestException} - if id is invalid
+   * @throws {InternalServerErrorException} - if error occurs during getting all user operate queue
+   */
+  @Get('/:id/user-operate-queue')
+  @ApiOkResponse({ type: [UserDto] })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  getAllUserOperateQueue(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<UserDto[]> {
+    return this.queuesService.getAllUserOperateQueue(id);
   }
 }
