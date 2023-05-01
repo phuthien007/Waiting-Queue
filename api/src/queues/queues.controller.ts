@@ -120,8 +120,6 @@ export class QueuesController {
     );
   }
 
-  // TODO: get all queue status active for member have filter by event
-
   /**
    * Find queue by id
    * @param id - id of queue to find

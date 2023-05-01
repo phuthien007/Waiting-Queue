@@ -10,11 +10,13 @@ export class EnrollQueue {
 
   @Column({
     name: 'start_serve',
+    nullable: true,
   })
   startServe: Date;
 
   @Column({
     name: 'end_serve',
+    nullable: true,
   })
   endServe: Date;
 
@@ -38,8 +40,8 @@ export class EnrollQueue {
   // relations
 
   @ManyToOne(() => Queue, (queue) => queue.enrollQueues)
-  queue: Promise<Queue>;
+  queue: Queue;
 
   @ManyToOne(() => Session, (session) => session.enrollQueues)
-  session: Promise<Session>;
+  session: Session;
 }

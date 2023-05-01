@@ -1,19 +1,43 @@
+import { BaseEntity } from 'src/common/base.entity';
 import { EnrollQueue } from 'src/enroll-queues/entities/enroll-queue.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('Sessions')
 export class Session {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-  @Column()
-  token: string;
+  @Column({})
+  browser: string;
+  @Column({
+    name: 'created_at',
+  })
+  createdAt: Date;
 
   @Column({
-    type: 'json',
+    name: 'updated_at',
   })
-  browser: string;
+  updatedAt: Date;
 
+  // init create date
+  @BeforeInsert()
+  initCreate() {
+    this.createdAt = new Date();
+    this.updatedAt = new Date();
+  }
+
+  // update date
+  @BeforeUpdate()
+  updateDate() {
+    this.updatedAt = new Date();
+  }
   // relations
 
   @OneToMany(() => EnrollQueue, (enrollQueue) => enrollQueue.session)
