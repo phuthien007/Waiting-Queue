@@ -68,7 +68,6 @@ export class UsersService {
       throw new BadRequestException(
         transformError(`Email: ${createUserDto.email}`, ERROR_TYPE.EXIST),
       );
-    // TODO: check role login to create role
 
     // check role
     if (createUserDto.role === RoleEnum.SUPER_ADMIN) {

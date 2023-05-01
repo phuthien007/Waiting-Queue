@@ -134,6 +134,19 @@ export interface UpdateQueueDto {
   eventId?: number;
 }
 
+export interface QueueDto {
+  id?: number;
+  createdAt?: string;
+  updatedAt?: string;
+  name?: string;
+  note?: string;
+  coord?: string;
+  code?: string;
+  description?: string;
+  status?: string;
+  event?: EventDto;
+}
+
 export type CreateQueueDtoStatus = typeof CreateQueueDtoStatus[keyof typeof CreateQueueDtoStatus];
 
 
@@ -192,19 +205,6 @@ export interface EventDto {
   user?: UserDto;
 }
 
-export interface QueueDto {
-  id?: number;
-  createdAt?: string;
-  updatedAt?: string;
-  name?: string;
-  note?: string;
-  coord?: string;
-  code?: string;
-  description?: string;
-  status?: string;
-  event?: EventDto;
-}
-
 export interface CreateEventDto {
   id?: number;
   createdAt?: string;
@@ -241,18 +241,6 @@ export interface LoginDto {
   tenantCode: string;
   email: string;
   password: string;
-}
-
-export interface UpdateSessionDto {
-  id?: number;
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-export interface CreateSessionDto {
-  id?: number;
-  createdAt?: string;
-  updatedAt?: string;
 }
 
 export type UserMeDtoRole = typeof UserMeDtoRole[keyof typeof UserMeDtoRole];

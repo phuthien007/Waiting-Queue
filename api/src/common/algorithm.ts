@@ -66,8 +66,8 @@ export const createResetTokenPassword = () => {
   // random token
   const token = randomPassword();
   // hash token
-  const hashToken = bcrypt.hash(token, 10);
-  return hashToken;
+  // const hashToken = bcrypt.hash(token, 10);
+  return token;
 };
 
 /**

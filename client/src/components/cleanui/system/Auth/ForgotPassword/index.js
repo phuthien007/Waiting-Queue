@@ -2,22 +2,26 @@ import { Input, Button, Form, notification } from "antd";
 import { Link } from "react-router-dom";
 // import { useRequestPasswordReset } from "@api/auth";
 import style from "../style.module.scss";
+import { useAuthControllerCreateResetPassword } from "@api/waitingQueue";
 
 const ForgotPassword = () => {
-  // const { isLoading, mutateAsync } = useRequestPasswordReset();
+  const { isLoading, mutateAsync } = useAuthControllerCreateResetPassword();
 
   const onFinish = (values) => {
-    // mutateAsync({
-    //   data: values.email,
-    // })
-    //   .then(() => {
-    //     notification.success({
-    //       message: "Thành công",
-    //       description:
-    //         "Gửi yêu cầu thành công, vui lòng kiểm tra email để lấy lại mật khẩu",
-    //     });
-    //   })
-    //   .catch((err) => console.log(err));
+    mutateAsync({
+      data: {
+        email: values.email,
+        tenantCode: values.tenantCode,
+      },
+    })
+      .then(() => {
+        notification.success({
+          message: "Thành công",
+          description:
+            "Gửi yêu cầu thành công, vui lòng kiểm tra email để lấy lại mật khẩu",
+        });
+      })
+      .catch((err) => console.log(err));
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -44,6 +48,12 @@ const ForgotPassword = () => {
           // disabled={isLoading}
         >
           <Form.Item
+            name="tenantCode"
+            rules={[{ required: true, message: "Vui lòng điền mã công ty" }]}
+          >
+            <Input size="large" placeholder="Mã công ty" />
+          </Form.Item>
+          <Form.Item
             name="email"
             rules={[
               { required: true, message: "Vui lòng điền địa chỉ email" },
@@ -53,7 +63,7 @@ const ForgotPassword = () => {
             <Input size="large" placeholder="Địa chỉ email" />
           </Form.Item>
           <Button
-            // loading={isLoading}
+            loading={isLoading}
             type="primary"
             htmlType="submit"
             size="large"

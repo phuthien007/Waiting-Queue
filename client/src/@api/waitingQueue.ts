@@ -24,8 +24,6 @@ import type {
   UsersControllerFindAllUserParams,
   UpdateUserDto,
   UserMeDto,
-  CreateSessionDto,
-  UpdateSessionDto,
   LoginDto,
   ResetPasswordDto,
   ChangePasswordDto,
@@ -817,260 +815,6 @@ export const useUsersControllerUpdateMeMutationOptions = <TError = void,
       return useMutation(mutationOptions);
     }
     
-export const useSessionsControllerCreateSessionHook = () => {
-        const sessionsControllerCreateSession = useCustomInstance<void>();
-
-        return (
-    createSessionDto: CreateSessionDto,
- ) => {
-        return sessionsControllerCreateSession(
-          {url: `/api/sessions`, method: 'post',
-      headers: {'Content-Type': 'application/json', },
-      data: createSessionDto
-    },
-          );
-        }
-      }
-    
-
-
-export const useSessionsControllerCreateSessionMutationOptions = <TError = unknown,
-    
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useSessionsControllerCreateSessionHook>>>, TError,{data: CreateSessionDto}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useSessionsControllerCreateSessionHook>>>, TError,{data: CreateSessionDto}, TContext> => {
- const {mutation: mutationOptions} = options ?? {};
-
-      const sessionsControllerCreateSession =  useSessionsControllerCreateSessionHook()
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<ReturnType<typeof useSessionsControllerCreateSessionHook>>>, {data: CreateSessionDto}> = (props) => {
-          const {data} = props ?? {};
-
-          return  sessionsControllerCreateSession(data,)
-        }
-
-        
-
- 
-   return  { mutationFn, ...mutationOptions }}
-
-    export type SessionsControllerCreateSessionMutationResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useSessionsControllerCreateSessionHook>>>>
-    export type SessionsControllerCreateSessionMutationBody = CreateSessionDto
-    export type SessionsControllerCreateSessionMutationError = unknown
-
-    export const useSessionsControllerCreateSession = <TError = unknown,
-    
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useSessionsControllerCreateSessionHook>>>, TError,{data: CreateSessionDto}, TContext>, }
-) => {
-    
-      const mutationOptions = useSessionsControllerCreateSessionMutationOptions(options);
-     
-      return useMutation(mutationOptions);
-    }
-    
-export const useSessionsControllerFindAllSessionHook = () => {
-        const sessionsControllerFindAllSession = useCustomInstance<void>();
-
-        return (
-    
- signal?: AbortSignal
-) => {
-        return sessionsControllerFindAllSession(
-          {url: `/api/sessions`, method: 'get', signal
-    },
-          );
-        }
-      }
-    
-
-export const getSessionsControllerFindAllSessionQueryKey = () => [`/api/sessions`] as const;
-  
-
-    
-export const useSessionsControllerFindAllSessionQueryOptions = <TData = Awaited<ReturnType<ReturnType<typeof useSessionsControllerFindAllSessionHook>>>, TError = unknown>( options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useSessionsControllerFindAllSessionHook>>>, TError, TData>, }
-): UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useSessionsControllerFindAllSessionHook>>>, TError, TData> & { queryKey: QueryKey } => {
-const {query: queryOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getSessionsControllerFindAllSessionQueryKey();
-
-  const sessionsControllerFindAllSession =  useSessionsControllerFindAllSessionHook();
-  
-    const queryFn: QueryFunction<Awaited<ReturnType<ReturnType<typeof useSessionsControllerFindAllSessionHook>>>> = ({ signal }) => sessionsControllerFindAllSession(signal);
-    
-      
-      
-   return  { queryKey, queryFn, ...queryOptions}}
-
-export type SessionsControllerFindAllSessionQueryResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useSessionsControllerFindAllSessionHook>>>>
-export type SessionsControllerFindAllSessionQueryError = unknown
-
-export const useSessionsControllerFindAllSession = <TData = Awaited<ReturnType<ReturnType<typeof useSessionsControllerFindAllSessionHook>>>, TError = unknown>(
-  options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useSessionsControllerFindAllSessionHook>>>, TError, TData>, }
-
-  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
-
-  const queryOptions = useSessionsControllerFindAllSessionQueryOptions(options)
-
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
-
-  query.queryKey = queryOptions.queryKey;
-
-  return query;
-}
-
-
-export const useSessionsControllerFindOneSessionHook = () => {
-        const sessionsControllerFindOneSession = useCustomInstance<void>();
-
-        return (
-    id: string,
- signal?: AbortSignal
-) => {
-        return sessionsControllerFindOneSession(
-          {url: `/api/sessions/${id}`, method: 'get', signal
-    },
-          );
-        }
-      }
-    
-
-export const getSessionsControllerFindOneSessionQueryKey = (id: string,) => [`/api/sessions/${id}`] as const;
-  
-
-    
-export const useSessionsControllerFindOneSessionQueryOptions = <TData = Awaited<ReturnType<ReturnType<typeof useSessionsControllerFindOneSessionHook>>>, TError = unknown>(id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useSessionsControllerFindOneSessionHook>>>, TError, TData>, }
-): UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useSessionsControllerFindOneSessionHook>>>, TError, TData> & { queryKey: QueryKey } => {
-const {query: queryOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getSessionsControllerFindOneSessionQueryKey(id);
-
-  const sessionsControllerFindOneSession =  useSessionsControllerFindOneSessionHook();
-  
-    const queryFn: QueryFunction<Awaited<ReturnType<ReturnType<typeof useSessionsControllerFindOneSessionHook>>>> = ({ signal }) => sessionsControllerFindOneSession(id, signal);
-    
-      
-      
-   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions}}
-
-export type SessionsControllerFindOneSessionQueryResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useSessionsControllerFindOneSessionHook>>>>
-export type SessionsControllerFindOneSessionQueryError = unknown
-
-export const useSessionsControllerFindOneSession = <TData = Awaited<ReturnType<ReturnType<typeof useSessionsControllerFindOneSessionHook>>>, TError = unknown>(
- id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useSessionsControllerFindOneSessionHook>>>, TError, TData>, }
-
-  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
-
-  const queryOptions = useSessionsControllerFindOneSessionQueryOptions(id,options)
-
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
-
-  query.queryKey = queryOptions.queryKey;
-
-  return query;
-}
-
-
-export const useSessionsControllerUpdateSessionHook = () => {
-        const sessionsControllerUpdateSession = useCustomInstance<void>();
-
-        return (
-    id: string,
-    updateSessionDto: UpdateSessionDto,
- ) => {
-        return sessionsControllerUpdateSession(
-          {url: `/api/sessions/${id}`, method: 'patch',
-      headers: {'Content-Type': 'application/json', },
-      data: updateSessionDto
-    },
-          );
-        }
-      }
-    
-
-
-export const useSessionsControllerUpdateSessionMutationOptions = <TError = unknown,
-    
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useSessionsControllerUpdateSessionHook>>>, TError,{id: string;data: UpdateSessionDto}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useSessionsControllerUpdateSessionHook>>>, TError,{id: string;data: UpdateSessionDto}, TContext> => {
- const {mutation: mutationOptions} = options ?? {};
-
-      const sessionsControllerUpdateSession =  useSessionsControllerUpdateSessionHook()
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<ReturnType<typeof useSessionsControllerUpdateSessionHook>>>, {id: string;data: UpdateSessionDto}> = (props) => {
-          const {id,data} = props ?? {};
-
-          return  sessionsControllerUpdateSession(id,data,)
-        }
-
-        
-
- 
-   return  { mutationFn, ...mutationOptions }}
-
-    export type SessionsControllerUpdateSessionMutationResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useSessionsControllerUpdateSessionHook>>>>
-    export type SessionsControllerUpdateSessionMutationBody = UpdateSessionDto
-    export type SessionsControllerUpdateSessionMutationError = unknown
-
-    export const useSessionsControllerUpdateSession = <TError = unknown,
-    
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useSessionsControllerUpdateSessionHook>>>, TError,{id: string;data: UpdateSessionDto}, TContext>, }
-) => {
-    
-      const mutationOptions = useSessionsControllerUpdateSessionMutationOptions(options);
-     
-      return useMutation(mutationOptions);
-    }
-    
-export const useSessionsControllerRemoveSessionHook = () => {
-        const sessionsControllerRemoveSession = useCustomInstance<void>();
-
-        return (
-    id: string,
- ) => {
-        return sessionsControllerRemoveSession(
-          {url: `/api/sessions/${id}`, method: 'delete'
-    },
-          );
-        }
-      }
-    
-
-
-export const useSessionsControllerRemoveSessionMutationOptions = <TError = unknown,
-    
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useSessionsControllerRemoveSessionHook>>>, TError,{id: string}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useSessionsControllerRemoveSessionHook>>>, TError,{id: string}, TContext> => {
- const {mutation: mutationOptions} = options ?? {};
-
-      const sessionsControllerRemoveSession =  useSessionsControllerRemoveSessionHook()
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<ReturnType<typeof useSessionsControllerRemoveSessionHook>>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
-
-          return  sessionsControllerRemoveSession(id,)
-        }
-
-        
-
- 
-   return  { mutationFn, ...mutationOptions }}
-
-    export type SessionsControllerRemoveSessionMutationResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useSessionsControllerRemoveSessionHook>>>>
-    
-    export type SessionsControllerRemoveSessionMutationError = unknown
-
-    export const useSessionsControllerRemoveSession = <TError = unknown,
-    
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useSessionsControllerRemoveSessionHook>>>, TError,{id: string}, TContext>, }
-) => {
-    
-      const mutationOptions = useSessionsControllerRemoveSessionMutationOptions(options);
-     
-      return useMutation(mutationOptions);
-    }
-    
 export const useAuthControllerLoginHook = () => {
         const authControllerLogin = useCustomInstance<void>();
 
@@ -1178,9 +922,12 @@ export const useAuthControllerFinishResetPasswordHook = () => {
 
         return (
     token: string,
+    resetPasswordDto: ResetPasswordDto,
  ) => {
         return authControllerFinishResetPassword(
-          {url: `/api/auth/finish-reset-password/${token}`, method: 'post'
+          {url: `/api/auth/finish-reset-password/${token}`, method: 'post',
+      headers: {'Content-Type': 'application/json', },
+      data: resetPasswordDto
     },
           );
         }
@@ -1190,17 +937,17 @@ export const useAuthControllerFinishResetPasswordHook = () => {
 
 export const useAuthControllerFinishResetPasswordMutationOptions = <TError = unknown,
     
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useAuthControllerFinishResetPasswordHook>>>, TError,{token: string}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useAuthControllerFinishResetPasswordHook>>>, TError,{token: string}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useAuthControllerFinishResetPasswordHook>>>, TError,{token: string;data: ResetPasswordDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useAuthControllerFinishResetPasswordHook>>>, TError,{token: string;data: ResetPasswordDto}, TContext> => {
  const {mutation: mutationOptions} = options ?? {};
 
       const authControllerFinishResetPassword =  useAuthControllerFinishResetPasswordHook()
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<ReturnType<typeof useAuthControllerFinishResetPasswordHook>>>, {token: string}> = (props) => {
-          const {token} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<ReturnType<typeof useAuthControllerFinishResetPasswordHook>>>, {token: string;data: ResetPasswordDto}> = (props) => {
+          const {token,data} = props ?? {};
 
-          return  authControllerFinishResetPassword(token,)
+          return  authControllerFinishResetPassword(token,data,)
         }
 
         
@@ -1209,12 +956,12 @@ export const useAuthControllerFinishResetPasswordMutationOptions = <TError = unk
    return  { mutationFn, ...mutationOptions }}
 
     export type AuthControllerFinishResetPasswordMutationResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useAuthControllerFinishResetPasswordHook>>>>
-    
+    export type AuthControllerFinishResetPasswordMutationBody = ResetPasswordDto
     export type AuthControllerFinishResetPasswordMutationError = unknown
 
     export const useAuthControllerFinishResetPassword = <TError = unknown,
     
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useAuthControllerFinishResetPasswordHook>>>, TError,{token: string}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useAuthControllerFinishResetPasswordHook>>>, TError,{token: string;data: ResetPasswordDto}, TContext>, }
 ) => {
     
       const mutationOptions = useAuthControllerFinishResetPasswordMutationOptions(options);

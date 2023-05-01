@@ -161,7 +161,7 @@ const routes = [
     exact: true,
   },
   {
-    path: "auth/reset-password",
+    path: "auth/reset-password/:token",
     Component: lazy(() => import("pages/auth/reset-password")),
     exact: true,
   },
