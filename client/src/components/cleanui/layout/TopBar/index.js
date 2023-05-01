@@ -35,14 +35,14 @@ const TopBar = () => {
           <Button
             className="mr-2"
             icon={<i className="fa fa-camera mr-2" />}
-            type="primary"
+            type="link"
           >
             Mở camera
           </Button>
           <Button
             className="mr-2"
             icon={<i className="fe fe-log-in mr-2" />}
-            type="primary"
+            type="link"
             href="/auth/login"
           >
             Đăng nhập

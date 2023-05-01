@@ -93,7 +93,7 @@ const Layout = ({ children }) => {
     if (!isUserAuthorized) dispatch(loadCurrentAccount());
 
     if (isAuthLayout && isUserAuthorized) navigate("/home");
-    if (pathname === "/" && isUserAuthorized) navigate("/public/home");
+    if (pathname === "/" && !isUserAuthorized) navigate("/public/home");
     // if (!isAuthLayout && !isUserAuthorized) navigate("/public/home");
   }, [
     dispatch,
