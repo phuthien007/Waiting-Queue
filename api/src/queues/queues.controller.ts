@@ -106,17 +106,33 @@ export class QueuesController {
     required: false,
     type: Number,
   })
+  @ApiQuery({
+    name: 'page',
+    required: true,
+    type: Number,
+    example: 1,
+  })
+  @ApiQuery({
+    name: 'size',
+    required: true,
+    type: Number,
+    example: 10,
+  })
   @ApiOkResponse({ type: [QueueDto] })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   findAllQueueUserCanSee(
     @Req() req: any,
     @Query('search') search?: string,
     @Query('eventId', ParseIntPipe) eventId?: number,
+    @Query('page') page?: number,
+    @Query('size') size?: number,
   ) {
     return this.queuesService.findAllQueueUserCanSee(
       search,
       req.user.id,
       eventId,
+      page,
+      size,
     );
   }
 

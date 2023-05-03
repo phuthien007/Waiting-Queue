@@ -2,6 +2,7 @@ import { DataSource, In, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { Queue } from './entities/queue.entity';
 import { User } from 'src/users/entities/user.entity';
+import { QueueDto } from './dto/queue.dto';
 
 /**
  * QueuesRepository class for queue repository
@@ -52,7 +53,13 @@ export class QueuesRepository extends Repository<Queue> {
    * @param eventId query event id
    * @returns queue user can see
    */
-  async queueUserCanSee(query: string, userId: number, eventId: number) {
+  async queueUserCanSee(
+    query: string,
+    userId: number,
+    eventId: number,
+    page: number,
+    size: number,
+  ): Promise<[Queue[], number]> {
     const queryRunner = this.dataSource.createQueryRunner();
     const queryBuilder = queryRunner.manager
       .createQueryBuilder()
@@ -68,10 +75,14 @@ export class QueuesRepository extends Repository<Queue> {
       queryBuilder.andWhere('q.event_id = :eventId', { eventId });
     }
     if (query) {
-      queryBuilder.andWhere('e.name LIKE :query', { query: `%${query}%` });
+      queryBuilder.andWhere('q.name LIKE :query', { query: `%${query}%` });
     }
+
+    queryBuilder.take(size).skip((page - 1) * size);
+
     // .andWhere('e.name LIKE :query', { query: `%${query}%` });
-    const result = await queryBuilder.getRawMany();
-    return result;
+    const result = (await queryBuilder.getRawMany()) as Queue[];
+    const total = await queryBuilder.getCount();
+    return [result, total];
   }
 }

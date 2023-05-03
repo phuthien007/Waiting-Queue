@@ -20,7 +20,12 @@ export class EventsRepository extends Repository<Event> {
    * @param userId user id
    * @returns event user can see
    */
-  async queryEventUserCanSee(query: string, userId: number) {
+  async queryEventUserCanSee(
+    query: string,
+    userId: number,
+    page: number,
+    size: number,
+  ): Promise<[Event[], number]> {
     /*
     SELECT q.event_id , e.*, u.id AS access_id FROM Queues q 
 LEFT JOIN Events e ON 
@@ -44,8 +49,11 @@ ON u.id = rqu.user_id
     if (query) {
       queryBuilder.andWhere('e.name LIKE :query', { query: `%${query}%` });
     }
+    queryBuilder.take(size).skip((page - 1) * size);
+
     // .andWhere('e.name LIKE :query', { query: `%${query}%` });
-    const result = await queryBuilder.getRawMany();
-    return result;
+    const result = (await queryBuilder.getRawMany()) as Event[];
+    const number = (await queryBuilder.getCount()) || 0;
+    return [result, number];
   }
 }

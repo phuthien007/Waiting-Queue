@@ -22,6 +22,7 @@ import { LoggerService } from 'src/logger/logger.service';
 import { TenantDto } from 'src/tenants/dto/tenant.dto';
 import { MailService } from 'src/mail/mail.service';
 import * as bcrypt from 'bcrypt';
+import { PaginateDto } from 'src/common/paginate.dto';
 /**
  * UsersService class for users service with CRUD operations for users and other operations
  */
@@ -138,7 +139,7 @@ export class UsersService {
 
     const savedUser = await this.userRepository.save(user);
 
-    // TODO: send email to user if not have password
+    //  send email to user if not have password
     this.mailService.sendRegisterTenantSuccess(
       savedUser,
       randomRaw,
@@ -156,23 +157,30 @@ export class UsersService {
    * @returns UserDto object with created user data
    * @throws {BadRequestException} - if search is not valid
    */
-  async findAll(search: any, tenantCode?: string): Promise<UserDto[]> {
+  async findAll(
+    search: any,
+    tenantCode?: string,
+  ): Promise<PaginateDto<UserDto>> {
     // start create search
     const filterObj = new FilterOperator();
     // transform to filter
     Object.keys(search).forEach((key) => {
-      if (search[key] instanceof Array) {
-        search[key].forEach((tmp: any) => {
-          filterObj.addOperator(key, tmp);
-        });
-      } else {
-        filterObj.addOperator(key, search[key]);
+      if (key !== 'page' && key !== 'size' && key !== 'sort') {
+        if (search[key] instanceof Array) {
+          search[key].forEach((tmp: any) => {
+            filterObj.addOperator(key, tmp);
+          });
+        } else {
+          filterObj.addOperator(key, search[key]);
+        }
       }
     });
+    filterObj.sort = search?.sort;
+    let totalCount: number;
 
     let users: User[] = [];
     try {
-      users = await this.userRepository.find({
+      [users, totalCount] = await this.userRepository.findAndCount({
         relations: ['tenant'],
         where: {
           ...filterObj.transformToQuery(),
@@ -180,6 +188,7 @@ export class UsersService {
             tenantCode: tenantCode,
           },
         },
+        order: filterObj.parseSortToOrder(),
       });
     } catch (error) {
       this.log.error(error);
@@ -191,11 +200,16 @@ export class UsersService {
         ),
       );
     }
-
-    return users.map((user: User) =>
+    const result = users.map((user: User) =>
       plainToInstance(UserDto, user, {
         excludeExtraneousValues: true,
       }),
+    );
+    return new PaginateDto<UserDto>(
+      result,
+      search.page,
+      result.length === search.size ? search.size : result.length,
+      totalCount,
     );
   }
 

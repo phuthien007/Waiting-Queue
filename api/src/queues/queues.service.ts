@@ -18,6 +18,7 @@ import { QueueEnum, commonEnum } from 'src/common/enum';
 import { Equal, Not } from 'typeorm';
 import { UserDto } from 'src/users/dto/user.dto';
 import { User } from 'src/users/entities/user.entity';
+import { PaginateDto } from 'src/common/paginate.dto';
 
 /**
  * QueuesService class for queues service with CRUD operations for queues and other operations
@@ -69,25 +70,31 @@ export class QueuesService {
    * @param search - search query params
    * @returns array of QueueDto objects with queues data
    */
-  async findAll(search: any) {
+  async findAll(search: any): Promise<PaginateDto<QueueDto>> {
     // start create search
     const filterObj = new FilterOperator();
     // transform to filter
     Object.keys(search).forEach((key) => {
-      if (search[key] instanceof Array) {
-        search[key].forEach((tmp: any) => {
-          filterObj.addOperator(key, tmp);
-        });
-      } else {
-        filterObj.addOperator(key, search[key]);
+      if (key !== 'page' && key !== 'size' && key !== 'sort') {
+        if (search[key] instanceof Array) {
+          search[key].forEach((tmp: any) => {
+            filterObj.addOperator(key, tmp);
+          });
+        } else {
+          filterObj.addOperator(key, search[key]);
+        }
       }
     });
+    filterObj.sort = search?.sort;
 
     let queues: Queue[] = [];
+    let totalCount: number;
+
     try {
-      queues = await this.queueRepository.find({
+      [queues, totalCount] = await this.queueRepository.findAndCount({
         relations: ['event'],
         where: filterObj.transformToQuery(),
+        order: filterObj.parseSortToOrder(),
       });
     } catch (error) {
       this.log.error(error);
@@ -99,11 +106,16 @@ export class QueuesService {
         ),
       );
     }
-
-    return queues.map((queue: Queue) =>
+    const result = queues.map((queue: Queue) =>
       plainToInstance(QueueDto, queue, {
         excludeExtraneousValues: true,
       }),
+    );
+    return new PaginateDto<QueueDto>(
+      result,
+      search.page,
+      result.length === search.size ? search.size : result.length,
+      totalCount,
     );
   }
 
@@ -236,13 +248,18 @@ export class QueuesService {
     search: string,
     userId: number,
     eventId: number,
-  ) {
+    page: number,
+    size: number,
+  ): Promise<PaginateDto<QueueDto>> {
     let queues: Queue[] = [];
+    let totalCount: number;
     try {
-      queues = await this.queueRepository.queueUserCanSee(
+      [queues, totalCount] = await this.queueRepository.queueUserCanSee(
         search,
         userId,
         eventId,
+        page,
+        size,
       );
     } catch (error) {
       this.log.error(error);
@@ -255,10 +272,17 @@ export class QueuesService {
       );
     }
 
-    return queues.map((queue: Queue) =>
+    const result = queues.map((queue: Queue) =>
       plainToInstance(QueueDto, queue, {
         excludeExtraneousValues: true,
       }),
+    );
+
+    return new PaginateDto<QueueDto>(
+      result,
+      page,
+      result.length === size ? size : result.length,
+      totalCount,
     );
   }
 }

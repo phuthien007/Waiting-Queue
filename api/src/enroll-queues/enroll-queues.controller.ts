@@ -28,6 +28,7 @@ import { FilterOperator } from 'src/common/filters.vm';
 import { RoleGuard } from 'src/auth/role.guard';
 import { HasRole } from 'src/common/decorators';
 import { EnrollQueueEnum } from 'src/common/enum';
+import { PaginateDto } from 'src/common/paginate.dto';
 
 @ApiTags('enroll-queues')
 @Controller('/api/enroll-queues')
@@ -72,14 +73,28 @@ export class EnrollQueuesController {
   @ApiQuery({ name: 'queueId', required: true })
   @ApiQuery({ name: 'status', required: false, enum: EnrollQueueEnum })
   @ApiQuery({ name: 'sort', required: false, example: 'id:ASC' })
+  @ApiQuery({
+    name: 'page',
+    required: true,
+    type: Number,
+    example: 1,
+  })
+  @ApiQuery({
+    name: 'size',
+    required: true,
+    type: Number,
+    example: 10,
+  })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @HasRole('admin')
   findAllEnrollQueue(
+    @Query('page') page: number,
+    @Query('size') size: number,
     @Query('queueId') queueId: number,
     @Query('status') status?: string,
     @Query('sort') sort?: string,
-  ) {
-    return this.enrollQueuesService.findAll(queueId, status, sort);
+  ): Promise<PaginateDto<EnrollQueueDto>> {
+    return this.enrollQueuesService.findAll(page, size, queueId, status, sort);
   }
 
   // @Get(':id')

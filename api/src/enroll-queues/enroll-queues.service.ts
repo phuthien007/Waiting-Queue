@@ -1,17 +1,18 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import { CreateEnrollQueueDto } from './dto/create-enroll-queue.dto';
-import { UpdateEnrollQueueDto } from './dto/update-enroll-queue.dto';
-import { EnrollQueuesRepository } from './enroll-queues.repository';
-import { LoggerService } from 'src/logger/logger.service';
-import { SessionsService } from 'src/sessions/sessions.service';
-import { QueuesRepository } from 'src/queues/queues.repository';
-import { EnrollQueue } from './entities/enroll-queue.entity';
-import { Session } from 'src/sessions/entities/session.entity';
-import { EnrollQueueEnum } from 'src/common/enum';
-import { plainToInstance } from 'class-transformer';
-import { EnrollQueueDto } from './dto/enroll-queue.dto';
 import { REQUEST } from '@nestjs/core';
+import { plainToInstance } from 'class-transformer';
 import { Request } from 'express';
+import { ERROR_TYPE, transformError } from 'src/common/constant.error';
+import { FilterOperator } from 'src/common/filters.vm';
+import { PaginateDto } from 'src/common/paginate.dto';
+import { LoggerService } from 'src/logger/logger.service';
+import { QueuesRepository } from 'src/queues/queues.repository';
+import { Session } from 'src/sessions/entities/session.entity';
+import { SessionsService } from 'src/sessions/sessions.service';
+import { CreateEnrollQueueDto } from './dto/create-enroll-queue.dto';
+import { EnrollQueueDto } from './dto/enroll-queue.dto';
+import { EnrollQueuesRepository } from './enroll-queues.repository';
+import { EnrollQueue } from './entities/enroll-queue.entity';
 import { Equal, FindOptionsOrder } from 'typeorm';
 
 @Injectable()
@@ -96,13 +97,19 @@ export class EnrollQueuesService {
    * @param sort sort enroll queue
    * @returns list enroll queue of queueId
    */
-  async findAll(queueId: number, status?: string, sort?: string) {
+  async findAll(
+    page: number,
+    size: number,
+    queueId: number,
+    status?: string,
+    sort?: string,
+  ): Promise<PaginateDto<EnrollQueueDto>> {
     // find enrollqueue by queueId
-    // TODO: check role of user can action this queue
+
+    const userInRequest = this.request.user as any;
+
     // create payload
-    const payload = {
-      queue: { id: Equal(queueId) },
-    };
+    const payload = {};
     if (status) {
       payload['status'] = Equal(status);
     }
@@ -118,13 +125,33 @@ export class EnrollQueuesService {
       });
     }
 
-    const result = await this.enrollQueueRepository.find({
-      where: { ...payload },
-      relations: ['queue'],
-      order: sortObj,
-    });
-    return result.map((item) =>
+    // get enroll queue with queueId and event contain queue and same tenant
+    const [enrollQueues, totalCount] =
+      await this.enrollQueueRepository.findAndCount({
+        where: {
+          ...payload,
+          queue: {
+            id: Equal(queueId),
+            event: {
+              user: {
+                tenant: {
+                  tenantCode: userInRequest.tenantCode,
+                },
+              },
+            },
+          },
+        },
+        relations: ['queue'],
+        order: sortObj,
+      });
+    const result = enrollQueues.map((item) =>
       plainToInstance(EnrollQueueDto, item, { excludeExtraneousValues: true }),
+    );
+    return new PaginateDto<EnrollQueueDto>(
+      result,
+      page,
+      size === result.length ? size : result.length,
+      totalCount,
     );
   }
 
@@ -147,9 +174,24 @@ export class EnrollQueuesService {
       const userInRequest = this.request.user as any;
       if (userInRequest?.role && userInRequest?.role === 'admin') {
         // can delete
-        // TODO: check admin of event contain this queue
         this.log.debug('admin can delete enrollQueue');
-        return this.enrollQueueRepository.delete({ id: id });
+        const existEnrollQueue = await this.enrollQueueRepository.findOne({
+          where: {
+            id: id,
+            queue: {
+              event: {
+                user: {
+                  tenant: {
+                    tenantCode: userInRequest.tenantCode,
+                  },
+                },
+              },
+            },
+          },
+        });
+        if (existEnrollQueue) {
+          return this.enrollQueueRepository.delete({ id: id });
+        }
       }
     }
     // check is owner by sessionId
