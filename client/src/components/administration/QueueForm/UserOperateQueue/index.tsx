@@ -45,7 +45,9 @@ const UserOperateQueue: React.FC<Props> = ({ id }) => {
     isLoading: loadingGetAllUser,
     data: dataUser,
     refetch: getAllUser,
-  } = useUsersControllerFindAllUser();
+  } = useUsersControllerFindAllUser({
+    eq: [`role:OPERATOR`],
+  });
 
   const { isLoading: loadingAssignMember, mutateAsync: assignMember } =
     useQueuesControllerAssignMember();
@@ -161,13 +163,13 @@ const UserOperateQueue: React.FC<Props> = ({ id }) => {
                       }}
                       onChange={(value: number[]) => {
                         setData(
-                          dataUser?.filter((user: UserDto) =>
+                          dataUser?.data?.filter((user: UserDto) =>
                             value.includes(user.id)
                           )
                         );
                       }}
                     >
-                      {dataUser?.map((user: UserDto) => {
+                      {dataUser?.data?.map((user: UserDto) => {
                         return (
                           <Select.Option key={user.id} value={user.id}>
                             {user.fullName}

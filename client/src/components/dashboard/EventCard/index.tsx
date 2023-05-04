@@ -3,24 +3,42 @@ import {
   DeleteOutlined,
   EditOutlined,
 } from "@ant-design/icons";
-import { Button, Card, Divider, Row } from "antd";
+import { EventDto } from "@api/waitingQueue.schemas";
+import { Button, Card, Descriptions, Divider, Row, Tag } from "antd";
 import React from "react";
 import { Link } from "react-router-dom";
 
 export type Props = {
-  title: string;
+  data: EventDto;
 };
 
-const EventCard: React.FC<Props> = ({ title }) => {
+const EventCard: React.FC<Props> = ({ data }) => {
   return (
     <>
       <Card
-        title={<Link to={"/event/detail"}>title</Link>}
-        extra={<Button type="link">Xem chi tiết</Button>}
+        title={<Link to={`/event/${data?.id}`}>{data?.name}</Link>}
+        extra={
+          <Button type="link" href={`/event/${data?.id}`}>
+            Xem chi tiết
+          </Button>
+        }
       >
-        <p>Ngày 1/1/2021</p>
-        <p>Địa điểm: 123 đường 1</p>
-        <p>Thời gian: 12:00</p>
+        <Descriptions column={1}>
+          <Descriptions.Item label="Thời gian">
+            {data?.daily ? "Hằng ngày" : `Từ ${data?.from} đến ${data?.to}`}
+          </Descriptions.Item>
+          <Descriptions.Item label="Địa điểm">{data?.place}</Descriptions.Item>
+          <Descriptions.Item label="Mô tả">
+            {data?.description}
+          </Descriptions.Item>
+          <Descriptions.Item label="Trạng thái">
+            {data?.status ? (
+              <Tag color="green">Hoạt động</Tag>
+            ) : (
+              <Tag color="red">Đã đóng</Tag>
+            )}
+          </Descriptions.Item>
+        </Descriptions>
         {/* <Divider />
         <Row justify="space-between">
           <Button

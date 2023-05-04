@@ -29,7 +29,7 @@ import TenantForm from "components/administration/TenantForm";
 import _ from "lodash";
 import React, { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import { STATUS_QUEUE_ENUM } from "services/utils/constants";
+import { DEFAULT_PAGE_SIZE, STATUS_QUEUE_ENUM } from "services/utils/constants";
 import { StatusQueueRender } from "services/utils/format";
 import { selectUser } from "store/userSlice";
 import { useSelector } from "react-redux";
@@ -38,7 +38,11 @@ const ManagementQueues: React.FC = () => {
   const params = useParams();
   const { id } = params;
   const [searchText, setSearchText] = React.useState("");
-  const onSearch = (value: string) => setSearchText(value);
+  const onSearch = (value: string) => {
+    setSearchText(value);
+    setPage(1);
+  };
+  const [page, setPage] = React.useState<number>(1);
   const { role } = useSelector(selectUser);
   const {
     refetch: getAllQueueByEventId,
@@ -56,6 +60,8 @@ const ManagementQueues: React.FC = () => {
   } = useQueuesControllerFindAllQueueUserCanSee({
     eventId: _.toSafeInteger(id),
     search: `${searchText}`,
+    page: page,
+    size: DEFAULT_PAGE_SIZE,
   });
 
   const { isLoading: loadingCreate, mutateAsync: createQueue } =
@@ -69,7 +75,7 @@ const ManagementQueues: React.FC = () => {
 
   const columns: ColumnsType<QueueDto> = [
     {
-      title: "Name",
+      title: "Tên hàng đợi",
       dataIndex: "name",
       key: "name",
       render: (text, record) => (
@@ -110,7 +116,7 @@ const ManagementQueues: React.FC = () => {
             {role === "ADMIN" && (
               <Space>
                 <QueueForm
-                  reloadData={getAllQueueByEventId}
+                  reloadData={handleReloadData}
                   saveData={updateQueue}
                   loading={loadingUpdate}
                   type="edit"
@@ -145,7 +151,7 @@ const ManagementQueues: React.FC = () => {
             )}
             {role === "OPERATOR" && (
               <QueueForm
-                reloadData={getAllQueueByEventId}
+                reloadData={handleReloadData}
                 saveData={updateQueue}
                 loading={loadingUpdate}
                 type="view"
@@ -157,17 +163,25 @@ const ManagementQueues: React.FC = () => {
       },
     },
   ];
-
+  const handleReloadData = () => {
+    setPage(1);
+    setSearchText("");
+    if (role === "ADMIN") {
+      getAllQueueByEventId();
+    } else if (role === "OPERATOR") {
+      getAllMyQueueByEventId();
+    }
+  };
   const handleDelete = async (id: string) => {
     await deleteQueue({
       id: _.parseInt(id),
     }).then(() => {
-      getAllQueueByEventId();
       if (!loadingDelete) {
         notification.success({
           message: "Thành công",
           description: "Xóa hàng đợi thành công",
         });
+        handleReloadData();
       }
     });
   };
@@ -178,7 +192,7 @@ const ManagementQueues: React.FC = () => {
     } else if (role === "OPERATOR") {
       getAllMyQueueByEventId();
     }
-  }, [searchText]);
+  }, [searchText, page]);
 
   return (
     <>
@@ -204,7 +218,7 @@ const ManagementQueues: React.FC = () => {
               saveData={createQueue}
               loading={loadingCreate}
               type="add"
-              reloadData={getAllQueueByEventId}
+              reloadData={handleReloadData}
               data={{
                 status: STATUS_QUEUE_ENUM.PENDING,
               }}
@@ -218,7 +232,19 @@ const ManagementQueues: React.FC = () => {
             scroll={{ x: 1000 }}
             loading={loadingQueue || loadingMyQueue}
             columns={columns}
-            dataSource={role === "ADMIN" ? queueData : queueMyData}
+            dataSource={role === "ADMIN" ? queueData?.data : queueMyData?.data}
+            pagination={{
+              current: page,
+              pageSize: DEFAULT_PAGE_SIZE,
+              showSizeChanger: false,
+              total:
+                (role === "ADMIN"
+                  ? queueData?.pagination?.total
+                  : queueMyData?.pagination?.total) || 0,
+            }}
+            onChange={(pagination) => {
+              setPage(pagination.current);
+            }}
           />
         </Card>
       </Row>

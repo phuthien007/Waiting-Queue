@@ -24,21 +24,28 @@ import EventForm from "components/administration/EventForm";
 import TenantForm from "components/administration/TenantForm";
 import _ from "lodash";
 import moment from "moment";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { FORMAT_DATE_MINUTE } from "services/utils/constants";
+import {
+  DEFAULT_PAGE_SIZE,
+  FORMAT_DATE_MINUTE,
+} from "services/utils/constants";
 import { selectUser } from "store/userSlice";
 
 const ManagementEvents: React.FC = () => {
-  const [searchText, setSearchText] = React.useState("");
+  const [searchText, setSearchText] = React.useState<string>("");
   const { role } = useSelector(selectUser);
+  const [page, setPage] = useState<number>(1);
+
   const {
     refetch: getAllMyEvent,
     isFetching: loadingMyData,
     data: myEvent,
   } = useEventsControllerFindAllEventUserCanSee({
     search: `${searchText}`,
+    page: page,
+    size: DEFAULT_PAGE_SIZE,
   });
   const {
     refetch: getAllEvent,
@@ -46,6 +53,8 @@ const ManagementEvents: React.FC = () => {
     data: dataEvent,
   } = useEventsControllerFindAllEvent({
     like: [`name:${searchText}`],
+    page: page,
+    size: DEFAULT_PAGE_SIZE,
   });
 
   const { isLoading: loadingUpdate, mutateAsync: updateEvent } =
@@ -102,7 +111,7 @@ const ManagementEvents: React.FC = () => {
             {role === "ADMIN" && (
               <Space>
                 <EventForm
-                  reloadData={getAllEvent}
+                  reloadData={handleReloadData}
                   saveData={updateEvent}
                   loading={loadingUpdate}
                   type="edit"
@@ -139,9 +148,9 @@ const ManagementEvents: React.FC = () => {
             )}
             {role === "OPERATOR" && (
               <EventForm
-                reloadData={getAllEvent}
-                saveData={updateEvent}
-                loading={loadingUpdate}
+                // reloadData={handleReloadData}
+                // saveData={updateEvent}
+                // loading={loadingUpdate}
                 type="view"
                 data={record}
               />
@@ -152,11 +161,17 @@ const ManagementEvents: React.FC = () => {
     },
   ];
 
-  useEffect(() => {
-    console.log(role);
+  const handleReloadData = () => {
+    setPage(1);
+    setSearchText("");
     if (role === "ADMIN") getAllEvent();
     else if (role === "OPERATOR") getAllMyEvent();
-  }, [searchText]);
+  };
+
+  useEffect(() => {
+    if (role === "ADMIN") getAllEvent();
+    else if (role === "OPERATOR") getAllMyEvent();
+  }, [searchText, page]);
 
   return (
     <>
@@ -171,7 +186,10 @@ const ManagementEvents: React.FC = () => {
           <Search
             allowClear
             placeholder="Tìm kiếm theo tên"
-            onSearch={(e) => setSearchText(e)}
+            onSearch={(e) => {
+              setSearchText(e);
+              setPage(1);
+            }}
             style={{ width: "100%" }}
           />
         </Col>
@@ -182,7 +200,7 @@ const ManagementEvents: React.FC = () => {
               saveData={createEvent}
               loading={loadingCreate}
               type="add"
-              reloadData={getAllEvent}
+              reloadData={handleReloadData}
               data={{
                 status: true,
               }}
@@ -195,8 +213,20 @@ const ManagementEvents: React.FC = () => {
           <Table
             loading={loadingData || loadingMyData}
             columns={columns}
-            dataSource={role === "ADMIN" ? dataEvent : myEvent}
+            dataSource={role === "ADMIN" ? dataEvent?.data : myEvent?.data}
             scroll={{ x: 1000 }}
+            pagination={{
+              current: page,
+              pageSize: DEFAULT_PAGE_SIZE,
+              showSizeChanger: false,
+              total:
+                (role === "ADMIN"
+                  ? dataEvent?.pagination?.total
+                  : myEvent?.pagination?.total) || 0,
+            }}
+            onChange={(pagination) => {
+              setPage(pagination.current);
+            }}
           />
         </Card>
       </Row>

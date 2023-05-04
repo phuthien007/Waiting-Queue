@@ -5,6 +5,7 @@ import {
   CheckOutlined,
   CloseOutlined,
   EditOutlined,
+  EyeOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
 import { EventDto } from "@api/waitingQueue.schemas";
@@ -80,8 +81,8 @@ const EventForm: React.FC<Props> = ({
     form.resetFields();
     form.setFieldsValue({
       ...data,
-      from: moment(data.from),
-      to: moment(data.to),
+      from: data.from ? moment(data.from) : null,
+      to: data.to ? moment(data.to) : null,
     });
 
     setIsModalOpen(true);
@@ -97,6 +98,21 @@ const EventForm: React.FC<Props> = ({
 
   const onFinish = (values: EventDto) => {
     values.id = data.id;
+
+    // validate data
+    if (!values.from && !values.to && values.daily === false) {
+      notification.error({
+        message: "Lỗi",
+        description: "Cần phải có thời gian cho sự kiện",
+      });
+      return;
+    } else if (values.from && values.to && values.daily === true) {
+      notification.error({
+        message: "Lỗi",
+        description: "Không thể cùng lúc chọn sự kiện lặp lại và thời gian",
+      });
+    }
+
     // saveData({ ...values })
     // TODO: validate data
     saveData({
@@ -133,17 +149,36 @@ const EventForm: React.FC<Props> = ({
           </Space>
         </Button>
       ) : (
-        <Tooltip title="Sửa">
-          <Button
-            onClick={showModal}
-            type="primary"
-            shape="circle"
-            icon={<EditOutlined />}
-          />
-        </Tooltip>
+        <>
+          {type === "edit" ? (
+            <Tooltip title="Sửa">
+              <Button
+                onClick={showModal}
+                type="primary"
+                shape="circle"
+                icon={<EditOutlined />}
+              />
+            </Tooltip>
+          ) : (
+            <Tooltip title="Xem chi tiết">
+              <Button
+                onClick={showModal}
+                type="primary"
+                shape="circle"
+                icon={<EyeOutlined />}
+              />
+            </Tooltip>
+          )}
+        </>
       )}
       <Modal
-        title={type === "add" ? "Thêm mới" : "Chỉnh sửa"}
+        title={
+          type === "add"
+            ? "Thêm mới"
+            : type === "edit"
+            ? "Chỉnh sửa"
+            : "Xem chi tiết"
+        }
         okText="Lưu"
         width="80%"
         cancelText="Hủy"
@@ -185,7 +220,12 @@ const EventForm: React.FC<Props> = ({
               },
             ]}
           >
-            <Input type="text" placeholder="Tên sự kiện" />
+            <Input
+              readOnly={type === "view"}
+              bordered={type === "view" ? null : true}
+              type="text"
+              placeholder="Tên sự kiện"
+            />
           </Form.Item>
           <Form.Item
             style={{ marginBottom: 0 }}
@@ -206,7 +246,12 @@ const EventForm: React.FC<Props> = ({
               },
             ]}
           >
-            <Input type="text" placeholder="Địa điểm" />
+            <Input
+              readOnly={type === "view"}
+              bordered={type === "view" ? null : true}
+              type="text"
+              placeholder="Địa điểm"
+            />
           </Form.Item>
           <Form.Item
             style={{ marginBottom: 0, width: "100%" }}
@@ -231,6 +276,8 @@ const EventForm: React.FC<Props> = ({
             ]}
           >
             <DatePicker
+              disabled={type === "view"}
+              bordered={type === "view" ? null : true}
               showTime
               allowClear
               style={{ width: "100%" }}
@@ -264,6 +311,8 @@ const EventForm: React.FC<Props> = ({
             ]}
           >
             <DatePicker
+              disabled={type === "view"}
+              bordered={type === "view" ? null : true}
               showTime
               allowClear
               style={{ width: "100%" }}
@@ -277,7 +326,7 @@ const EventForm: React.FC<Props> = ({
             name="daily"
             valuePropName="checked"
           >
-            <Checkbox />
+            <Checkbox disabled={type === "view"} />
           </Form.Item>
           <Form.Item
             style={{ marginBottom: 0 }}
@@ -285,7 +334,7 @@ const EventForm: React.FC<Props> = ({
             name="status"
             valuePropName="checked"
           >
-            <Checkbox />
+            <Checkbox disabled={type === "view"} />
           </Form.Item>
 
           <Form.Item
@@ -298,7 +347,9 @@ const EventForm: React.FC<Props> = ({
               listType="picture"
               maxCount={1}
             >
-              <Button icon={<UploadOutlined />}>Tải ảnh lên</Button>
+              {type !== "view" && (
+                <Button icon={<UploadOutlined />}>Tải ảnh lên</Button>
+              )}
             </Upload>
           </Form.Item>
 
@@ -316,7 +367,11 @@ const EventForm: React.FC<Props> = ({
               },
             ]}
           >
-            <Input placeholder="Mô tả" />
+            <Input
+              placeholder="Mô tả"
+              readOnly={type === "view"}
+              bordered={type === "view" ? null : true}
+            />
           </Form.Item>
           <Form.Item
             label="Ghi chú"
@@ -332,32 +387,39 @@ const EventForm: React.FC<Props> = ({
               },
             ]}
           >
-            <TextArea placeholder="Ghi chú" rows={3} />
+            <TextArea
+              placeholder="Ghi chú"
+              rows={3}
+              readOnly={type === "view"}
+              bordered={type === "view" ? null : true}
+            />
           </Form.Item>
 
-          <Form.Item {...tailLayout}>
-            <Row>
-              <Col span={4}>
-                <Button
-                  icon={<i className="fe fe-x mr-2" />}
-                  onClick={handleCancel}
-                  className="ant-btn-danger"
-                >
-                  Hủy
-                </Button>
-              </Col>
-              <Col offset={4} span={16}>
-                <Button
-                  loading={loading}
-                  icon={<i className="fe fe-save mr-2" />}
-                  type="primary"
-                  htmlType="submit"
-                >
-                  Lưu
-                </Button>
-              </Col>
-            </Row>
-          </Form.Item>
+          {type !== "view" && (
+            <Form.Item {...tailLayout}>
+              <Row>
+                <Col span={4}>
+                  <Button
+                    icon={<i className="fe fe-x mr-2" />}
+                    onClick={handleCancel}
+                    className="ant-btn-danger"
+                  >
+                    Hủy
+                  </Button>
+                </Col>
+                <Col offset={4} span={16}>
+                  <Button
+                    loading={loading}
+                    icon={<i className="fe fe-save mr-2" />}
+                    type="primary"
+                    htmlType="submit"
+                  >
+                    Lưu
+                  </Button>
+                </Col>
+              </Row>
+            </Form.Item>
+          )}
         </Form>
       </Modal>
     </>

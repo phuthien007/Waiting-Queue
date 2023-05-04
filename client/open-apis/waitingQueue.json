@@ -157,6 +157,33 @@
                 "type": "string"
               }
             }
+          },
+          {
+            "required": false,
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "required": false,
+            "name": "size",
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "example": "id:ASC,created_at:DESC",
+            "required": false,
+            "name": "sort",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -498,6 +525,33 @@
                 "type": "string"
               }
             }
+          },
+          {
+            "required": false,
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "required": false,
+            "name": "size",
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "example": "id:ASC,created_at:DESC",
+            "required": false,
+            "name": "sort",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -761,7 +815,15 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ResetPasswordDto"
+                "type": "object",
+                "properties": {
+                  "password": {
+                    "type": "string"
+                  },
+                  "confirmPassword": {
+                    "type": "string"
+                  }
+                }
               }
             }
           }
@@ -962,6 +1024,33 @@
                 "type": "string"
               }
             }
+          },
+          {
+            "required": false,
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "required": false,
+            "name": "size",
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "example": "id:ASC,created_at:DESC",
+            "required": false,
+            "name": "sort",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -995,8 +1084,27 @@
             "name": "search",
             "required": false,
             "in": "query",
+            "description": "Search query name with operator LIKE",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "example": 1,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "size",
+            "required": true,
+            "in": "query",
+            "example": 10,
+            "schema": {
+              "type": "number"
             }
           }
         ],
@@ -1275,6 +1383,33 @@
                 "type": "string"
               }
             }
+          },
+          {
+            "required": false,
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "required": false,
+            "name": "size",
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "example": "id:ASC,created_at:DESC",
+            "required": false,
+            "name": "sort",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -1355,6 +1490,24 @@
             "name": "eventId",
             "required": false,
             "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "example": 1,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "size",
+            "required": true,
+            "in": "query",
+            "example": 10,
             "schema": {
               "type": "number"
             }
@@ -1542,14 +1695,7 @@
         },
         "responses": {
           "201": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EnrollQueueDto"
-                }
-              }
-            }
+            "description": "Created"
           },
           "400": {
             "description": "Bad Request"
@@ -1563,113 +1709,51 @@
         "operationId": "EnrollQueuesController_findAllEnrollQueue",
         "parameters": [
           {
-            "required": false,
-            "name": "eq",
+            "name": "page",
+            "required": true,
             "in": "query",
+            "example": 1,
             "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
+              "type": "number"
             }
           },
           {
-            "required": false,
-            "name": "ne",
+            "name": "size",
+            "required": true,
             "in": "query",
+            "example": 10,
             "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
+              "type": "number"
             }
           },
           {
-            "required": false,
-            "name": "gt",
+            "name": "queueId",
+            "required": true,
             "in": "query",
             "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
+              "type": "number"
             }
           },
           {
+            "name": "status",
             "required": false,
-            "name": "gte",
             "in": "query",
             "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
+              "enum": [
+                "pending",
+                "serving",
+                "waiting"
+              ],
+              "type": "string"
             }
           },
           {
+            "name": "sort",
             "required": false,
-            "name": "lt",
             "in": "query",
+            "example": "id:ASC",
             "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "required": false,
-            "name": "lte",
-            "in": "query",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "required": false,
-            "name": "in",
-            "in": "query",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "required": false,
-            "name": "notIn",
-            "in": "query",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "required": false,
-            "name": "like",
-            "in": "query",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "required": false,
-            "name": "notLike",
-            "in": "query",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
+              "type": "string"
             }
           }
         ],
@@ -1696,85 +1780,34 @@
         ]
       }
     },
-    "/api/enroll-queues/{id}": {
+    "/api/enroll-queues/my-enroll": {
       "get": {
-        "operationId": "EnrollQueuesController_findOneEnrollQueue",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
+        "operationId": "EnrollQueuesController_findAllMyEnrollQueue",
+        "parameters": [],
         "responses": {
           "200": {
             "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/EnrollQueueDto"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EnrollQueueDto"
+                  }
                 }
               }
             }
           },
           "400": {
             "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
           }
         },
         "tags": [
           "enroll-queues"
         ]
-      },
-      "patch": {
-        "operationId": "EnrollQueuesController_updateEnrollQueue",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateEnrollQueueDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EnrollQueueDto"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        },
-        "tags": [
-          "enroll-queues"
-        ]
-      },
+      }
+    },
+    "/api/enroll-queues/{id}": {
       "delete": {
         "operationId": "EnrollQueuesController_removeEnrollQueue",
         "parameters": [
@@ -1783,7 +1816,7 @@
             "required": true,
             "in": "path",
             "schema": {
-              "type": "number"
+              "type": "string"
             }
           }
         ],
@@ -1823,12 +1856,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-01T08:05:27.002Z"
+            "default": "2023-05-04T13:51:24.683Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-01T08:05:27.002Z"
+            "default": "2023-05-04T13:51:24.683Z"
           },
           "name": {
             "type": "string"
@@ -1869,12 +1902,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-01T08:05:27.002Z"
+            "default": "2023-05-04T13:51:24.683Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-01T08:05:27.002Z"
+            "default": "2023-05-04T13:51:24.683Z"
           },
           "name": {
             "type": "string"
@@ -1914,12 +1947,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-01T08:05:27.002Z"
+            "default": "2023-05-04T13:51:24.683Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-01T08:05:27.002Z"
+            "default": "2023-05-04T13:51:24.683Z"
           },
           "name": {
             "type": "string"
@@ -1960,12 +1993,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-01T08:05:27.002Z"
+            "default": "2023-05-04T13:51:24.683Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-01T08:05:27.002Z"
+            "default": "2023-05-04T13:51:24.683Z"
           },
           "email": {
             "type": "string"
@@ -2013,12 +2046,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-01T08:05:27.002Z"
+            "default": "2023-05-04T13:51:24.683Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-01T08:05:27.002Z"
+            "default": "2023-05-04T13:51:24.683Z"
           },
           "email": {
             "type": "string"
@@ -2064,12 +2097,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-01T08:05:27.002Z"
+            "default": "2023-05-04T13:51:24.683Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-01T08:05:27.002Z"
+            "default": "2023-05-04T13:51:24.683Z"
           },
           "email": {
             "type": "string"
@@ -2130,12 +2163,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-01T08:05:27.002Z"
+            "default": "2023-05-04T13:51:24.683Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-01T08:05:27.002Z"
+            "default": "2023-05-04T13:51:24.683Z"
           },
           "email": {
             "type": "string"
@@ -2238,12 +2271,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-01T08:05:27.002Z"
+            "default": "2023-05-04T13:51:24.683Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-01T08:05:27.002Z"
+            "default": "2023-05-04T13:51:24.683Z"
           },
           "name": {
             "type": "string"
@@ -2291,12 +2324,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-01T08:05:27.002Z"
+            "default": "2023-05-04T13:51:24.683Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-01T08:05:27.002Z"
+            "default": "2023-05-04T13:51:24.683Z"
           },
           "name": {
             "type": "string"
@@ -2344,12 +2377,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-01T08:05:27.002Z"
+            "default": "2023-05-04T13:51:24.683Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-01T08:05:27.002Z"
+            "default": "2023-05-04T13:51:24.683Z"
           },
           "name": {
             "type": "string"
@@ -2397,12 +2430,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-01T08:05:27.002Z"
+            "default": "2023-05-04T13:51:24.683Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-01T08:05:27.002Z"
+            "default": "2023-05-04T13:51:24.683Z"
           },
           "name": {
             "type": "string"
@@ -2443,12 +2476,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-01T08:05:27.002Z"
+            "default": "2023-05-04T13:51:24.683Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-01T08:05:27.002Z"
+            "default": "2023-05-04T13:51:24.683Z"
           },
           "name": {
             "type": "string"
@@ -2482,12 +2515,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-01T08:05:27.002Z"
+            "default": "2023-05-04T13:51:24.683Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-01T08:05:27.002Z"
+            "default": "2023-05-04T13:51:24.683Z"
           },
           "name": {
             "type": "string"
@@ -2522,35 +2555,16 @@
       "CreateEnrollQueueDto": {
         "type": "object",
         "properties": {
-          "startServe": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "endServe": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "enrollTime": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "status": {
-            "type": "string"
-          },
           "note": {
             "type": "string"
           },
-          "queueId": {
-            "type": "number"
-          },
-          "sessionId": {
-            "type": "number"
+          "queueCode": {
+            "type": "string"
           }
-        }
-      },
-      "Queue": {
-        "type": "object",
-        "properties": {}
+        },
+        "required": [
+          "queueCode"
+        ]
       },
       "Session": {
         "type": "object",
@@ -2559,6 +2573,9 @@
       "EnrollQueueDto": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string"
+          },
           "startServe": {
             "format": "date-time",
             "type": "string"
@@ -2578,39 +2595,10 @@
             "type": "string"
           },
           "queue": {
-            "$ref": "#/components/schemas/Queue"
+            "$ref": "#/components/schemas/QueueDto"
           },
           "session": {
             "$ref": "#/components/schemas/Session"
-          }
-        }
-      },
-      "UpdateEnrollQueueDto": {
-        "type": "object",
-        "properties": {
-          "startServe": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "endServe": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "enrollTime": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "status": {
-            "type": "string"
-          },
-          "note": {
-            "type": "string"
-          },
-          "queueId": {
-            "type": "number"
-          },
-          "sessionId": {
-            "type": "number"
           }
         }
       }

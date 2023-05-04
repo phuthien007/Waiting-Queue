@@ -5,6 +5,7 @@ import {
   CheckOutlined,
   CloseOutlined,
   EditOutlined,
+  EyeOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
 
@@ -128,17 +129,37 @@ const QueueForm: React.FC<Props> = ({
           </Space>
         </Button>
       ) : (
-        <Tooltip title="Sửa">
-          <Button
-            onClick={showModal}
-            type="primary"
-            shape="circle"
-            icon={<EditOutlined />}
-          />
-        </Tooltip>
+        <>
+          {type === "view" ? (
+            <Tooltip title="Xem">
+              <Button
+                onClick={showModal}
+                type="primary"
+                shape="circle"
+                icon={<EyeOutlined />}
+              />
+            </Tooltip>
+          ) : (
+            <Tooltip title="Sửa">
+              <Button
+                onClick={showModal}
+                type="primary"
+                shape="circle"
+                icon={<EditOutlined />}
+              />
+            </Tooltip>
+          )}
+        </>
       )}
+
       <Modal
-        title={type === "add" ? "Thêm mới" : "Chỉnh sửa"}
+        title={
+          type === "add"
+            ? "Thêm mới"
+            : type === "edit"
+            ? "Chỉnh sửa"
+            : "Xem chi tiết"
+        }
         okText="Lưu"
         width="50%"
         cancelText="Hủy"
@@ -180,7 +201,12 @@ const QueueForm: React.FC<Props> = ({
               },
             ]}
           >
-            <Input type="text" placeholder="Tên hàng đợi" />
+            <Input
+              bordered={type === "view" ? null : true}
+              readOnly={type === "view"}
+              type="text"
+              placeholder="Tên hàng đợi"
+            />
           </Form.Item>
 
           <Form.Item
@@ -188,14 +214,21 @@ const QueueForm: React.FC<Props> = ({
             label="Vị trí mã:"
             name="coord"
           >
-            <Input />
+            <Input
+              placeholder="Vị trí mã"
+              bordered={type === "view" ? null : true}
+              readOnly={type === "view"}
+            />
           </Form.Item>
           <Form.Item
             style={{ marginBottom: 0 }}
             label="Trạng thái:"
             name="status"
           >
-            <Select>
+            <Select
+              bordered={type === "view" ? null : true}
+              disabled={type === "view"}
+            >
               {Object.keys(STATUS_QUEUE_ENUM).map((key) => (
                 <Select.Option value={STATUS_QUEUE_ENUM[key]}>
                   {StatusQueueRender(STATUS_QUEUE_ENUM[key])}
@@ -218,7 +251,11 @@ const QueueForm: React.FC<Props> = ({
               },
             ]}
           >
-            <Input placeholder="Mô tả" />
+            <Input
+              bordered={type === "view" ? null : true}
+              readOnly={type === "view"}
+              placeholder="Mô tả"
+            />
           </Form.Item>
           <Form.Item
             label="Ghi chú"
@@ -234,32 +271,41 @@ const QueueForm: React.FC<Props> = ({
               },
             ]}
           >
-            <TextArea placeholder="Ghi chú" rows={3} />
+            <TextArea
+              bordered={type === "view" ? null : true}
+              readOnly={type === "view"}
+              placeholder="Ghi chú"
+              rows={3}
+            />
           </Form.Item>
 
-          <Form.Item {...tailLayout}>
-            <Row>
-              <Col span={4}>
-                <Button
-                  icon={<i className="fe fe-x mr-2" />}
-                  onClick={handleCancel}
-                  className="ant-btn-danger"
-                >
-                  Hủy
-                </Button>
-              </Col>
-              <Col offset={4} span={16}>
-                <Button
-                  loading={loading}
-                  icon={<i className="fe fe-save mr-2" />}
-                  type="primary"
-                  htmlType="submit"
-                >
-                  Lưu
-                </Button>
-              </Col>
-            </Row>
-          </Form.Item>
+          {type === "view" ? null : (
+            <>
+              <Form.Item {...tailLayout}>
+                <Row>
+                  <Col span={4}>
+                    <Button
+                      icon={<i className="fe fe-x mr-2" />}
+                      onClick={handleCancel}
+                      className="ant-btn-danger"
+                    >
+                      Hủy
+                    </Button>
+                  </Col>
+                  <Col offset={4} span={16}>
+                    <Button
+                      loading={loading}
+                      icon={<i className="fe fe-save mr-2" />}
+                      type="primary"
+                      htmlType="submit"
+                    >
+                      Lưu
+                    </Button>
+                  </Col>
+                </Row>
+              </Form.Item>
+            </>
+          )}
         </Form>
       </Modal>
     </>

@@ -2,22 +2,29 @@
 /**
  * 
  */
+export type EnrollQueuesControllerFindAllEnrollQueueStatus = typeof EnrollQueuesControllerFindAllEnrollQueueStatus[keyof typeof EnrollQueuesControllerFindAllEnrollQueueStatus];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const EnrollQueuesControllerFindAllEnrollQueueStatus = {
+  pending: 'pending',
+  serving: 'serving',
+  waiting: 'waiting',
+} as const;
+
 export type EnrollQueuesControllerFindAllEnrollQueueParams = {
-eq?: string[];
-ne?: string[];
-gt?: string[];
-gte?: string[];
-lt?: string[];
-lte?: string[];
-in?: string[];
-notIn?: string[];
-like?: string[];
-notLike?: string[];
+page: number;
+size: number;
+queueId: number;
+status?: EnrollQueuesControllerFindAllEnrollQueueStatus;
+sort?: string;
 };
 
 export type QueuesControllerFindAllQueueUserCanSeeParams = {
 search?: string;
 eventId?: number;
+page: number;
+size: number;
 };
 
 export type QueuesControllerFindAllQueueParams = {
@@ -31,10 +38,18 @@ in?: string[];
 notIn?: string[];
 like?: string[];
 notLike?: string[];
+page?: number;
+size?: number;
+sort?: string;
 };
 
 export type EventsControllerFindAllEventUserCanSeeParams = {
+/**
+ * Search query name with operator LIKE
+ */
 search?: string;
+page: number;
+size: number;
 };
 
 export type EventsControllerFindAllEventParams = {
@@ -48,6 +63,14 @@ in?: string[];
 notIn?: string[];
 like?: string[];
 notLike?: string[];
+page?: number;
+size?: number;
+sort?: string;
+};
+
+export type AuthControllerFinishResetPasswordBody = {
+  password?: string;
+  confirmPassword?: string;
 };
 
 export type UsersControllerFindAllUserParams = {
@@ -61,6 +84,9 @@ in?: string[];
 notIn?: string[];
 like?: string[];
 notLike?: string[];
+page?: number;
+size?: number;
+sort?: string;
 };
 
 export type TenantsControllerFindAllTenantParams = {
@@ -74,40 +100,27 @@ in?: string[];
 notIn?: string[];
 like?: string[];
 notLike?: string[];
+page?: number;
+size?: number;
+sort?: string;
 };
-
-export interface UpdateEnrollQueueDto {
-  startServe?: string;
-  endServe?: string;
-  enrollTime?: string;
-  status?: string;
-  note?: string;
-  queueId?: number;
-  sessionId?: number;
-}
 
 export interface Session { [key: string]: any }
 
-export interface Queue { [key: string]: any }
-
 export interface EnrollQueueDto {
+  id?: string;
   startServe?: string;
   endServe?: string;
   enrollTime?: string;
   status?: string;
   note?: string;
-  queue?: Queue;
+  queue?: QueueDto;
   session?: Session;
 }
 
 export interface CreateEnrollQueueDto {
-  startServe?: string;
-  endServe?: string;
-  enrollTime?: string;
-  status?: string;
   note?: string;
-  queueId?: number;
-  sessionId?: number;
+  queueCode: string;
 }
 
 export type UpdateQueueDtoStatus = typeof UpdateQueueDtoStatus[keyof typeof UpdateQueueDtoStatus];

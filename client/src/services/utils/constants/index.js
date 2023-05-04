@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 const NA = "NA";
-const DEFAULT_PAGE_SIZE = 10; // Default pageSize;
+const DEFAULT_PAGE_SIZE = 2; // Default pageSize;
 
 // regex for username start with letter and contain only letter, number, underscore
 const REGEX_USERNAME = /^[a-zA-Z][a-zA-Z0-9_.]*$/;
