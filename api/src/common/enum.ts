@@ -35,7 +35,8 @@ export enum QueueEnum {
 export enum EnrollQueueEnum {
   PENDING = 'pending',
   SERVING = 'serving',
-  WAITING = 'waiting',
+  DONE = 'done',
+  BLOCKED = 'is_blocked',
 }
 
 /**

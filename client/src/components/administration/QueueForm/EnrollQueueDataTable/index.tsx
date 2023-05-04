@@ -1,5 +1,12 @@
 import { DeleteOutlined, QuestionCircleOutlined } from "@ant-design/icons";
-import { useEventsControllerFindAllEvent } from "@api/waitingQueue";
+import {
+  useEnrollQueuesControllerFindAllEnrollQueue,
+  useEventsControllerFindAllEvent,
+} from "@api/waitingQueue";
+import {
+  EnrollQueueDto,
+  EnrollQueuesControllerFindAllEnrollQueueStatus,
+} from "@api/waitingQueue.schemas";
 import {
   Button,
   Card,
@@ -16,133 +23,98 @@ import type { ColumnsType } from "antd/es/table";
 import Search from "antd/lib/input/Search";
 import EventForm from "components/administration/EventForm";
 import TenantForm from "components/administration/TenantForm";
+import _ from "lodash";
+import moment from "moment";
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import {
+  DEFAULT_PAGE_SIZE,
+  FORMAT_DATE_MINUTE,
+} from "services/utils/constants";
+import { StatusEnrollQueueRender } from "services/utils/format";
 
-type DataType = {
-  key: string;
-  name: string;
-  age: number;
-  address: string;
-  tags: string[];
+type Props = {
+  status: string;
 };
 
-const data: DataType[] = [
-  {
-    key: "1",
-    name: "John Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park",
-    tags: ["nice", "developer"],
-  },
-  {
-    key: "2",
-    name: "Jim Green",
-    age: 42,
-    address: "London No. 1 Lake Park",
-    tags: ["loser"],
-  },
-  {
-    key: "3",
-    name: "Joe Black",
-    age: 32,
-    address: "Sidney No. 1 Lake Park",
-    tags: ["cool", "teacher"],
-  },
-];
+const ManagementEnrollQueues: React.FC<Props> = ({ status }) => {
+  const { eventId, queueId } = useParams();
 
-const ManagementEnrollQueues: React.FC = () => {
-  const { refetch: getAllEvent, isFetching: loadingData } =
-    useEventsControllerFindAllEvent({});
+  const [page, setPage] = React.useState(1);
 
-  const columns: ColumnsType<DataType> = [
+  const { isFetching, refetch, data } =
+    useEnrollQueuesControllerFindAllEnrollQueue({
+      page: 1,
+      size: DEFAULT_PAGE_SIZE,
+      queueId: _.parseInt(queueId) || 0,
+      status: status
+        ? (status as EnrollQueuesControllerFindAllEnrollQueueStatus)
+        : undefined,
+    });
+  const columns: ColumnsType<EnrollQueueDto> = [
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-      render: (text) => <Link to="/event/1">{text}</Link>,
+      title: "STT",
+      dataIndex: "id",
+      key: "id",
+      width: 50,
+      render: (text, record, index) => {
+        return <span>{(page - 1) * DEFAULT_PAGE_SIZE + index + 1}</span>;
+      },
     },
     {
-      title: "Age",
-      dataIndex: "age",
-      key: "age",
+      title: "Thời gian tham gia",
+      dataIndex: "enrollTime",
+      key: "enrollTime",
+      render: (value) => moment(value).format(FORMAT_DATE_MINUTE),
     },
     {
-      title: "Address",
-      dataIndex: "address",
-      key: "address",
+      title: "Thời gian bắt đầu phục vụ",
+      dataIndex: "enrollTime",
+      key: "enrollTime",
+      render: (value) => moment(value).format(FORMAT_DATE_MINUTE),
     },
     {
-      title: "Tags",
-      key: "tags",
-      dataIndex: "tags",
-      render: (_, { tags }) => (
-        <>
-          {tags.map((tag) => {
-            let color = tag.length > 5 ? "geekblue" : "green";
-            if (tag === "loser") {
-              color = "volcano";
-            }
-            return (
-              <Tag color={color} key={tag}>
-                {tag.toUpperCase()}
-              </Tag>
-            );
-          })}
-        </>
-      ),
+      title: "Thời gian kết thúc phục vụ",
+      dataIndex: "enrollTime",
+      key: "enrollTime",
+      render: (value) => moment(value).format(FORMAT_DATE_MINUTE),
+    },
+    {
+      title: "Trạng thái",
+      dataIndex: "status",
+      key: "status",
+      render: (value) => StatusEnrollQueueRender(value),
     },
     {
       title: "Hành động",
       fixed: "right",
       width: 100,
       key: "key",
-      render: (record) => {
-        return (
-          <>
-            <Space>
-              <Tooltip title="Xóa">
-                <Popconfirm
-                  title="XÁC NHẬN XÓA"
-                  // onConfirm={() => handleDelete(record.id)}
-                  okText="Xóa"
-                  okButtonProps={
-                    {
-                      // loading: loadingDelete,
-                    }
-                  }
-                  cancelText="Hủy"
-                  icon={
-                    <QuestionCircleOutlined
-                      style={{
-                        color: "red",
-                      }}
-                    />
-                  }
-                >
-                  <Button
-                    className="ant-btn-danger"
-                    shape="circle"
-                    icon={<DeleteOutlined />}
-                  />
-                </Popconfirm>
-              </Tooltip>
-            </Space>
-          </>
-        );
-      },
     },
   ];
 
   useEffect(() => {
-    getAllEvent();
-  }, []);
+    refetch();
+  }, [page, status]);
 
   return (
     <>
       <Row>
         <Card style={{ width: "100%" }}>
-          <Table columns={columns} dataSource={data} />
+          <Table
+            loading={isFetching}
+            columns={columns}
+            dataSource={data?.data}
+            pagination={{
+              current: page,
+              pageSize: DEFAULT_PAGE_SIZE,
+              showSizeChanger: false,
+              total: data?.pagination.total || 0,
+            }}
+            onChange={(pagination) => {
+              setPage(pagination.current);
+            }}
+          />
         </Card>
       </Row>
     </>

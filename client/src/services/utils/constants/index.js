@@ -63,6 +63,11 @@ const STATUS_QUEUE_ENUM = {
   SERVING: "serving",
   IS_CLOSED: "is_closed",
 };
+const STATUS_ENROLL_QUEUE_ENUM = {
+  PENDING: "pending",
+  SERVING: "serving",
+  DONE: "done",
+};
 
 module.exports = {
   ROLE_ENUM,
@@ -76,4 +81,5 @@ module.exports = {
   REGEX_EMAIL,
   WHITELISTFILEUPLOAD,
   REGEX_PASSWORD,
+  STATUS_ENROLL_QUEUE_ENUM,
 };

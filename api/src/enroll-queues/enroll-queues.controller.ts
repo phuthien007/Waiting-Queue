@@ -30,6 +30,8 @@ import { HasRole } from 'src/common/decorators';
 import { EnrollQueueEnum } from 'src/common/enum';
 import { PaginateDto } from 'src/common/paginate.dto';
 
+// TODO: add number of people in queue
+
 @ApiTags('enroll-queues')
 @Controller('/api/enroll-queues')
 @UseGuards(RoleGuard)

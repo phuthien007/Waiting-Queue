@@ -1,4 +1,5 @@
 import {
+  useEnrollQueuesControllerFindAllEnrollQueue,
   useEventsControllerFindOneEvent,
   useQueuesControllerFindOneQueue,
 } from "@api/waitingQueue";
@@ -22,6 +23,10 @@ import _ from "lodash";
 import React from "react";
 import { Helmet } from "react-helmet";
 import { Link, useParams } from "react-router-dom";
+import {
+  DEFAULT_PAGE_SIZE,
+  STATUS_ENROLL_QUEUE_ENUM,
+} from "services/utils/constants";
 
 const DetailEvent = () => {
   const params = useParams();
@@ -93,17 +98,17 @@ const DetailEvent = () => {
       <Card title="Danh sách người đợi" className="mt-2">
         <Tabs defaultActiveKey="2">
           <Tabs.TabPane tab="Tất cả" key="1">
-            <ManagementEnrollQueues />
+            <ManagementEnrollQueues status="" />
           </Tabs.TabPane>
           <Tabs.TabPane tab="Đang chờ" key="2">
-            <ManagementEnrollQueues />
+            <ManagementEnrollQueues status={STATUS_ENROLL_QUEUE_ENUM.PENDING} />
           </Tabs.TabPane>
           <Tabs.TabPane tab="Đã xong" key="3">
-            <ManagementEnrollQueues />
+            <ManagementEnrollQueues status={STATUS_ENROLL_QUEUE_ENUM.DONE} />
           </Tabs.TabPane>
-          <Tabs.TabPane tab="Đã hủy" key="4">
-            <ManagementEnrollQueues />
-          </Tabs.TabPane>
+          {/* <Tabs.TabPane tab="Đã hủy" key="4">
+            <ManagementEnrollQueues status={STATUS_ENROLL_QUEUE_ENUM.BLOCKED} />
+          </Tabs.TabPane> */}
         </Tabs>
       </Card>
     </>
