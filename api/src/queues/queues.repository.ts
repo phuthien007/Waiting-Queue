@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { Queue } from './entities/queue.entity';
 import { User } from 'src/users/entities/user.entity';
 import { QueueDto } from './dto/queue.dto';
+import { QueueEnum } from 'src/common/enum';
 
 /**
  * QueuesRepository class for queue repository
@@ -13,6 +14,11 @@ export class QueuesRepository extends Repository<Queue> {
     super(Queue, dataSource.createEntityManager());
   }
 
+  /**
+   * assign list member into queue
+   * @param queueId queue id
+   * @param memberIds list of member id
+   */
   async assignMemberIntoQueue(queueId: number, memberIds: number[]) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
@@ -69,7 +75,8 @@ export class QueuesRepository extends Repository<Queue> {
       .leftJoin('Events', 'e', 'e.id = q.event_id')
       .leftJoin('RelQueuesUsers', 'rqu', 'rqu.queue_id = q.id')
       .leftJoin(User, 'u', 'u.id = rqu.user_id')
-      .where('u.id = :userId', { userId });
+      .where('u.id = :userId', { userId })
+      .andWhere('u.status != :status', { status: QueueEnum.IS_CLOSED });
 
     if (eventId) {
       queryBuilder.andWhere('q.event_id = :eventId', { eventId });

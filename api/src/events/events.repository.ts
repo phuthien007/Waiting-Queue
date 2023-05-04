@@ -45,11 +45,15 @@ ON u.id = rqu.user_id
       .leftJoin(Event, 'e', 'e.id = q.event_id')
       .leftJoin('RelQueuesUsers', 'rqu', 'rqu.queue_id = q.id')
       .leftJoin(User, 'u', 'u.id = rqu.user_id')
-      .where('u.id = :userId', { userId });
+      .where('u.id = :userId', { userId })
+      .andWhere('e.status = :status', { status: 1 });
     if (query) {
       queryBuilder.andWhere('e.name LIKE :query', { query: `%${query}%` });
     }
-    queryBuilder.take(size).skip((page - 1) * size);
+    queryBuilder
+      .take(size)
+      .skip((page - 1) * size)
+      .orderBy('e.id', 'DESC');
 
     // .andWhere('e.name LIKE :query', { query: `%${query}%` });
     const result = (await queryBuilder.getRawMany()) as Event[];
