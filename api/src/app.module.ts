@@ -26,6 +26,10 @@ import { LoggerModule } from './logger/logger.module';
 import { ExceptionModule } from './exception/exception.module';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { MailModule } from './mail/mail.module';
+import { FilesModule } from './files/files.module';
+import { MulterModule } from '@nestjs/platform-express';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -49,6 +53,16 @@ import { MailModule } from './mail/mail.module';
         entities: [User, Tenant, Queue, EnrollQueue, Event, Session],
       }),
     }),
+    MulterModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        dest: configService.get<string>('FILE_PATH'),
+      }),
+      inject: [ConfigService],
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'),
+    }),
     TenantsModule,
     SessionsModule,
     AuthModule,
@@ -59,6 +73,7 @@ import { MailModule } from './mail/mail.module';
     LoggerModule,
     ExceptionModule,
     MailModule,
+    FilesModule,
   ],
   controllers: [AppController],
   providers: [
