@@ -5,8 +5,10 @@ import {
 } from "@ant-design/icons";
 import { EventDto } from "@api/waitingQueue.schemas";
 import { Button, Card, Descriptions, Divider, Row, Tag } from "antd";
+import moment from "moment";
 import React from "react";
 import { Link } from "react-router-dom";
+import { FORMAT_DATE_MINUTE } from "services/utils/constants";
 
 export type Props = {
   data: EventDto;
@@ -25,7 +27,11 @@ const EventCard: React.FC<Props> = ({ data }) => {
       >
         <Descriptions column={1}>
           <Descriptions.Item label="Thời gian">
-            {data?.daily ? "Hằng ngày" : `Từ ${data?.from} đến ${data?.to}`}
+            {data?.daily
+              ? "Hàng ngày"
+              : `Từ ${moment(data?.from).format(
+                  FORMAT_DATE_MINUTE
+                )} đến ${moment(data?.to).format(FORMAT_DATE_MINUTE)}`}
           </Descriptions.Item>
           <Descriptions.Item label="Địa điểm">{data?.place}</Descriptions.Item>
           <Descriptions.Item label="Mô tả">

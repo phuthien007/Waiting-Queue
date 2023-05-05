@@ -278,7 +278,9 @@ const EventForm: React.FC<Props> = ({
             <DatePicker
               disabled={type === "view"}
               bordered={type === "view" ? null : true}
-              showTime
+              showTime={{
+                format: "HH:mm",
+              }}
               allowClear
               style={{ width: "100%" }}
               format={(value) => moment(value).format(FORMAT_DATE_MINUTE)}
@@ -313,7 +315,9 @@ const EventForm: React.FC<Props> = ({
             <DatePicker
               disabled={type === "view"}
               bordered={type === "view" ? null : true}
-              showTime
+              showTime={{
+                format: "HH:mm",
+              }}
               allowClear
               style={{ width: "100%" }}
               format={(value) => moment(value).format(FORMAT_DATE_MINUTE)}
