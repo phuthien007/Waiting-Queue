@@ -1,4 +1,10 @@
-import { REGEX_USERNAME, REGEX_EMAIL, REGEX_PASSWORD } from "../constants";
+import { size } from "lodash";
+import {
+  REGEX_USERNAME,
+  REGEX_EMAIL,
+  REGEX_PASSWORD,
+  WHITE_LIST_IMAGE,
+} from "../constants";
 
 export const ValidateUserName = (username) => {
   const regex = new RegExp(REGEX_USERNAME);
@@ -29,4 +35,12 @@ export const removeVietnameseTones = (str) => {
     return newstr.replace(/đ/g, "d").replace(/Đ/g, "D");
   }
   return "";
+};
+
+export const checkTypeImage = (type) => {
+  return WHITE_LIST_IMAGE.includes(type);
+};
+
+export const checkSizeImage = (size) => {
+  return size < 50 * 1024 * 1024;
 };

@@ -2,6 +2,18 @@
 /**
  * 
  */
+export type FilesControllerFindOneParams = {
+fileName: string;
+};
+
+export type FilesControllerRemoveParams = {
+fileName: string;
+};
+
+export type FilesControllerUploadFileBody = {
+  file?: Blob;
+};
+
 export type EnrollQueuesControllerFindAllEnrollQueueStatus = typeof EnrollQueuesControllerFindAllEnrollQueueStatus[keyof typeof EnrollQueuesControllerFindAllEnrollQueueStatus];
 
 
@@ -9,7 +21,8 @@ export type EnrollQueuesControllerFindAllEnrollQueueStatus = typeof EnrollQueues
 export const EnrollQueuesControllerFindAllEnrollQueueStatus = {
   pending: 'pending',
   serving: 'serving',
-  waiting: 'waiting',
+  done: 'done',
+  is_blocked: 'is_blocked',
 } as const;
 
 export type EnrollQueuesControllerFindAllEnrollQueueParams = {

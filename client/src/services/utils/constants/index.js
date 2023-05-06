@@ -69,7 +69,22 @@ const STATUS_ENROLL_QUEUE_ENUM = {
   DONE: "done",
 };
 
+const WHITE_LIST_IMAGE = [
+  "image/png",
+  "image/jpg",
+  "image/jpeg",
+  "image/gif",
+
+  "image/svg+xml",
+  "image/tiff",
+  "image/webp",
+  "image/bmp",
+  "image/x-icon",
+  "image/vnd.microsoft.icon",
+];
+
 module.exports = {
+  WHITE_LIST_IMAGE,
   ROLE_ENUM,
   STATUS_QUEUE_ENUM,
   DEFAULT_PAGE_SIZE,

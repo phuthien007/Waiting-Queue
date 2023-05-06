@@ -8,6 +8,10 @@ import {
   EyeOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
+import {
+  useFilesControllerRemove,
+  useFilesControllerUploadFile,
+} from "@api/waitingQueue";
 import { EventDto } from "@api/waitingQueue.schemas";
 import {
   Button,
@@ -26,12 +30,16 @@ import {
   Upload,
   notification,
 } from "antd";
+import { UploadFile } from "antd/es/upload/interface";
 import TextArea from "antd/lib/input/TextArea";
 import moment from "moment";
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { FORMAT_DATE_MINUTE } from "services/utils/constants";
+import { serveImage } from "services/utils";
+import { FORMAT_DATE_MINUTE, WHITE_LIST_IMAGE } from "services/utils/constants";
 import {
+  checkSizeImage,
+  checkTypeImage,
   removeVietnameseTones,
   ValidateEmail,
   ValidatePassword,
@@ -39,7 +47,6 @@ import {
 } from "services/utils/validates";
 import { selectUser } from "store/userSlice";
 // import ValidateUserName from '../../../services/utils/validates'
-import type { RangePickerProps } from "antd/es/date-picker";
 
 const tailLayout = {
   wrapperCol: {
@@ -58,14 +65,6 @@ type Props = {
   reloadData?: () => void;
 };
 
-const range = (start: number, end: number) => {
-  const result = [];
-  for (let i = start; i < end; i++) {
-    result.push(i);
-  }
-  return result;
-};
-
 const EventForm: React.FC<Props> = ({
   type,
   data,
@@ -76,6 +75,12 @@ const EventForm: React.FC<Props> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
   const { role: roleUser } = useSelector(selectUser);
+
+  const { mutateAsync: removeImage, isLoading: loadingRemoveImage } =
+    useFilesControllerRemove();
+
+  const { mutateAsync: uploadImage, isLoading: loadingUploadImage } =
+    useFilesControllerUploadFile();
 
   const showModal = () => {
     form.resetFields();
@@ -96,38 +101,72 @@ const EventForm: React.FC<Props> = ({
     setIsModalOpen(false);
   };
 
-  const onFinish = (values: EventDto) => {
-    values.id = data.id;
-
-    // validate data
-    if (!values.from && !values.to && values.daily === false) {
+  const onFinish = async (values: EventDto) => {
+    if (
+      values?.drawImagePath &&
+      values?.drawImagePath?.fileList?.length === 0
+    ) {
+      console.log("Success:", values);
       notification.error({
         message: "Lỗi",
-        description: "Cần phải có thời gian cho sự kiện",
+        description: "Bạn được chọn 1 hình ảnh",
       });
       return;
-    } else if (values.from && values.to && values.daily === true) {
-      notification.error({
-        message: "Lỗi",
-        description: "Không thể cùng lúc chọn sự kiện lặp lại và thời gian",
+    } else {
+      values.id = data.id;
+      const oldImage = data.drawImagePath;
+      // // validate data
+      if (!values.from && !values.to && values.daily === false) {
+        notification.error({
+          message: "Lỗi",
+          description: "Cần phải có thời gian cho sự kiện",
+        });
+        return;
+      } else if (values.from && values.to && values.daily === true) {
+        notification.error({
+          message: "Lỗi",
+          description: "Không thể cùng lúc chọn sự kiện lặp lại và thời gian",
+        });
+      }
+
+      // handle Image
+      if (values.drawImagePath && values.drawImagePath.file) {
+        const res = await uploadImage({
+          data: {
+            file: values.drawImagePath.file,
+          },
+        });
+        if (res) {
+          values.drawImagePath = res;
+        }
+        // remove old Image
+        if (oldImage) {
+          try {
+            removeImage({
+              params: {
+                fileName: oldImage,
+              },
+            });
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      }
+
+      saveData({
+        id: values.id,
+        data: { ...values, status: values.status ? 1 : 0 },
+      }).then((res) => {
+        if (res) {
+          notification.success({
+            message: "Thành công",
+            description: "Lưu thành công",
+          });
+          handleCancel();
+          reloadData();
+        }
       });
     }
-
-    // saveData({ ...values })
-    // TODO: validate data
-    saveData({
-      id: values.id,
-      data: { ...values, status: values.status ? 1 : 0 },
-    }).then((res) => {
-      if (res) {
-        notification.success({
-          message: "Thành công",
-          description: "Lưu thành công",
-        });
-        handleCancel();
-        reloadData();
-      }
-    });
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -343,13 +382,50 @@ const EventForm: React.FC<Props> = ({
 
           <Form.Item
             style={{ marginBottom: 0 }}
-            label="Địa điểm:"
+            label="Ảnh:"
             name="drawImagePath"
+            rules={[
+              {
+                required: true,
+                message: "Ảnh không được bỏ trống",
+              },
+            ]}
           >
             <Upload
-              action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+              defaultFileList={
+                data.drawImagePath
+                  ? [
+                      {
+                        uid: Math.random() * 1000,
+                        name: data.drawImagePath,
+                        status: "done",
+                        url: serveImage(data.drawImagePath),
+                      },
+                    ]
+                  : []
+              }
               listType="picture"
               maxCount={1}
+              beforeUpload={(file) => {
+                if (!checkSizeImage(file.size)) {
+                  notification.error({
+                    message: "Lỗi",
+                    description: "Ảnh không được quá 50MB",
+                  });
+                  return Upload.LIST_IGNORE;
+                }
+
+                if (!checkTypeImage(file.type)) {
+                  notification.error({
+                    message: "Lỗi",
+                    description: `Ảnh phải có định dạng là ${WHITE_LIST_IMAGE.join(
+                      "; "
+                    )}`,
+                  });
+                  return Upload.LIST_IGNORE;
+                }
+                return false;
+              }}
             >
               {type !== "view" && (
                 <Button icon={<UploadOutlined />}>Tải ảnh lên</Button>

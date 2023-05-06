@@ -40,7 +40,10 @@ import type {
   UpdateQueueDto,
   CreateEnrollQueueDto,
   EnrollQueueDto,
-  EnrollQueuesControllerFindAllEnrollQueueParams
+  EnrollQueuesControllerFindAllEnrollQueueParams,
+  FilesControllerUploadFileBody,
+  FilesControllerRemoveParams,
+  FilesControllerFindOneParams
 } from './waitingQueue.schemas'
 import { useCustomInstance } from './use-custom-instance';
 import { customFormData } from './custom-form-data';
@@ -1989,3 +1992,156 @@ export const useEnrollQueuesControllerRemoveEnrollQueueMutationOptions = <TError
       return useMutation(mutationOptions);
     }
     
+export const useFilesControllerUploadFileHook = () => {
+        const filesControllerUploadFile = useCustomInstance<void>();
+
+        return (
+    filesControllerUploadFileBody: FilesControllerUploadFileBody,
+ ) => {const formData = customFormData(filesControllerUploadFileBody)
+        return filesControllerUploadFile(
+          {url: `/api/files`, method: 'post',
+      headers: {'Content-Type': 'multipart/form-data', },
+       data: formData
+    },
+          );
+        }
+      }
+    
+
+
+export const useFilesControllerUploadFileMutationOptions = <TError = unknown,
+    
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useFilesControllerUploadFileHook>>>, TError,{data: FilesControllerUploadFileBody}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useFilesControllerUploadFileHook>>>, TError,{data: FilesControllerUploadFileBody}, TContext> => {
+ const {mutation: mutationOptions} = options ?? {};
+
+      const filesControllerUploadFile =  useFilesControllerUploadFileHook()
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<ReturnType<typeof useFilesControllerUploadFileHook>>>, {data: FilesControllerUploadFileBody}> = (props) => {
+          const {data} = props ?? {};
+
+          return  filesControllerUploadFile(data,)
+        }
+
+        
+
+ 
+   return  { mutationFn, ...mutationOptions }}
+
+    export type FilesControllerUploadFileMutationResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useFilesControllerUploadFileHook>>>>
+    export type FilesControllerUploadFileMutationBody = FilesControllerUploadFileBody
+    export type FilesControllerUploadFileMutationError = unknown
+
+    export const useFilesControllerUploadFile = <TError = unknown,
+    
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useFilesControllerUploadFileHook>>>, TError,{data: FilesControllerUploadFileBody}, TContext>, }
+) => {
+    
+      const mutationOptions = useFilesControllerUploadFileMutationOptions(options);
+     
+      return useMutation(mutationOptions);
+    }
+    
+export const useFilesControllerRemoveHook = () => {
+        const filesControllerRemove = useCustomInstance<void>();
+
+        return (
+    params: FilesControllerRemoveParams,
+ ) => {
+        return filesControllerRemove(
+          {url: `/api/files`, method: 'delete',
+        params
+    },
+          );
+        }
+      }
+    
+
+
+export const useFilesControllerRemoveMutationOptions = <TError = unknown,
+    
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useFilesControllerRemoveHook>>>, TError,{params: FilesControllerRemoveParams}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useFilesControllerRemoveHook>>>, TError,{params: FilesControllerRemoveParams}, TContext> => {
+ const {mutation: mutationOptions} = options ?? {};
+
+      const filesControllerRemove =  useFilesControllerRemoveHook()
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<ReturnType<typeof useFilesControllerRemoveHook>>>, {params: FilesControllerRemoveParams}> = (props) => {
+          const {params} = props ?? {};
+
+          return  filesControllerRemove(params,)
+        }
+
+        
+
+ 
+   return  { mutationFn, ...mutationOptions }}
+
+    export type FilesControllerRemoveMutationResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useFilesControllerRemoveHook>>>>
+    
+    export type FilesControllerRemoveMutationError = unknown
+
+    export const useFilesControllerRemove = <TError = unknown,
+    
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useFilesControllerRemoveHook>>>, TError,{params: FilesControllerRemoveParams}, TContext>, }
+) => {
+    
+      const mutationOptions = useFilesControllerRemoveMutationOptions(options);
+     
+      return useMutation(mutationOptions);
+    }
+    
+export const useFilesControllerFindOneHook = () => {
+        const filesControllerFindOne = useCustomInstance<void>();
+
+        return (
+    params: FilesControllerFindOneParams,
+ signal?: AbortSignal
+) => {
+        return filesControllerFindOne(
+          {url: `/api/files/download`, method: 'get',
+        params, signal
+    },
+          );
+        }
+      }
+    
+
+export const getFilesControllerFindOneQueryKey = (params: FilesControllerFindOneParams,) => [`/api/files/download`, ...(params ? [params]: [])] as const;
+  
+
+    
+export const useFilesControllerFindOneQueryOptions = <TData = Awaited<ReturnType<ReturnType<typeof useFilesControllerFindOneHook>>>, TError = Blob>(params: FilesControllerFindOneParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useFilesControllerFindOneHook>>>, TError, TData>, }
+): UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useFilesControllerFindOneHook>>>, TError, TData> & { queryKey: QueryKey } => {
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getFilesControllerFindOneQueryKey(params);
+
+  const filesControllerFindOne =  useFilesControllerFindOneHook();
+  
+    const queryFn: QueryFunction<Awaited<ReturnType<ReturnType<typeof useFilesControllerFindOneHook>>>> = ({ signal }) => filesControllerFindOne(params, signal);
+    
+      
+      
+   return  { queryKey, queryFn, ...queryOptions}}
+
+export type FilesControllerFindOneQueryResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useFilesControllerFindOneHook>>>>
+export type FilesControllerFindOneQueryError = Blob
+
+export const useFilesControllerFindOne = <TData = Awaited<ReturnType<ReturnType<typeof useFilesControllerFindOneHook>>>, TError = Blob>(
+ params: FilesControllerFindOneParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useFilesControllerFindOneHook>>>, TError, TData>, }
+
+  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+
+  const queryOptions = useFilesControllerFindOneQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+

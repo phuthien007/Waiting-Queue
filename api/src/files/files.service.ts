@@ -68,9 +68,6 @@ export class FilesService {
       fs.unlinkSync(`${path}/${fileName}`);
     } catch (error) {
       this.log.error(error);
-      throw new BadRequestException(
-        'Xảy ra lỗi khi xóa file, vui lòng thử lại sau!',
-      );
     }
   }
 }
