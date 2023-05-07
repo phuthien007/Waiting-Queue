@@ -9,9 +9,9 @@ import {
 
 export const StatusRender = (status) => {
   if (status) {
-    return <Tag>Hoạt động</Tag>;
+    return <Tag color="green">Hoạt động</Tag>;
   } else {
-    return <Tag>Ngừng hoạt động</Tag>;
+    return <Tag color="red">Ngừng hoạt động</Tag>;
   }
 };
 
@@ -29,27 +29,39 @@ export const RoleRender = (role) => {
 export const StatusQueueRender = (status) => {
   switch (status) {
     case STATUS_QUEUE_ENUM.PENDING:
-      return <Tag>Chờ phục vụ</Tag>;
+      return "Chờ phục vụ";
     case STATUS_QUEUE_ENUM.SERVING:
-      return <Tag>Đang phục vụ</Tag>;
+      return "Đang phục vụ";
     case STATUS_QUEUE_ENUM.WAITING:
-      return <Tag>Đang chờ người mới</Tag>;
+      return "Đang chờ người mới";
     case STATUS_QUEUE_ENUM.IS_CLOSED:
-      return <Tag>Đã đóng</Tag>;
+      return "Đã đóng";
     default:
-      return <Tag>Đã đóng</Tag>;
+      return "Đã đóng";
   }
 };
 
 export const StatusEnrollQueueRender = (status) => {
   switch (status) {
     case STATUS_ENROLL_QUEUE_ENUM.PENDING:
-      return <Tag>Chờ phục vụ</Tag>;
+      return "Chờ phục vụ";
     case STATUS_ENROLL_QUEUE_ENUM.SERVING:
-      return <Tag>Đang phục vụ</Tag>;
+      return "Đang phục vụ";
     case STATUS_ENROLL_QUEUE_ENUM.DONE:
-      return <Tag>Đã phục vụ</Tag>;
+      return "Đã phục vụ";
     default:
-      return <Tag>Chờ phục vụ</Tag>;
+      return "Chờ phục vụ";
+  }
+};
+export const StatusEnrollQueueRenderColor = (status) => {
+  switch (status) {
+    case STATUS_ENROLL_QUEUE_ENUM.PENDING:
+      return "purple";
+    case STATUS_ENROLL_QUEUE_ENUM.SERVING:
+      return "blue";
+    case STATUS_ENROLL_QUEUE_ENUM.DONE:
+      return "green";
+    default:
+      return "purple";
   }
 };

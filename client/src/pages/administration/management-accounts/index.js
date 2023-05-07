@@ -204,7 +204,7 @@ function ManagementAccounts() {
         </Col>
       </Row>
       <Row>
-        <Card style={{ width: "100%" }}>
+        <Card className="br-8" style={{ width: "100%" }}>
           <Table
             scroll={{ x: 1200 }}
             rowKey="id"

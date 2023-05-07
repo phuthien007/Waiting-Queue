@@ -19,9 +19,10 @@ const EventCard: React.FC<Props> = ({ data }) => {
   return (
     <>
       <Card
+        className="br-8"
         title={<Link to={`/event/${data?.id}`}>{data?.name}</Link>}
         extra={
-          <Button type="link" href={`/event/${data?.id}`}>
+          <Button className="br-8" type="link" href={`/event/${data?.id}`}>
             Xem chi tiết
           </Button>
         }

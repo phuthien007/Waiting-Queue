@@ -131,7 +131,7 @@ function ManagementTenants() {
         </Col>
       </Row>
       <Row>
-        <Card style={{ width: "100%" }}>
+        <Card style={{ width: "100%" }} className="br-8">
           <Table
             scroll={{ x: 1200 }}
             rowKey="id"

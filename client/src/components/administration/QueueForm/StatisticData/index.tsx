@@ -5,7 +5,7 @@ import React from "react";
 const StatisticData: React.FC = () => (
   <>
     <Col className="p-2" span={12}>
-      <Card>
+      <Card className="br-8">
         <Statistic
           title="Thời gian đợi trung bình"
           value={11.28}
@@ -17,7 +17,7 @@ const StatisticData: React.FC = () => (
       </Card>
     </Col>
     <Col span={12} className="p-2">
-      <Card>
+      <Card className="br-8">
         <Statistic
           title="Thời gian phục vụ trung bình"
           value={9.3}

@@ -122,6 +122,7 @@ export interface Session { [key: string]: any }
 
 export interface EnrollQueueDto {
   id?: string;
+  sequenceNumber?: number;
   startServe?: string;
   endServe?: string;
   enrollTime?: string;

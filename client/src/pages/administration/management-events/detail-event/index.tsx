@@ -38,13 +38,13 @@ const DetailEvent = () => {
         <Breadcrumb.Item>Chi tiết sự kiện</Breadcrumb.Item>
       </Breadcrumb>
 
-      <Card loading={isFetching} title="" className="mt-2">
+      <Card className="br-8 mt-2" loading={isFetching} title="">
         <InformationEventCard data={data} />
       </Card>
 
       <Divider />
 
-      <Card title="Danh sách hàng đợi" className="mt-2">
+      <Card className="br-8 mt-2" title="Danh sách hàng đợi">
         <ManagementQueues />
       </Card>
     </>

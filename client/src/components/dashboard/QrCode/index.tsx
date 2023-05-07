@@ -36,7 +36,7 @@ const QrCodeComponent: React.FC = () => {
     <div>
       <Button
         type="primary"
-        className="mr-2"
+        className="mr-2 br-8"
         icon={<i className="fa fa-camera mr-2" />}
         onClick={showModal}
       >

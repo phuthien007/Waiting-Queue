@@ -25,7 +25,7 @@ const InformationQueueCard: React.FC<Props> = ({ data }) => {
         xxl: 3,
         xl: 3,
         lg: 3,
-        md: 3,
+        md: 2,
         sm: 2,
         xs: 1,
       }}

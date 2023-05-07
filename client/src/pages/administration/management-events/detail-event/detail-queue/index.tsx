@@ -70,12 +70,12 @@ const DetailEvent = () => {
 
       <Row>
         <Col className="p-2" sm={24} md={12} xl={12}>
-          <Card loading={loadingDataEvent} title="" className="mt-2">
+          <Card loading={loadingDataEvent} title="" className="mt-2 br-8">
             <InformationEventCard data={dataEvent} />
           </Card>
         </Col>
         <Col className="p-2" sm={24} md={12} xl={12}>
-          <Card loading={loadingDataQueue} title="" className="mt-2">
+          <Card loading={loadingDataQueue} title="" className="mt-2 br-8">
             <InformationQueueCard data={dataQueue} />
           </Card>
         </Col>
@@ -89,13 +89,13 @@ const DetailEvent = () => {
       </Row>
       <Row justify="center">
         {/* // render card to display a number current serving */}
-        <Card>
+        <Card className="br-8">
           <h1>3</h1>
         </Card>
       </Row>
       <Divider />
 
-      <Card title="Danh sách người đợi" className="mt-2">
+      <Card title="Danh sách người đợi" className="mt-2 br-8">
         <Tabs defaultActiveKey="2">
           <Tabs.TabPane tab="Tất cả" key="1">
             <ManagementEnrollQueues status="" />
