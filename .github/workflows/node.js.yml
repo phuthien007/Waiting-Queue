@@ -31,7 +31,7 @@ jobs:
         run: |
           cd api
           yarn install
-      - name: Install Dependencies and build in Client
+      - name: Install Dependencies And Build In Client
         run: |
           cd client
           yarn install
@@ -41,7 +41,4 @@ jobs:
         with:
           name: build-client
           path: client/build
-      # - name: Test
-      #   run: npm test
-      # - name: Lint
-      #   run: npm run lint
+  

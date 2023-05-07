@@ -1,12 +1,27 @@
 import { useEffect, useState } from "react";
-import { Avatar, Card, Col, Layout, Menu, Row } from "antd";
+import {
+  Affix,
+  Avatar,
+  Button,
+  Card,
+  Col,
+  Layout,
+  Menu,
+  Row,
+  Tooltip,
+} from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import classNames from "classnames";
 import Breadcrumbs from "components/cleanui/layout/Breadcrumbs";
 import Footer from "components/cleanui/layout/Footer";
 import MenuMain from "components/cleanui/layout/Menu";
-import { LogoutOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  LogoutOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import { selectSettings } from "store/settingSlice";
 import { logoutUser, selectUser } from "store/userSlice";
 import IdleTimer from "components/system/IdleTimer";
@@ -28,7 +43,7 @@ const SubMainLayout = ({ children }) => {
   const location = useLocation();
 
   const [selectedMenu, setSelectedMenu] = useState("");
-
+  const [isCollapsed, setIsCollapsed] = useState(false);
   useEffect(() => {
     setSelectedMenu(getDefaultActiveKey(location.pathname));
   }, [location]);
@@ -87,7 +102,9 @@ const SubMainLayout = ({ children }) => {
       logout();
     }
   };
-
+  const toggleCollapsed = () => {
+    setIsCollapsed(!isCollapsed);
+  };
   return (
     <div
       className={classNames({ cui__layout__grayBackground: isGrayBackground })}
@@ -113,8 +130,41 @@ const SubMainLayout = ({ children }) => {
           <Breadcrumbs />
           <Layout.Content style={{ height: "100%", position: "relative" }}>
             <div className="cui__utils__content">
-              <Row gutter={16}>
-                <Col span={6}>
+              <Row>
+                <Col
+                  className="mt-2"
+                  sm={2}
+                  xs={2}
+                  md={0}
+                  lg={0}
+                  xl={0}
+                  xxl={0}
+                >
+                  <Affix
+                    offsetTop={120}
+                    onChange={(affixed) => console.log(affixed)}
+                  >
+                    <Menu
+                      style={{
+                        width: "100%",
+                        borderRight: 0,
+                      }}
+                      inlineCollapsed={!isCollapsed}
+                      onClick={(e) => handleChangeMenu(e)}
+                      selectedKeys={selectedMenu}
+                      items={items}
+                    />
+                  </Affix>
+                </Col>
+                <Col
+                  className="mt-2"
+                  sm={0}
+                  xs={0}
+                  md={8}
+                  lg={8}
+                  xl={6}
+                  xxl={6}
+                >
                   <Card>
                     <Row justify="center">
                       <Avatar size={128} icon={<UserOutlined />} />
@@ -125,18 +175,28 @@ const SubMainLayout = ({ children }) => {
                         {user.tenant.name || "Công ty"}
                       </b>
                     </p>
+
                     <Menu
                       style={{
                         width: "100%",
                         borderRight: 0,
                       }}
+                      // inlineCollapsed={isCollapsed}
                       onClick={(e) => handleChangeMenu(e)}
                       selectedKeys={selectedMenu}
                       items={items}
                     />
                   </Card>
                 </Col>
-                <Col span={18}>
+                <Col
+                  className="mt-2 ml-1"
+                  sm={21}
+                  xs={21}
+                  md={15}
+                  lg={15}
+                  xl={17}
+                  xxl={17}
+                >
                   <div>{children}</div>
                 </Col>
               </Row>

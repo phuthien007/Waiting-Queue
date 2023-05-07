@@ -9,12 +9,14 @@ import {
   Query,
   ParseIntPipe,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { QueuesService } from './queues.service';
 import { CreateQueueDto } from './dto/create-queue.dto';
 import { UpdateQueueDto } from './dto/update-queue.dto';
 import {
   ApiBadRequestResponse,
+  ApiBody,
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -24,6 +26,7 @@ import {
 import { QueueDto } from './dto/queue.dto';
 import { FilterOperator } from 'src/common/filters.vm';
 import { RoleGuard } from 'src/auth/role.guard';
+import { UserDto } from 'src/users/dto/user.dto';
 /**
  * QueuesController class for queues controller with CRUD operations for queues
  */
@@ -49,6 +52,25 @@ export class QueuesController {
   }
 
   /**
+   *  Assign member into queue by id
+   * @param id - id of queue to assign member
+   * @param memberIds - array of member id to assign into queue
+   * @returns QueueDto object with queue data after assign member
+   */
+  @Post('/:id/assign-member')
+  @ApiBody({ type: [Number] })
+  @ApiCreatedResponse({
+    description: 'Assign member into queue successfully',
+  })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  assignMember(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() memberIds: number[],
+  ) {
+    return this.queuesService.assignMemberIntoQueue(id, memberIds);
+  }
+
+  /**
    * Find all queues with search query params
    * @param search - search query params
    * @returns array of QueueDto objects with queues data
@@ -66,6 +88,52 @@ export class QueuesController {
   @ApiBadRequestResponse({ description: 'Bad Request' })
   findAllQueue(@Query() search: any) {
     return this.queuesService.findAll(search);
+  }
+
+  /**
+   * Find all queues endpoint (GET /my-queues) with search query
+   * @param search Search query from request query
+   * @returns Array of event DTO objects
+   */
+  @Get('/my-queues')
+  @ApiQuery({
+    name: 'search',
+    required: false,
+    type: String,
+  })
+  @ApiQuery({
+    name: 'eventId',
+    required: false,
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'page',
+    required: true,
+    type: Number,
+    example: 1,
+  })
+  @ApiQuery({
+    name: 'size',
+    required: true,
+    type: Number,
+    example: 10,
+  })
+  @ApiOkResponse({ type: [QueueDto] })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  findAllQueueUserCanSee(
+    @Req() req: any,
+    @Query('search') search?: string,
+    @Query('eventId', ParseIntPipe) eventId?: number,
+    @Query('page') page?: number,
+    @Query('size') size?: number,
+  ) {
+    return this.queuesService.findAllQueueUserCanSee(
+      search,
+      req.user.id,
+      eventId,
+      page,
+      size,
+    );
   }
 
   /**
@@ -118,5 +186,22 @@ export class QueuesController {
   @ApiNotFoundResponse({ description: 'Not Found' })
   removeQueue(@Param('id', ParseIntPipe) id: number) {
     return this.queuesService.remove(+id);
+  }
+
+  // api get all user operate queue
+  /**
+   * Get all user operate queue
+   * @param id  - id of queue to get all user operate queue
+   * @returns  array of UserDto objects with user data
+   * @throws {BadRequestException} - if id is invalid
+   * @throws {InternalServerErrorException} - if error occurs during getting all user operate queue
+   */
+  @Get('/:id/user-operate-queue')
+  @ApiOkResponse({ type: [UserDto] })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  getAllUserOperateQueue(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<UserDto[]> {
+    return this.queuesService.getAllUserOperateQueue(id);
   }
 }

@@ -1,5 +1,12 @@
 import { DeleteOutlined, QuestionCircleOutlined } from "@ant-design/icons";
-import { useEventsControllerFindAllEvent } from "@api/waitingQueue";
+import {
+  useEnrollQueuesControllerFindAllEnrollQueue,
+  useEventsControllerFindAllEvent,
+} from "@api/waitingQueue";
+import {
+  EnrollQueueDto,
+  EnrollQueuesControllerFindAllEnrollQueueStatus,
+} from "@api/waitingQueue.schemas";
 import {
   Button,
   Card,
@@ -11,138 +18,137 @@ import {
   Table,
   Tag,
   Tooltip,
+  message,
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import Search from "antd/lib/input/Search";
 import EventForm from "components/administration/EventForm";
 import TenantForm from "components/administration/TenantForm";
+import _ from "lodash";
+import moment from "moment";
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import {
+  DEFAULT_PAGE_SIZE,
+  FORMAT_DATE_MINUTE,
+} from "services/utils/constants";
+import { StatusEnrollQueueRender } from "services/utils/format";
 
-interface DataType {
-  key: string;
-  name: string;
-  age: number;
-  address: string;
-  tags: string[];
-}
+type Props = {
+  status: string;
+};
 
-const data: DataType[] = [
-  {
-    key: "1",
-    name: "John Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park",
-    tags: ["nice", "developer"],
-  },
-  {
-    key: "2",
-    name: "Jim Green",
-    age: 42,
-    address: "London No. 1 Lake Park",
-    tags: ["loser"],
-  },
-  {
-    key: "3",
-    name: "Joe Black",
-    age: 32,
-    address: "Sidney No. 1 Lake Park",
-    tags: ["cool", "teacher"],
-  },
-];
+const ManagementEnrollQueues: React.FC<Props> = ({ status }) => {
+  const { eventId, queueId } = useParams();
+  const [dataSource, setDataSource] = React.useState<{
+    data: EnrollQueueDto[];
+    pagination: {
+      current: number;
+      pageSize: number;
+      total: number;
+    };
+  }>({
+    data: [],
+    pagination: {
+      current: 1,
+      pageSize: DEFAULT_PAGE_SIZE,
+      total: 0,
+    },
+  });
+  const [page, setPage] = React.useState(1);
 
-const ManagementEnrollQueues: React.FC = () => {
-  const { refetch: getAllEvent, isFetching: loadingData } =
-    useEventsControllerFindAllEvent({});
-
-  const columns: ColumnsType<DataType> = [
+  const { isFetching, refetch, data } =
+    useEnrollQueuesControllerFindAllEnrollQueue({
+      page: 1,
+      size: DEFAULT_PAGE_SIZE,
+      queueId: _.parseInt(queueId) || 0,
+      status: status
+        ? (status as EnrollQueuesControllerFindAllEnrollQueueStatus)
+        : undefined,
+    });
+  const columns: ColumnsType<EnrollQueueDto> = [
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-      render: (text) => <Link to="/event/1">{text}</Link>,
+      title: "STT",
+      dataIndex: "sequenceNumber",
+      key: "id",
+      width: 50,
     },
     {
-      title: "Age",
-      dataIndex: "age",
-      key: "age",
+      title: "Thời gian tham gia",
+      dataIndex: "enrollTime",
+      key: "enrollTime",
+      render: (value) => moment(value).format(FORMAT_DATE_MINUTE),
     },
     {
-      title: "Address",
-      dataIndex: "address",
-      key: "address",
+      title: "Thời gian bắt đầu phục vụ",
+      dataIndex: "startServe",
+      key: "enrollTime",
+      render: (value) =>
+        value ? moment(value).format(FORMAT_DATE_MINUTE) : null,
     },
     {
-      title: "Tags",
-      key: "tags",
-      dataIndex: "tags",
-      render: (_, { tags }) => (
-        <>
-          {tags.map((tag) => {
-            let color = tag.length > 5 ? "geekblue" : "green";
-            if (tag === "loser") {
-              color = "volcano";
-            }
-            return (
-              <Tag color={color} key={tag}>
-                {tag.toUpperCase()}
-              </Tag>
-            );
-          })}
-        </>
-      ),
+      title: "Thời gian kết thúc phục vụ",
+      dataIndex: "endServe",
+      key: "enrollTime",
+      render: (value) =>
+        value ? moment(value).format(FORMAT_DATE_MINUTE) : null,
+    },
+    {
+      title: "Trạng thái",
+      dataIndex: "status",
+      key: "status",
+      render: (value) => StatusEnrollQueueRender(value),
     },
     {
       title: "Hành động",
       fixed: "right",
       width: 100,
       key: "key",
-      render: (record) => {
-        return (
-          <>
-            <Space>
-              <Tooltip title="Xóa">
-                <Popconfirm
-                  title="XÁC NHẬN XÓA"
-                  // onConfirm={() => handleDelete(record.id)}
-                  okText="Xóa"
-                  okButtonProps={
-                    {
-                      // loading: loadingDelete,
-                    }
-                  }
-                  cancelText="Hủy"
-                  icon={
-                    <QuestionCircleOutlined
-                      style={{
-                        color: "red",
-                      }}
-                    />
-                  }
-                >
-                  <Button
-                    className="ant-btn-danger"
-                    shape="circle"
-                    icon={<DeleteOutlined />}
-                  />
-                </Popconfirm>
-              </Tooltip>
-            </Space>
-          </>
-        );
-      },
     },
   ];
 
   useEffect(() => {
-    getAllEvent();
+    const enrollQueueInterval = setInterval(() => {
+      refetch().then((res) => {
+        setDataSource((prev) => {
+          if (prev) {
+            if (res.data.data.length > prev.data.length) {
+              message.success("Có người đăng ký mới tham gia hàng đợi");
+            }
+          }
+          return res.data;
+        });
+      });
+    }, 5000);
+    return () => {
+      clearInterval(enrollQueueInterval);
+    };
+  }, [page, status]);
+
+  useEffect(() => {
+    refetch().then((res) => {
+      setDataSource(res.data);
+    });
   }, []);
 
   return (
     <>
       <Row>
-        <Card style={{ width: "100%" }}>
-          <Table columns={columns} dataSource={data} />
+        <Card style={{ width: "100%" }} className="br-8">
+          <Table
+            // loading={isFetching}
+            columns={columns}
+            dataSource={dataSource?.data}
+            pagination={{
+              current: page,
+              pageSize: DEFAULT_PAGE_SIZE,
+              showSizeChanger: false,
+              total: dataSource?.pagination.total || 0,
+            }}
+            onChange={(pagination) => {
+              setPage(pagination.current);
+            }}
+          />
         </Card>
       </Row>
     </>

@@ -3,24 +3,59 @@ import {
   DeleteOutlined,
   EditOutlined,
 } from "@ant-design/icons";
-import { Button, Card, Divider, Row } from "antd";
+import { EventDto } from "@api/waitingQueue.schemas";
+import { Button, Card, Descriptions, Divider, Image, Row, Tag } from "antd";
+import moment from "moment";
 import React from "react";
 import { Link } from "react-router-dom";
+import { serveImage } from "services/utils";
+import { FORMAT_DATE_MINUTE } from "services/utils/constants";
 
 export type Props = {
-  title: string;
+  data: EventDto;
 };
 
-const EventCard: React.FC<Props> = ({ title }) => {
+const EventCard: React.FC<Props> = ({ data }) => {
   return (
     <>
       <Card
-        title={<Link to={"/event/detail"}>title</Link>}
-        extra={<Button type="link">Xem chi tiết</Button>}
+        className="br-8"
+        title={<Link to={`/event/${data?.id}`}>{data?.name}</Link>}
+        extra={
+          <Button className="br-8" type="link" href={`/event/${data?.id}`}>
+            Xem chi tiết
+          </Button>
+        }
       >
-        <p>Ngày 1/1/2021</p>
-        <p>Địa điểm: 123 đường 1</p>
-        <p>Thời gian: 12:00</p>
+        <Row justify="center">
+          <Image
+            // width={200}
+            height={180}
+            src={serveImage(data?.drawImagePath)}
+          />
+        </Row>
+
+        <hr />
+        <Descriptions column={1}>
+          <Descriptions.Item label="Thời gian">
+            {data?.daily
+              ? "Hàng ngày"
+              : `Từ ${moment(data?.from).format(
+                  FORMAT_DATE_MINUTE
+                )} đến ${moment(data?.to).format(FORMAT_DATE_MINUTE)}`}
+          </Descriptions.Item>
+          <Descriptions.Item label="Địa điểm">{data?.place}</Descriptions.Item>
+          <Descriptions.Item label="Mô tả">
+            {data?.description}
+          </Descriptions.Item>
+          <Descriptions.Item label="Trạng thái">
+            {data?.status ? (
+              <Tag color="green">Hoạt động</Tag>
+            ) : (
+              <Tag color="red">Đã đóng</Tag>
+            )}
+          </Descriptions.Item>
+        </Descriptions>
         {/* <Divider />
         <Row justify="space-between">
           <Button

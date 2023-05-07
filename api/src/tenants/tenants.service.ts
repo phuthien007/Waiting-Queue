@@ -8,7 +8,7 @@ import { CreateTenantDto } from './dto/create-tenant.dto';
 import { UpdateTenantDto } from './dto/update-tenant.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Tenant } from './entities/tenants.entity';
-import { Repository } from 'typeorm';
+import { FindOptionsOrder, Repository } from 'typeorm';
 import { TenantsRepository } from './tenants.repository';
 import { plainToInstance } from 'class-transformer';
 import { partialMapping, randomCodeTenant } from 'src/common/algorithm';
@@ -17,6 +17,7 @@ import { ERROR_TYPE, transformError } from 'src/common/constant.error';
 import { UsersService } from 'src/users/users.service';
 import { FilterOperator } from 'src/common/filters.vm';
 import { LoggerService } from 'src/logger/logger.service';
+import { PaginateDto } from 'src/common/paginate.dto';
 
 /**
  * TenantsService class for tenants service with CRUD operations for tenants and other operations
@@ -74,30 +75,37 @@ export class TenantsService {
       excludeExtraneousValues: true,
     });
   }
-
-  // TODO: pagination
   /**
    * Find all tenants with search query params
    * @param search - search query params
    * @returns TenantDto[] object with found tenants data
    */
-  async findAll(search: any): Promise<TenantDto[]> {
+  async findAll(search: any): Promise<PaginateDto<TenantDto>> {
     // start create search
     const filterObj = new FilterOperator();
     // transform to filter
     Object.keys(search).forEach((key) => {
-      if (search[key] instanceof Array) {
-        search[key].forEach((tmp: any) => {
-          filterObj.addOperator(key, tmp);
-        });
-      } else {
-        filterObj.addOperator(key, search[key]);
+      if (key !== 'page' && key !== 'size' && key !== 'sort') {
+        if (search[key] instanceof Array) {
+          search[key].forEach((tmp: any) => {
+            filterObj.addOperator(key, tmp);
+          });
+        } else {
+          filterObj.addOperator(key, search[key]);
+        }
       }
     });
+
+    // transform to sort
+    filterObj.sort = search?.sort;
     let tenants: Tenant[] = [];
+    let totalCount: number;
     try {
-      tenants = await this.tenantRepository.find({
+      [tenants, totalCount] = await this.tenantRepository.findAndCount({
         where: filterObj.transformToQuery(),
+        order: filterObj.parseSortToOrder(),
+        take: search.size || 10,
+        skip: (search.page - 1) * search.size || 1,
       });
     } catch (error) {
       this.log.error(error);
@@ -109,10 +117,17 @@ export class TenantsService {
       );
     }
 
-    return tenants.map((tenant) =>
+    const result = tenants.map((tenant) =>
       plainToInstance(TenantDto, tenant, {
         excludeExtraneousValues: true,
       }),
+    );
+
+    return new PaginateDto<TenantDto>(
+      result,
+      search.page,
+      result.length === search.size ? search.size : result.length,
+      totalCount,
     );
   }
 

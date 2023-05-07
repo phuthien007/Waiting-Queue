@@ -79,9 +79,7 @@ export class UsersController {
   })
   @ApiOkResponse({ type: [UserDto] })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  findAllUser(@Query() search: any, @Req() req): Promise<UserDto[]> {
-    console.log('req.user.role', req.user.role);
-    console.log('req.user.role', req.user);
+  findAllUser(@Query() search: any, @Req() req) {
     if (req.user.role === RoleEnum.SUPER_ADMIN) {
       return this.usersService.findAll(search);
     } else {

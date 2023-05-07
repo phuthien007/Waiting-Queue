@@ -8,6 +8,7 @@ import {
   Delete,
   Query,
   ParseIntPipe,
+  Req,
 } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
@@ -22,6 +23,8 @@ import {
 } from '@nestjs/swagger';
 import { EventDto } from './dto/event.dto';
 import { FilterOperator } from 'src/common/filters.vm';
+import { RoleEnum } from 'src/common/enum';
+import { PaginateDto } from 'src/common/paginate.dto';
 
 /**
  * Events controller class for events endpoints (create, update, delete, etc.)
@@ -57,9 +60,51 @@ export class EventsController {
   })
   @ApiOkResponse({ type: [EventDto] })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  findAllEvent(@Query() search: any) {
+  findAllEvent(@Query() search: any): Promise<PaginateDto<EventDto>> {
     return this.eventsService.findAll(search);
   }
+
+  /**
+   * Find all events endpoint (GET /events) with search query
+   * @param search Search query from request query
+   * @returns Array of event DTO objects
+   */
+  @Get('/my-events')
+  @ApiQuery({
+    name: 'search',
+    required: false,
+    type: String,
+    description: 'Search query name with operator LIKE',
+  })
+  @ApiQuery({
+    name: 'page',
+    required: true,
+    type: Number,
+    example: 1,
+  })
+  @ApiQuery({
+    name: 'size',
+    required: true,
+    type: Number,
+    example: 10,
+  })
+  @ApiOkResponse({ type: [EventDto] })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  findAllEventUserCanSee(
+    @Req() req: any,
+    @Query('search') search?: string,
+    @Query('page') page?: number,
+    @Query('size') size?: number,
+  ): Promise<PaginateDto<EventDto>> {
+    return this.eventsService.findAllEventUserCanSee(
+      search,
+      req.user.id,
+      page,
+      size,
+    );
+  }
+
+  // TODO: api upload image place
 
   /**
    * Find one event endpoint (GET /events/:id) with id param

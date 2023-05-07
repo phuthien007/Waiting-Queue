@@ -24,26 +24,33 @@ import type {
   UsersControllerFindAllUserParams,
   UpdateUserDto,
   UserMeDto,
-  CreateSessionDto,
-  UpdateSessionDto,
   LoginDto,
   ResetPasswordDto,
+  AuthControllerFinishResetPasswordBody,
   ChangePasswordDto,
   EventDto,
   CreateEventDto,
   EventsControllerFindAllEventParams,
+  EventsControllerFindAllEventUserCanSeeParams,
   UpdateEventDto,
   QueueDto,
   CreateQueueDto,
   QueuesControllerFindAllQueueParams,
+  QueuesControllerFindAllQueueUserCanSeeParams,
   UpdateQueueDto,
-  EnrollQueueDto,
   CreateEnrollQueueDto,
+  EnrollQueueDto,
   EnrollQueuesControllerFindAllEnrollQueueParams,
-  UpdateEnrollQueueDto
+  FilesControllerUploadFileBody,
+  FilesControllerRemoveParams,
+  FilesControllerFindOneParams
 } from './waitingQueue.schemas'
 import { useCustomInstance } from './use-custom-instance';
 import { customFormData } from './custom-form-data';
+
+type AwaitedInput<T> = PromiseLike<T> | T;
+
+      type Awaited<O> = O extends AwaitedInput<infer T> ? T : never;
 
 
 export const useAppControllerGetHelloHook = () => {
@@ -811,260 +818,6 @@ export const useUsersControllerUpdateMeMutationOptions = <TError = void,
       return useMutation(mutationOptions);
     }
     
-export const useSessionsControllerCreateSessionHook = () => {
-        const sessionsControllerCreateSession = useCustomInstance<void>();
-
-        return (
-    createSessionDto: CreateSessionDto,
- ) => {
-        return sessionsControllerCreateSession(
-          {url: `/api/sessions`, method: 'post',
-      headers: {'Content-Type': 'application/json', },
-      data: createSessionDto
-    },
-          );
-        }
-      }
-    
-
-
-export const useSessionsControllerCreateSessionMutationOptions = <TError = unknown,
-    
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useSessionsControllerCreateSessionHook>>>, TError,{data: CreateSessionDto}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useSessionsControllerCreateSessionHook>>>, TError,{data: CreateSessionDto}, TContext> => {
- const {mutation: mutationOptions} = options ?? {};
-
-      const sessionsControllerCreateSession =  useSessionsControllerCreateSessionHook()
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<ReturnType<typeof useSessionsControllerCreateSessionHook>>>, {data: CreateSessionDto}> = (props) => {
-          const {data} = props ?? {};
-
-          return  sessionsControllerCreateSession(data,)
-        }
-
-        
-
- 
-   return  { mutationFn, ...mutationOptions }}
-
-    export type SessionsControllerCreateSessionMutationResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useSessionsControllerCreateSessionHook>>>>
-    export type SessionsControllerCreateSessionMutationBody = CreateSessionDto
-    export type SessionsControllerCreateSessionMutationError = unknown
-
-    export const useSessionsControllerCreateSession = <TError = unknown,
-    
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useSessionsControllerCreateSessionHook>>>, TError,{data: CreateSessionDto}, TContext>, }
-) => {
-    
-      const mutationOptions = useSessionsControllerCreateSessionMutationOptions(options);
-     
-      return useMutation(mutationOptions);
-    }
-    
-export const useSessionsControllerFindAllSessionHook = () => {
-        const sessionsControllerFindAllSession = useCustomInstance<void>();
-
-        return (
-    
- signal?: AbortSignal
-) => {
-        return sessionsControllerFindAllSession(
-          {url: `/api/sessions`, method: 'get', signal
-    },
-          );
-        }
-      }
-    
-
-export const getSessionsControllerFindAllSessionQueryKey = () => [`/api/sessions`] as const;
-  
-
-    
-export const useSessionsControllerFindAllSessionQueryOptions = <TData = Awaited<ReturnType<ReturnType<typeof useSessionsControllerFindAllSessionHook>>>, TError = unknown>( options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useSessionsControllerFindAllSessionHook>>>, TError, TData>, }
-): UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useSessionsControllerFindAllSessionHook>>>, TError, TData> & { queryKey: QueryKey } => {
-const {query: queryOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getSessionsControllerFindAllSessionQueryKey();
-
-  const sessionsControllerFindAllSession =  useSessionsControllerFindAllSessionHook();
-  
-    const queryFn: QueryFunction<Awaited<ReturnType<ReturnType<typeof useSessionsControllerFindAllSessionHook>>>> = ({ signal }) => sessionsControllerFindAllSession(signal);
-    
-      
-      
-   return  { queryKey, queryFn, ...queryOptions}}
-
-export type SessionsControllerFindAllSessionQueryResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useSessionsControllerFindAllSessionHook>>>>
-export type SessionsControllerFindAllSessionQueryError = unknown
-
-export const useSessionsControllerFindAllSession = <TData = Awaited<ReturnType<ReturnType<typeof useSessionsControllerFindAllSessionHook>>>, TError = unknown>(
-  options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useSessionsControllerFindAllSessionHook>>>, TError, TData>, }
-
-  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
-
-  const queryOptions = useSessionsControllerFindAllSessionQueryOptions(options)
-
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
-
-  query.queryKey = queryOptions.queryKey;
-
-  return query;
-}
-
-
-export const useSessionsControllerFindOneSessionHook = () => {
-        const sessionsControllerFindOneSession = useCustomInstance<void>();
-
-        return (
-    id: string,
- signal?: AbortSignal
-) => {
-        return sessionsControllerFindOneSession(
-          {url: `/api/sessions/${id}`, method: 'get', signal
-    },
-          );
-        }
-      }
-    
-
-export const getSessionsControllerFindOneSessionQueryKey = (id: string,) => [`/api/sessions/${id}`] as const;
-  
-
-    
-export const useSessionsControllerFindOneSessionQueryOptions = <TData = Awaited<ReturnType<ReturnType<typeof useSessionsControllerFindOneSessionHook>>>, TError = unknown>(id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useSessionsControllerFindOneSessionHook>>>, TError, TData>, }
-): UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useSessionsControllerFindOneSessionHook>>>, TError, TData> & { queryKey: QueryKey } => {
-const {query: queryOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getSessionsControllerFindOneSessionQueryKey(id);
-
-  const sessionsControllerFindOneSession =  useSessionsControllerFindOneSessionHook();
-  
-    const queryFn: QueryFunction<Awaited<ReturnType<ReturnType<typeof useSessionsControllerFindOneSessionHook>>>> = ({ signal }) => sessionsControllerFindOneSession(id, signal);
-    
-      
-      
-   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions}}
-
-export type SessionsControllerFindOneSessionQueryResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useSessionsControllerFindOneSessionHook>>>>
-export type SessionsControllerFindOneSessionQueryError = unknown
-
-export const useSessionsControllerFindOneSession = <TData = Awaited<ReturnType<ReturnType<typeof useSessionsControllerFindOneSessionHook>>>, TError = unknown>(
- id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useSessionsControllerFindOneSessionHook>>>, TError, TData>, }
-
-  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
-
-  const queryOptions = useSessionsControllerFindOneSessionQueryOptions(id,options)
-
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
-
-  query.queryKey = queryOptions.queryKey;
-
-  return query;
-}
-
-
-export const useSessionsControllerUpdateSessionHook = () => {
-        const sessionsControllerUpdateSession = useCustomInstance<void>();
-
-        return (
-    id: string,
-    updateSessionDto: UpdateSessionDto,
- ) => {
-        return sessionsControllerUpdateSession(
-          {url: `/api/sessions/${id}`, method: 'patch',
-      headers: {'Content-Type': 'application/json', },
-      data: updateSessionDto
-    },
-          );
-        }
-      }
-    
-
-
-export const useSessionsControllerUpdateSessionMutationOptions = <TError = unknown,
-    
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useSessionsControllerUpdateSessionHook>>>, TError,{id: string;data: UpdateSessionDto}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useSessionsControllerUpdateSessionHook>>>, TError,{id: string;data: UpdateSessionDto}, TContext> => {
- const {mutation: mutationOptions} = options ?? {};
-
-      const sessionsControllerUpdateSession =  useSessionsControllerUpdateSessionHook()
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<ReturnType<typeof useSessionsControllerUpdateSessionHook>>>, {id: string;data: UpdateSessionDto}> = (props) => {
-          const {id,data} = props ?? {};
-
-          return  sessionsControllerUpdateSession(id,data,)
-        }
-
-        
-
- 
-   return  { mutationFn, ...mutationOptions }}
-
-    export type SessionsControllerUpdateSessionMutationResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useSessionsControllerUpdateSessionHook>>>>
-    export type SessionsControllerUpdateSessionMutationBody = UpdateSessionDto
-    export type SessionsControllerUpdateSessionMutationError = unknown
-
-    export const useSessionsControllerUpdateSession = <TError = unknown,
-    
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useSessionsControllerUpdateSessionHook>>>, TError,{id: string;data: UpdateSessionDto}, TContext>, }
-) => {
-    
-      const mutationOptions = useSessionsControllerUpdateSessionMutationOptions(options);
-     
-      return useMutation(mutationOptions);
-    }
-    
-export const useSessionsControllerRemoveSessionHook = () => {
-        const sessionsControllerRemoveSession = useCustomInstance<void>();
-
-        return (
-    id: string,
- ) => {
-        return sessionsControllerRemoveSession(
-          {url: `/api/sessions/${id}`, method: 'delete'
-    },
-          );
-        }
-      }
-    
-
-
-export const useSessionsControllerRemoveSessionMutationOptions = <TError = unknown,
-    
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useSessionsControllerRemoveSessionHook>>>, TError,{id: string}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useSessionsControllerRemoveSessionHook>>>, TError,{id: string}, TContext> => {
- const {mutation: mutationOptions} = options ?? {};
-
-      const sessionsControllerRemoveSession =  useSessionsControllerRemoveSessionHook()
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<ReturnType<typeof useSessionsControllerRemoveSessionHook>>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
-
-          return  sessionsControllerRemoveSession(id,)
-        }
-
-        
-
- 
-   return  { mutationFn, ...mutationOptions }}
-
-    export type SessionsControllerRemoveSessionMutationResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useSessionsControllerRemoveSessionHook>>>>
-    
-    export type SessionsControllerRemoveSessionMutationError = unknown
-
-    export const useSessionsControllerRemoveSession = <TError = unknown,
-    
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useSessionsControllerRemoveSessionHook>>>, TError,{id: string}, TContext>, }
-) => {
-    
-      const mutationOptions = useSessionsControllerRemoveSessionMutationOptions(options);
-     
-      return useMutation(mutationOptions);
-    }
-    
 export const useAuthControllerLoginHook = () => {
         const authControllerLogin = useCustomInstance<void>();
 
@@ -1172,9 +925,12 @@ export const useAuthControllerFinishResetPasswordHook = () => {
 
         return (
     token: string,
+    authControllerFinishResetPasswordBody: AuthControllerFinishResetPasswordBody,
  ) => {
         return authControllerFinishResetPassword(
-          {url: `/api/auth/finish-reset-password/${token}`, method: 'post'
+          {url: `/api/auth/finish-reset-password/${token}`, method: 'post',
+      headers: {'Content-Type': 'application/json', },
+      data: authControllerFinishResetPasswordBody
     },
           );
         }
@@ -1184,17 +940,17 @@ export const useAuthControllerFinishResetPasswordHook = () => {
 
 export const useAuthControllerFinishResetPasswordMutationOptions = <TError = unknown,
     
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useAuthControllerFinishResetPasswordHook>>>, TError,{token: string}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useAuthControllerFinishResetPasswordHook>>>, TError,{token: string}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useAuthControllerFinishResetPasswordHook>>>, TError,{token: string;data: AuthControllerFinishResetPasswordBody}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useAuthControllerFinishResetPasswordHook>>>, TError,{token: string;data: AuthControllerFinishResetPasswordBody}, TContext> => {
  const {mutation: mutationOptions} = options ?? {};
 
       const authControllerFinishResetPassword =  useAuthControllerFinishResetPasswordHook()
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<ReturnType<typeof useAuthControllerFinishResetPasswordHook>>>, {token: string}> = (props) => {
-          const {token} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<ReturnType<typeof useAuthControllerFinishResetPasswordHook>>>, {token: string;data: AuthControllerFinishResetPasswordBody}> = (props) => {
+          const {token,data} = props ?? {};
 
-          return  authControllerFinishResetPassword(token,)
+          return  authControllerFinishResetPassword(token,data,)
         }
 
         
@@ -1203,12 +959,12 @@ export const useAuthControllerFinishResetPasswordMutationOptions = <TError = unk
    return  { mutationFn, ...mutationOptions }}
 
     export type AuthControllerFinishResetPasswordMutationResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useAuthControllerFinishResetPasswordHook>>>>
-    
+    export type AuthControllerFinishResetPasswordMutationBody = AuthControllerFinishResetPasswordBody
     export type AuthControllerFinishResetPasswordMutationError = unknown
 
     export const useAuthControllerFinishResetPassword = <TError = unknown,
     
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useAuthControllerFinishResetPasswordHook>>>, TError,{token: string}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useAuthControllerFinishResetPasswordHook>>>, TError,{token: string;data: AuthControllerFinishResetPasswordBody}, TContext>, }
 ) => {
     
       const mutationOptions = useAuthControllerFinishResetPasswordMutationOptions(options);
@@ -1410,6 +1166,58 @@ export const useEventsControllerFindAllEvent = <TData = Awaited<ReturnType<Retur
   ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
 
   const queryOptions = useEventsControllerFindAllEventQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+
+export const useEventsControllerFindAllEventUserCanSeeHook = () => {
+        const eventsControllerFindAllEventUserCanSee = useCustomInstance<EventDto[]>();
+
+        return (
+    params: EventsControllerFindAllEventUserCanSeeParams,
+ signal?: AbortSignal
+) => {
+        return eventsControllerFindAllEventUserCanSee(
+          {url: `/api/events/my-events`, method: 'get',
+        params, signal
+    },
+          );
+        }
+      }
+    
+
+export const getEventsControllerFindAllEventUserCanSeeQueryKey = (params: EventsControllerFindAllEventUserCanSeeParams,) => [`/api/events/my-events`, ...(params ? [params]: [])] as const;
+  
+
+    
+export const useEventsControllerFindAllEventUserCanSeeQueryOptions = <TData = Awaited<ReturnType<ReturnType<typeof useEventsControllerFindAllEventUserCanSeeHook>>>, TError = void>(params: EventsControllerFindAllEventUserCanSeeParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useEventsControllerFindAllEventUserCanSeeHook>>>, TError, TData>, }
+): UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useEventsControllerFindAllEventUserCanSeeHook>>>, TError, TData> & { queryKey: QueryKey } => {
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getEventsControllerFindAllEventUserCanSeeQueryKey(params);
+
+  const eventsControllerFindAllEventUserCanSee =  useEventsControllerFindAllEventUserCanSeeHook();
+  
+    const queryFn: QueryFunction<Awaited<ReturnType<ReturnType<typeof useEventsControllerFindAllEventUserCanSeeHook>>>> = ({ signal }) => eventsControllerFindAllEventUserCanSee(params, signal);
+    
+      
+      
+   return  { queryKey, queryFn, ...queryOptions}}
+
+export type EventsControllerFindAllEventUserCanSeeQueryResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useEventsControllerFindAllEventUserCanSeeHook>>>>
+export type EventsControllerFindAllEventUserCanSeeQueryError = void
+
+export const useEventsControllerFindAllEventUserCanSee = <TData = Awaited<ReturnType<ReturnType<typeof useEventsControllerFindAllEventUserCanSeeHook>>>, TError = void>(
+ params: EventsControllerFindAllEventUserCanSeeParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useEventsControllerFindAllEventUserCanSeeHook>>>, TError, TData>, }
+
+  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+
+  const queryOptions = useEventsControllerFindAllEventUserCanSeeQueryOptions(params,options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 
@@ -1674,6 +1482,110 @@ export const useQueuesControllerFindAllQueue = <TData = Awaited<ReturnType<Retur
 }
 
 
+export const useQueuesControllerAssignMemberHook = () => {
+        const queuesControllerAssignMember = useCustomInstance<void>();
+
+        return (
+    id: number,
+    queuesControllerAssignMemberBody: number[],
+ ) => {
+        return queuesControllerAssignMember(
+          {url: `/api/queues/${id}/assign-member`, method: 'post',
+      headers: {'Content-Type': 'application/json', },
+      data: queuesControllerAssignMemberBody
+    },
+          );
+        }
+      }
+    
+
+
+export const useQueuesControllerAssignMemberMutationOptions = <TError = unknown,
+    
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerAssignMemberHook>>>, TError,{id: number;data: number[]}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerAssignMemberHook>>>, TError,{id: number;data: number[]}, TContext> => {
+ const {mutation: mutationOptions} = options ?? {};
+
+      const queuesControllerAssignMember =  useQueuesControllerAssignMemberHook()
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<ReturnType<typeof useQueuesControllerAssignMemberHook>>>, {id: number;data: number[]}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  queuesControllerAssignMember(id,data,)
+        }
+
+        
+
+ 
+   return  { mutationFn, ...mutationOptions }}
+
+    export type QueuesControllerAssignMemberMutationResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useQueuesControllerAssignMemberHook>>>>
+    export type QueuesControllerAssignMemberMutationBody = number[]
+    export type QueuesControllerAssignMemberMutationError = unknown
+
+    export const useQueuesControllerAssignMember = <TError = unknown,
+    
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerAssignMemberHook>>>, TError,{id: number;data: number[]}, TContext>, }
+) => {
+    
+      const mutationOptions = useQueuesControllerAssignMemberMutationOptions(options);
+     
+      return useMutation(mutationOptions);
+    }
+    
+export const useQueuesControllerFindAllQueueUserCanSeeHook = () => {
+        const queuesControllerFindAllQueueUserCanSee = useCustomInstance<QueueDto[]>();
+
+        return (
+    params: QueuesControllerFindAllQueueUserCanSeeParams,
+ signal?: AbortSignal
+) => {
+        return queuesControllerFindAllQueueUserCanSee(
+          {url: `/api/queues/my-queues`, method: 'get',
+        params, signal
+    },
+          );
+        }
+      }
+    
+
+export const getQueuesControllerFindAllQueueUserCanSeeQueryKey = (params: QueuesControllerFindAllQueueUserCanSeeParams,) => [`/api/queues/my-queues`, ...(params ? [params]: [])] as const;
+  
+
+    
+export const useQueuesControllerFindAllQueueUserCanSeeQueryOptions = <TData = Awaited<ReturnType<ReturnType<typeof useQueuesControllerFindAllQueueUserCanSeeHook>>>, TError = void>(params: QueuesControllerFindAllQueueUserCanSeeParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerFindAllQueueUserCanSeeHook>>>, TError, TData>, }
+): UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerFindAllQueueUserCanSeeHook>>>, TError, TData> & { queryKey: QueryKey } => {
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getQueuesControllerFindAllQueueUserCanSeeQueryKey(params);
+
+  const queuesControllerFindAllQueueUserCanSee =  useQueuesControllerFindAllQueueUserCanSeeHook();
+  
+    const queryFn: QueryFunction<Awaited<ReturnType<ReturnType<typeof useQueuesControllerFindAllQueueUserCanSeeHook>>>> = ({ signal }) => queuesControllerFindAllQueueUserCanSee(params, signal);
+    
+      
+      
+   return  { queryKey, queryFn, ...queryOptions}}
+
+export type QueuesControllerFindAllQueueUserCanSeeQueryResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useQueuesControllerFindAllQueueUserCanSeeHook>>>>
+export type QueuesControllerFindAllQueueUserCanSeeQueryError = void
+
+export const useQueuesControllerFindAllQueueUserCanSee = <TData = Awaited<ReturnType<ReturnType<typeof useQueuesControllerFindAllQueueUserCanSeeHook>>>, TError = void>(
+ params: QueuesControllerFindAllQueueUserCanSeeParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerFindAllQueueUserCanSeeHook>>>, TError, TData>, }
+
+  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+
+  const queryOptions = useQueuesControllerFindAllQueueUserCanSeeQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+
 export const useQueuesControllerFindOneQueueHook = () => {
         const queuesControllerFindOneQueue = useCustomInstance<QueueDto>();
 
@@ -1826,8 +1738,59 @@ export const useQueuesControllerRemoveQueueMutationOptions = <TError = unknown,
       return useMutation(mutationOptions);
     }
     
+export const useQueuesControllerGetAllUserOperateQueueHook = () => {
+        const queuesControllerGetAllUserOperateQueue = useCustomInstance<UserDto[]>();
+
+        return (
+    id: number,
+ signal?: AbortSignal
+) => {
+        return queuesControllerGetAllUserOperateQueue(
+          {url: `/api/queues/${id}/user-operate-queue`, method: 'get', signal
+    },
+          );
+        }
+      }
+    
+
+export const getQueuesControllerGetAllUserOperateQueueQueryKey = (id: number,) => [`/api/queues/${id}/user-operate-queue`] as const;
+  
+
+    
+export const useQueuesControllerGetAllUserOperateQueueQueryOptions = <TData = Awaited<ReturnType<ReturnType<typeof useQueuesControllerGetAllUserOperateQueueHook>>>, TError = void>(id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerGetAllUserOperateQueueHook>>>, TError, TData>, }
+): UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerGetAllUserOperateQueueHook>>>, TError, TData> & { queryKey: QueryKey } => {
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getQueuesControllerGetAllUserOperateQueueQueryKey(id);
+
+  const queuesControllerGetAllUserOperateQueue =  useQueuesControllerGetAllUserOperateQueueHook();
+  
+    const queryFn: QueryFunction<Awaited<ReturnType<ReturnType<typeof useQueuesControllerGetAllUserOperateQueueHook>>>> = ({ signal }) => queuesControllerGetAllUserOperateQueue(id, signal);
+    
+      
+      
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions}}
+
+export type QueuesControllerGetAllUserOperateQueueQueryResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useQueuesControllerGetAllUserOperateQueueHook>>>>
+export type QueuesControllerGetAllUserOperateQueueQueryError = void
+
+export const useQueuesControllerGetAllUserOperateQueue = <TData = Awaited<ReturnType<ReturnType<typeof useQueuesControllerGetAllUserOperateQueueHook>>>, TError = void>(
+ id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerGetAllUserOperateQueueHook>>>, TError, TData>, }
+
+  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+
+  const queryOptions = useQueuesControllerGetAllUserOperateQueueQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+
 export const useEnrollQueuesControllerCreateEnrollQueueHook = () => {
-        const enrollQueuesControllerCreateEnrollQueue = useCustomInstance<EnrollQueueDto>();
+        const enrollQueuesControllerCreateEnrollQueue = useCustomInstance<void>();
 
         return (
     createEnrollQueueDto: CreateEnrollQueueDto,
@@ -1843,7 +1806,7 @@ export const useEnrollQueuesControllerCreateEnrollQueueHook = () => {
     
 
 
-export const useEnrollQueuesControllerCreateEnrollQueueMutationOptions = <TError = void,
+export const useEnrollQueuesControllerCreateEnrollQueueMutationOptions = <TError = unknown,
     
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerCreateEnrollQueueHook>>>, TError,{data: CreateEnrollQueueDto}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerCreateEnrollQueueHook>>>, TError,{data: CreateEnrollQueueDto}, TContext> => {
@@ -1865,9 +1828,9 @@ export const useEnrollQueuesControllerCreateEnrollQueueMutationOptions = <TError
 
     export type EnrollQueuesControllerCreateEnrollQueueMutationResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerCreateEnrollQueueHook>>>>
     export type EnrollQueuesControllerCreateEnrollQueueMutationBody = CreateEnrollQueueDto
-    export type EnrollQueuesControllerCreateEnrollQueueMutationError = void
+    export type EnrollQueuesControllerCreateEnrollQueueMutationError = unknown
 
-    export const useEnrollQueuesControllerCreateEnrollQueue = <TError = void,
+    export const useEnrollQueuesControllerCreateEnrollQueue = <TError = unknown,
     
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerCreateEnrollQueueHook>>>, TError,{data: CreateEnrollQueueDto}, TContext>, }
 ) => {
@@ -1881,7 +1844,7 @@ export const useEnrollQueuesControllerFindAllEnrollQueueHook = () => {
         const enrollQueuesControllerFindAllEnrollQueue = useCustomInstance<EnrollQueueDto[]>();
 
         return (
-    params?: EnrollQueuesControllerFindAllEnrollQueueParams,
+    params: EnrollQueuesControllerFindAllEnrollQueueParams,
  signal?: AbortSignal
 ) => {
         return enrollQueuesControllerFindAllEnrollQueue(
@@ -1893,11 +1856,11 @@ export const useEnrollQueuesControllerFindAllEnrollQueueHook = () => {
       }
     
 
-export const getEnrollQueuesControllerFindAllEnrollQueueQueryKey = (params?: EnrollQueuesControllerFindAllEnrollQueueParams,) => [`/api/enroll-queues`, ...(params ? [params]: [])] as const;
+export const getEnrollQueuesControllerFindAllEnrollQueueQueryKey = (params: EnrollQueuesControllerFindAllEnrollQueueParams,) => [`/api/enroll-queues`, ...(params ? [params]: [])] as const;
   
 
     
-export const useEnrollQueuesControllerFindAllEnrollQueueQueryOptions = <TData = Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerFindAllEnrollQueueHook>>>, TError = void>(params?: EnrollQueuesControllerFindAllEnrollQueueParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerFindAllEnrollQueueHook>>>, TError, TData>, }
+export const useEnrollQueuesControllerFindAllEnrollQueueQueryOptions = <TData = Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerFindAllEnrollQueueHook>>>, TError = void>(params: EnrollQueuesControllerFindAllEnrollQueueParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerFindAllEnrollQueueHook>>>, TError, TData>, }
 ): UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerFindAllEnrollQueueHook>>>, TError, TData> & { queryKey: QueryKey } => {
 const {query: queryOptions} = options ?? {};
 
@@ -1915,7 +1878,7 @@ export type EnrollQueuesControllerFindAllEnrollQueueQueryResult = NonNullable<Aw
 export type EnrollQueuesControllerFindAllEnrollQueueQueryError = void
 
 export const useEnrollQueuesControllerFindAllEnrollQueue = <TData = Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerFindAllEnrollQueueHook>>>, TError = void>(
- params?: EnrollQueuesControllerFindAllEnrollQueueParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerFindAllEnrollQueueHook>>>, TError, TData>, }
+ params: EnrollQueuesControllerFindAllEnrollQueueParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerFindAllEnrollQueueHook>>>, TError, TData>, }
 
   ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
 
@@ -1929,48 +1892,48 @@ export const useEnrollQueuesControllerFindAllEnrollQueue = <TData = Awaited<Retu
 }
 
 
-export const useEnrollQueuesControllerFindOneEnrollQueueHook = () => {
-        const enrollQueuesControllerFindOneEnrollQueue = useCustomInstance<EnrollQueueDto>();
+export const useEnrollQueuesControllerFindAllMyEnrollQueueHook = () => {
+        const enrollQueuesControllerFindAllMyEnrollQueue = useCustomInstance<EnrollQueueDto[]>();
 
         return (
-    id: number,
+    
  signal?: AbortSignal
 ) => {
-        return enrollQueuesControllerFindOneEnrollQueue(
-          {url: `/api/enroll-queues/${id}`, method: 'get', signal
+        return enrollQueuesControllerFindAllMyEnrollQueue(
+          {url: `/api/enroll-queues/my-enroll`, method: 'get', signal
     },
           );
         }
       }
     
 
-export const getEnrollQueuesControllerFindOneEnrollQueueQueryKey = (id: number,) => [`/api/enroll-queues/${id}`] as const;
+export const getEnrollQueuesControllerFindAllMyEnrollQueueQueryKey = () => [`/api/enroll-queues/my-enroll`] as const;
   
 
     
-export const useEnrollQueuesControllerFindOneEnrollQueueQueryOptions = <TData = Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerFindOneEnrollQueueHook>>>, TError = void>(id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerFindOneEnrollQueueHook>>>, TError, TData>, }
-): UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerFindOneEnrollQueueHook>>>, TError, TData> & { queryKey: QueryKey } => {
+export const useEnrollQueuesControllerFindAllMyEnrollQueueQueryOptions = <TData = Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerFindAllMyEnrollQueueHook>>>, TError = void>( options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerFindAllMyEnrollQueueHook>>>, TError, TData>, }
+): UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerFindAllMyEnrollQueueHook>>>, TError, TData> & { queryKey: QueryKey } => {
 const {query: queryOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getEnrollQueuesControllerFindOneEnrollQueueQueryKey(id);
+  const queryKey =  queryOptions?.queryKey ?? getEnrollQueuesControllerFindAllMyEnrollQueueQueryKey();
 
-  const enrollQueuesControllerFindOneEnrollQueue =  useEnrollQueuesControllerFindOneEnrollQueueHook();
+  const enrollQueuesControllerFindAllMyEnrollQueue =  useEnrollQueuesControllerFindAllMyEnrollQueueHook();
   
-    const queryFn: QueryFunction<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerFindOneEnrollQueueHook>>>> = ({ signal }) => enrollQueuesControllerFindOneEnrollQueue(id, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerFindAllMyEnrollQueueHook>>>> = ({ signal }) => enrollQueuesControllerFindAllMyEnrollQueue(signal);
     
       
       
-   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions}}
+   return  { queryKey, queryFn, ...queryOptions}}
 
-export type EnrollQueuesControllerFindOneEnrollQueueQueryResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerFindOneEnrollQueueHook>>>>
-export type EnrollQueuesControllerFindOneEnrollQueueQueryError = void
+export type EnrollQueuesControllerFindAllMyEnrollQueueQueryResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerFindAllMyEnrollQueueHook>>>>
+export type EnrollQueuesControllerFindAllMyEnrollQueueQueryError = void
 
-export const useEnrollQueuesControllerFindOneEnrollQueue = <TData = Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerFindOneEnrollQueueHook>>>, TError = void>(
- id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerFindOneEnrollQueueHook>>>, TError, TData>, }
+export const useEnrollQueuesControllerFindAllMyEnrollQueue = <TData = Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerFindAllMyEnrollQueueHook>>>, TError = void>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerFindAllMyEnrollQueueHook>>>, TError, TData>, }
 
   ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
 
-  const queryOptions = useEnrollQueuesControllerFindOneEnrollQueueQueryOptions(id,options)
+  const queryOptions = useEnrollQueuesControllerFindAllMyEnrollQueueQueryOptions(options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 
@@ -1980,63 +1943,11 @@ export const useEnrollQueuesControllerFindOneEnrollQueue = <TData = Awaited<Retu
 }
 
 
-export const useEnrollQueuesControllerUpdateEnrollQueueHook = () => {
-        const enrollQueuesControllerUpdateEnrollQueue = useCustomInstance<EnrollQueueDto>();
-
-        return (
-    id: number,
-    updateEnrollQueueDto: UpdateEnrollQueueDto,
- ) => {
-        return enrollQueuesControllerUpdateEnrollQueue(
-          {url: `/api/enroll-queues/${id}`, method: 'patch',
-      headers: {'Content-Type': 'application/json', },
-      data: updateEnrollQueueDto
-    },
-          );
-        }
-      }
-    
-
-
-export const useEnrollQueuesControllerUpdateEnrollQueueMutationOptions = <TError = void,
-    
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerUpdateEnrollQueueHook>>>, TError,{id: number;data: UpdateEnrollQueueDto}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerUpdateEnrollQueueHook>>>, TError,{id: number;data: UpdateEnrollQueueDto}, TContext> => {
- const {mutation: mutationOptions} = options ?? {};
-
-      const enrollQueuesControllerUpdateEnrollQueue =  useEnrollQueuesControllerUpdateEnrollQueueHook()
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerUpdateEnrollQueueHook>>>, {id: number;data: UpdateEnrollQueueDto}> = (props) => {
-          const {id,data} = props ?? {};
-
-          return  enrollQueuesControllerUpdateEnrollQueue(id,data,)
-        }
-
-        
-
- 
-   return  { mutationFn, ...mutationOptions }}
-
-    export type EnrollQueuesControllerUpdateEnrollQueueMutationResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerUpdateEnrollQueueHook>>>>
-    export type EnrollQueuesControllerUpdateEnrollQueueMutationBody = UpdateEnrollQueueDto
-    export type EnrollQueuesControllerUpdateEnrollQueueMutationError = void
-
-    export const useEnrollQueuesControllerUpdateEnrollQueue = <TError = void,
-    
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerUpdateEnrollQueueHook>>>, TError,{id: number;data: UpdateEnrollQueueDto}, TContext>, }
-) => {
-    
-      const mutationOptions = useEnrollQueuesControllerUpdateEnrollQueueMutationOptions(options);
-     
-      return useMutation(mutationOptions);
-    }
-    
 export const useEnrollQueuesControllerRemoveEnrollQueueHook = () => {
         const enrollQueuesControllerRemoveEnrollQueue = useCustomInstance<void>();
 
         return (
-    id: number,
+    id: string,
  ) => {
         return enrollQueuesControllerRemoveEnrollQueue(
           {url: `/api/enroll-queues/${id}`, method: 'delete'
@@ -2049,14 +1960,14 @@ export const useEnrollQueuesControllerRemoveEnrollQueueHook = () => {
 
 export const useEnrollQueuesControllerRemoveEnrollQueueMutationOptions = <TError = unknown,
     
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerRemoveEnrollQueueHook>>>, TError,{id: number}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerRemoveEnrollQueueHook>>>, TError,{id: number}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerRemoveEnrollQueueHook>>>, TError,{id: string}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerRemoveEnrollQueueHook>>>, TError,{id: string}, TContext> => {
  const {mutation: mutationOptions} = options ?? {};
 
       const enrollQueuesControllerRemoveEnrollQueue =  useEnrollQueuesControllerRemoveEnrollQueueHook()
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerRemoveEnrollQueueHook>>>, {id: number}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerRemoveEnrollQueueHook>>>, {id: string}> = (props) => {
           const {id} = props ?? {};
 
           return  enrollQueuesControllerRemoveEnrollQueue(id,)
@@ -2073,7 +1984,7 @@ export const useEnrollQueuesControllerRemoveEnrollQueueMutationOptions = <TError
 
     export const useEnrollQueuesControllerRemoveEnrollQueue = <TError = unknown,
     
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerRemoveEnrollQueueHook>>>, TError,{id: number}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerRemoveEnrollQueueHook>>>, TError,{id: string}, TContext>, }
 ) => {
     
       const mutationOptions = useEnrollQueuesControllerRemoveEnrollQueueMutationOptions(options);
@@ -2081,3 +1992,156 @@ export const useEnrollQueuesControllerRemoveEnrollQueueMutationOptions = <TError
       return useMutation(mutationOptions);
     }
     
+export const useFilesControllerUploadFileHook = () => {
+        const filesControllerUploadFile = useCustomInstance<void>();
+
+        return (
+    filesControllerUploadFileBody: FilesControllerUploadFileBody,
+ ) => {const formData = customFormData(filesControllerUploadFileBody)
+        return filesControllerUploadFile(
+          {url: `/api/files`, method: 'post',
+      headers: {'Content-Type': 'multipart/form-data', },
+       data: formData
+    },
+          );
+        }
+      }
+    
+
+
+export const useFilesControllerUploadFileMutationOptions = <TError = unknown,
+    
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useFilesControllerUploadFileHook>>>, TError,{data: FilesControllerUploadFileBody}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useFilesControllerUploadFileHook>>>, TError,{data: FilesControllerUploadFileBody}, TContext> => {
+ const {mutation: mutationOptions} = options ?? {};
+
+      const filesControllerUploadFile =  useFilesControllerUploadFileHook()
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<ReturnType<typeof useFilesControllerUploadFileHook>>>, {data: FilesControllerUploadFileBody}> = (props) => {
+          const {data} = props ?? {};
+
+          return  filesControllerUploadFile(data,)
+        }
+
+        
+
+ 
+   return  { mutationFn, ...mutationOptions }}
+
+    export type FilesControllerUploadFileMutationResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useFilesControllerUploadFileHook>>>>
+    export type FilesControllerUploadFileMutationBody = FilesControllerUploadFileBody
+    export type FilesControllerUploadFileMutationError = unknown
+
+    export const useFilesControllerUploadFile = <TError = unknown,
+    
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useFilesControllerUploadFileHook>>>, TError,{data: FilesControllerUploadFileBody}, TContext>, }
+) => {
+    
+      const mutationOptions = useFilesControllerUploadFileMutationOptions(options);
+     
+      return useMutation(mutationOptions);
+    }
+    
+export const useFilesControllerRemoveHook = () => {
+        const filesControllerRemove = useCustomInstance<void>();
+
+        return (
+    params: FilesControllerRemoveParams,
+ ) => {
+        return filesControllerRemove(
+          {url: `/api/files`, method: 'delete',
+        params
+    },
+          );
+        }
+      }
+    
+
+
+export const useFilesControllerRemoveMutationOptions = <TError = unknown,
+    
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useFilesControllerRemoveHook>>>, TError,{params: FilesControllerRemoveParams}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useFilesControllerRemoveHook>>>, TError,{params: FilesControllerRemoveParams}, TContext> => {
+ const {mutation: mutationOptions} = options ?? {};
+
+      const filesControllerRemove =  useFilesControllerRemoveHook()
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<ReturnType<typeof useFilesControllerRemoveHook>>>, {params: FilesControllerRemoveParams}> = (props) => {
+          const {params} = props ?? {};
+
+          return  filesControllerRemove(params,)
+        }
+
+        
+
+ 
+   return  { mutationFn, ...mutationOptions }}
+
+    export type FilesControllerRemoveMutationResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useFilesControllerRemoveHook>>>>
+    
+    export type FilesControllerRemoveMutationError = unknown
+
+    export const useFilesControllerRemove = <TError = unknown,
+    
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useFilesControllerRemoveHook>>>, TError,{params: FilesControllerRemoveParams}, TContext>, }
+) => {
+    
+      const mutationOptions = useFilesControllerRemoveMutationOptions(options);
+     
+      return useMutation(mutationOptions);
+    }
+    
+export const useFilesControllerFindOneHook = () => {
+        const filesControllerFindOne = useCustomInstance<void>();
+
+        return (
+    params: FilesControllerFindOneParams,
+ signal?: AbortSignal
+) => {
+        return filesControllerFindOne(
+          {url: `/api/files/download`, method: 'get',
+        params, signal
+    },
+          );
+        }
+      }
+    
+
+export const getFilesControllerFindOneQueryKey = (params: FilesControllerFindOneParams,) => [`/api/files/download`, ...(params ? [params]: [])] as const;
+  
+
+    
+export const useFilesControllerFindOneQueryOptions = <TData = Awaited<ReturnType<ReturnType<typeof useFilesControllerFindOneHook>>>, TError = Blob>(params: FilesControllerFindOneParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useFilesControllerFindOneHook>>>, TError, TData>, }
+): UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useFilesControllerFindOneHook>>>, TError, TData> & { queryKey: QueryKey } => {
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getFilesControllerFindOneQueryKey(params);
+
+  const filesControllerFindOne =  useFilesControllerFindOneHook();
+  
+    const queryFn: QueryFunction<Awaited<ReturnType<ReturnType<typeof useFilesControllerFindOneHook>>>> = ({ signal }) => filesControllerFindOne(params, signal);
+    
+      
+      
+   return  { queryKey, queryFn, ...queryOptions}}
+
+export type FilesControllerFindOneQueryResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useFilesControllerFindOneHook>>>>
+export type FilesControllerFindOneQueryError = Blob
+
+export const useFilesControllerFindOne = <TData = Awaited<ReturnType<ReturnType<typeof useFilesControllerFindOneHook>>>, TError = Blob>(
+ params: FilesControllerFindOneParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useFilesControllerFindOneHook>>>, TError, TData>, }
+
+  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+
+  const queryOptions = useFilesControllerFindOneQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+

@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import { Exclude, Expose, Transform } from 'class-transformer';
 import {
   IsDate,
   IsDateString,
@@ -8,10 +8,19 @@ import {
   IsString,
 } from 'class-validator';
 import { EnrollQueueEnum } from 'src/common/enum';
+import { QueueDto } from 'src/queues/dto/queue.dto';
 import { Queue } from 'src/queues/entities/queue.entity';
 import { Session } from 'src/sessions/entities/session.entity';
 
 export class EnrollQueueDto {
+  @ApiPropertyOptional()
+  @Expose()
+  id: string;
+
+  @ApiPropertyOptional()
+  @Expose()
+  sequenceNumber: number;
+
   @ApiPropertyOptional()
   @Expose()
   startServe: Date;
@@ -36,9 +45,22 @@ export class EnrollQueueDto {
 
   @Expose()
   @ApiPropertyOptional()
-  queue: Queue;
+  @Transform(({ obj }) => {
+    if (obj.queue) {
+      return {
+        id: obj.queue.id,
+        code: obj.queue.code,
+        name: obj.queue.name,
+        description: obj.queue.description,
+        event: obj.queue.event,
+        status: obj.queue.status,
+      };
+    }
+    return null;
+  })
+  queue: QueueDto;
 
-  @Expose()
+  @Exclude()
   @ApiPropertyOptional()
   session: Session;
 }

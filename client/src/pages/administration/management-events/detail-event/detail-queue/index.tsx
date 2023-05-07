@@ -1,4 +1,9 @@
 import {
+  useEnrollQueuesControllerFindAllEnrollQueue,
+  useEventsControllerFindOneEvent,
+  useQueuesControllerFindOneQueue,
+} from "@api/waitingQueue";
+import {
   Breadcrumb,
   Button,
   Card,
@@ -13,53 +18,97 @@ import InformationEventCard from "components/administration/EventForm/Informatio
 import ManagementQueues from "components/administration/EventForm/QueueDataTable";
 import ManagementEnrollQueues from "components/administration/QueueForm/EnrollQueueDataTable";
 import InformationQueueCard from "components/administration/QueueForm/InformationQueueCard";
+import StatisticData from "components/administration/QueueForm/StatisticData";
+import _ from "lodash";
 import React from "react";
 import { Helmet } from "react-helmet";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import {
+  DEFAULT_PAGE_SIZE,
+  STATUS_ENROLL_QUEUE_ENUM,
+} from "services/utils/constants";
 
 const DetailEvent = () => {
+  const params = useParams();
+  const { eventId, queueId } = params;
+
+  const {
+    refetch: getDataEvent,
+    isFetching: loadingDataEvent,
+    data: dataEvent,
+  } = useEventsControllerFindOneEvent(_.parseInt(eventId) || 0, {
+    query: {
+      enabled: false,
+    },
+  });
+  const {
+    refetch: getDataQueue,
+    isFetching: loadingDataQueue,
+    data: dataQueue,
+  } = useQueuesControllerFindOneQueue(_.parseInt(queueId) || 0, {
+    query: {
+      enabled: false,
+    },
+  });
+
+  React.useEffect(() => {
+    getDataEvent();
+    getDataQueue();
+  }, [eventId, queueId]);
   return (
     <>
       <Helmet title="Chi tiết sự kiện" />
       <Breadcrumb>
         <Breadcrumb.Item>
-          <a href="/home">Home</a>
+          <Link to="/home">Home</Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>
-          <a href="/event/1">Chi tiết sự kiện</a>
+          <Link to={`/event/${eventId}`}>Chi tiết sự kiện</Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>Chi tiết hàng đợi</Breadcrumb.Item>
       </Breadcrumb>
 
       <Row>
-        <Col sm={24} md={12} xl={12}>
-          <Card title="" className="mt-2">
-            <InformationEventCard />
+        <Col className="p-2" sm={24} md={12} xl={12}>
+          <Card loading={loadingDataEvent} title="" className="mt-2 br-8">
+            <InformationEventCard data={dataEvent} />
           </Card>
         </Col>
-        <Col sm={24} md={12} xl={12}>
-          <Card title="" className="mt-2">
-            <InformationQueueCard />
+        <Col className="p-2" sm={24} md={12} xl={12}>
+          <Card loading={loadingDataQueue} title="" className="mt-2 br-8">
+            <InformationQueueCard data={dataQueue} />
           </Card>
         </Col>
       </Row>
 
       <Divider />
+      <Row>
+        {/* <Col span={24}> */}
+        <StatisticData />
+        {/* </Col> */}
+      </Row>
+      <Row justify="center">
+        {/* // render card to display a number current serving */}
+        <Card className="br-8">
+          <h1>3</h1>
+        </Card>
+      </Row>
+      <Divider />
 
-      <Card title="Danh sách người đợi" className="mt-2">
+      <Card title="Danh sách người đợi" className="mt-2 br-8">
         <Tabs defaultActiveKey="2">
           <Tabs.TabPane tab="Tất cả" key="1">
-            <ManagementEnrollQueues />
+            <ManagementEnrollQueues status="" />
           </Tabs.TabPane>
           <Tabs.TabPane tab="Đang chờ" key="2">
-            <ManagementEnrollQueues />
+            <ManagementEnrollQueues status={STATUS_ENROLL_QUEUE_ENUM.PENDING} />
           </Tabs.TabPane>
           <Tabs.TabPane tab="Đã xong" key="3">
-            <ManagementEnrollQueues />
+            <ManagementEnrollQueues status={STATUS_ENROLL_QUEUE_ENUM.DONE} />
           </Tabs.TabPane>
-          <Tabs.TabPane tab="Đã hủy" key="4">
-            <ManagementEnrollQueues />
-          </Tabs.TabPane>
+          {/* <Tabs.TabPane tab="Đã hủy" key="4">
+            <ManagementEnrollQueues status={STATUS_ENROLL_QUEUE_ENUM.BLOCKED} />
+          </Tabs.TabPane> */}
         </Tabs>
       </Card>
     </>

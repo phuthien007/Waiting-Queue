@@ -2,6 +2,7 @@
 
 import {
   Equal,
+  FindOptionsOrder,
   ILike,
   In,
   LessThan,
@@ -11,10 +12,11 @@ import {
   MoreThanOrEqual,
 } from 'typeorm';
 import { OperatorQueryEnum } from './enum';
-import { IsNotIn, NotEquals } from 'class-validator';
+import { IsNotEmpty, IsNotIn, NotEquals } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Optional } from '@nestjs/common';
 import { deepStringToObject } from './common';
+import { BaseEntity } from './base.entity';
 
 /**
  * Filter operator class for filter operator in query string
@@ -90,6 +92,25 @@ export class FilterOperator {
   // @Optional()
   notLike: string[];
 
+  // pagination
+  @ApiPropertyOptional({ type: Number, default: 1 })
+  @IsNotEmpty({
+    message: 'Page is required',
+  })
+  page: number;
+
+  @ApiPropertyOptional({ type: Number, default: 10 })
+  @IsNotEmpty({
+    message: 'Size is required',
+  })
+  size: number;
+
+  @ApiPropertyOptional({
+    type: String,
+    example: 'id:ASC,created_at:DESC',
+  })
+  sort: string;
+
   constructor() {
     this.eq = [];
     this.ne = [];
@@ -101,6 +122,9 @@ export class FilterOperator {
     this.notIn = [];
     this.like = [];
     this.notLike = [];
+    this.page = 1;
+    this.size = 10;
+    this.sort = 'id:ASC';
   }
 
   /**
@@ -253,6 +277,22 @@ export class FilterOperator {
       default:
         break;
     }
+  }
+
+  // parse sort to object order
+  public parseSortToOrder() {
+    const sortObj: FindOptionsOrder<unknown> = {
+      // id: 'ASC',
+    };
+    if (this.sort) {
+      const sortArr = this.sort.split(',');
+      sortArr.forEach((item) => {
+        const itemArr = item.split(':');
+        sortObj[itemArr[0]] = itemArr[1];
+      });
+    }
+
+    return sortObj;
   }
 
   //   public getOperator(operator: string) {

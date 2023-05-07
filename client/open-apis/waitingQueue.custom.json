@@ -157,6 +157,33 @@
                 "type": "string"
               }
             }
+          },
+          {
+            "required": false,
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "required": false,
+            "name": "size",
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "example": "id:ASC,created_at:DESC",
+            "required": false,
+            "name": "sort",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -498,6 +525,33 @@
                 "type": "string"
               }
             }
+          },
+          {
+            "required": false,
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "required": false,
+            "name": "size",
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "example": "id:ASC,created_at:DESC",
+            "required": false,
+            "name": "sort",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -692,117 +746,6 @@
         ]
       }
     },
-    "/api/sessions": {
-      "post": {
-        "operationId": "SessionsController_createSession",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateSessionDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "sessions"
-        ]
-      },
-      "get": {
-        "operationId": "SessionsController_findAllSession",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "sessions"
-        ]
-      }
-    },
-    "/api/sessions/{id}": {
-      "get": {
-        "operationId": "SessionsController_findOneSession",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "sessions"
-        ]
-      },
-      "patch": {
-        "operationId": "SessionsController_updateSession",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateSessionDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "sessions"
-        ]
-      },
-      "delete": {
-        "operationId": "SessionsController_removeSession",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "sessions"
-        ]
-      }
-    },
     "/api/auth/login": {
       "post": {
         "operationId": "AuthController_login",
@@ -867,6 +810,24 @@
             }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "password": {
+                    "type": "string"
+                  },
+                  "confirmPassword": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "201": {
             "description": "Finish reset password success"
@@ -1062,6 +1023,88 @@
               "items": {
                 "type": "string"
               }
+            }
+          },
+          {
+            "required": false,
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "required": false,
+            "name": "size",
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "example": "id:ASC,created_at:DESC",
+            "required": false,
+            "name": "sort",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        },
+        "tags": [
+          "events"
+        ]
+      }
+    },
+    "/api/events/my-events": {
+      "get": {
+        "operationId": "EventsController_findAllEventUserCanSee",
+        "parameters": [
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search query name with operator LIKE",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "example": 1,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "size",
+            "required": true,
+            "in": "query",
+            "example": 10,
+            "schema": {
+              "type": "number"
             }
           }
         ],
@@ -1340,6 +1383,134 @@
                 "type": "string"
               }
             }
+          },
+          {
+            "required": false,
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "required": false,
+            "name": "size",
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "example": "id:ASC,created_at:DESC",
+            "required": false,
+            "name": "sort",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/QueueDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        },
+        "tags": [
+          "queues"
+        ]
+      }
+    },
+    "/api/queues/{id}/assign-member": {
+      "post": {
+        "operationId": "QueuesController_assignMember",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Assign member into queue successfully"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        },
+        "tags": [
+          "queues"
+        ]
+      }
+    },
+    "/api/queues/my-queues": {
+      "get": {
+        "operationId": "QueuesController_findAllQueueUserCanSee",
+        "parameters": [
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "eventId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "example": 1,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "size",
+            "required": true,
+            "in": "query",
+            "example": 10,
+            "schema": {
+              "type": "number"
+            }
           }
         ],
         "responses": {
@@ -1472,6 +1643,42 @@
         ]
       }
     },
+    "/api/queues/{id}/user-operate-queue": {
+      "get": {
+        "operationId": "QueuesController_getAllUserOperateQueue",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        },
+        "tags": [
+          "queues"
+        ]
+      }
+    },
     "/api/enroll-queues": {
       "post": {
         "operationId": "EnrollQueuesController_createEnrollQueue",
@@ -1488,14 +1695,7 @@
         },
         "responses": {
           "201": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EnrollQueueDto"
-                }
-              }
-            }
+            "description": "Created"
           },
           "400": {
             "description": "Bad Request"
@@ -1509,113 +1709,52 @@
         "operationId": "EnrollQueuesController_findAllEnrollQueue",
         "parameters": [
           {
-            "required": false,
-            "name": "eq",
+            "name": "page",
+            "required": true,
             "in": "query",
+            "example": 1,
             "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
+              "type": "number"
             }
           },
           {
-            "required": false,
-            "name": "ne",
+            "name": "size",
+            "required": true,
             "in": "query",
+            "example": 10,
             "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
+              "type": "number"
             }
           },
           {
-            "required": false,
-            "name": "gt",
+            "name": "queueId",
+            "required": true,
             "in": "query",
             "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
+              "type": "number"
             }
           },
           {
+            "name": "status",
             "required": false,
-            "name": "gte",
             "in": "query",
             "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
+              "enum": [
+                "pending",
+                "serving",
+                "done",
+                "is_blocked"
+              ],
+              "type": "string"
             }
           },
           {
+            "name": "sort",
             "required": false,
-            "name": "lt",
             "in": "query",
+            "example": "id:ASC",
             "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "required": false,
-            "name": "lte",
-            "in": "query",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "required": false,
-            "name": "in",
-            "in": "query",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "required": false,
-            "name": "notIn",
-            "in": "query",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "required": false,
-            "name": "like",
-            "in": "query",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "required": false,
-            "name": "notLike",
-            "in": "query",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
+              "type": "string"
             }
           }
         ],
@@ -1642,85 +1781,34 @@
         ]
       }
     },
-    "/api/enroll-queues/{id}": {
+    "/api/enroll-queues/my-enroll": {
       "get": {
-        "operationId": "EnrollQueuesController_findOneEnrollQueue",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
+        "operationId": "EnrollQueuesController_findAllMyEnrollQueue",
+        "parameters": [],
         "responses": {
           "200": {
             "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/EnrollQueueDto"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EnrollQueueDto"
+                  }
                 }
               }
             }
           },
           "400": {
             "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
           }
         },
         "tags": [
           "enroll-queues"
         ]
-      },
-      "patch": {
-        "operationId": "EnrollQueuesController_updateEnrollQueue",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateEnrollQueueDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EnrollQueueDto"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        },
-        "tags": [
-          "enroll-queues"
-        ]
-      },
+      }
+    },
+    "/api/enroll-queues/{id}": {
       "delete": {
         "operationId": "EnrollQueuesController_removeEnrollQueue",
         "parameters": [
@@ -1729,7 +1817,7 @@
             "required": true,
             "in": "path",
             "schema": {
-              "type": "number"
+              "type": "string"
             }
           }
         ],
@@ -1746,6 +1834,92 @@
         },
         "tags": [
           "enroll-queues"
+        ]
+      }
+    },
+    "/api/files": {
+      "post": {
+        "operationId": "FilesController_uploadFile",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "Upload file",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The file has been successfully uploaded."
+          }
+        },
+        "tags": [
+          "files"
+        ]
+      },
+      "delete": {
+        "operationId": "FilesController_remove",
+        "parameters": [
+          {
+            "name": "fileName",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "files"
+        ]
+      }
+    },
+    "/api/files/download": {
+      "get": {
+        "operationId": "FilesController_findOne",
+        "parameters": [
+          {
+            "name": "fileName",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The file has been successfully downloaded."
+          },
+          "default": {
+            "description": "",
+            "content": {
+              "image/*": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "files"
         ]
       }
     }
@@ -1769,12 +1943,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-05-07T06:49:53.494Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-05-07T06:49:53.494Z"
           },
           "name": {
             "type": "string"
@@ -1815,12 +1989,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-05-07T06:49:53.494Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-05-07T06:49:53.494Z"
           },
           "name": {
             "type": "string"
@@ -1860,12 +2034,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-05-07T06:49:53.494Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-05-07T06:49:53.494Z"
           },
           "name": {
             "type": "string"
@@ -1906,12 +2080,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-05-07T06:49:53.494Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-05-07T06:49:53.494Z"
           },
           "email": {
             "type": "string"
@@ -1959,12 +2133,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-05-07T06:49:53.494Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-05-07T06:49:53.494Z"
           },
           "email": {
             "type": "string"
@@ -2010,12 +2184,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-05-07T06:49:53.494Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-05-07T06:49:53.494Z"
           },
           "email": {
             "type": "string"
@@ -2076,12 +2250,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-05-07T06:49:53.494Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-05-07T06:49:53.494Z"
           },
           "email": {
             "type": "string"
@@ -2115,42 +2289,6 @@
           },
           "tenant": {
             "$ref": "#/components/schemas/TenantDto"
-          }
-        }
-      },
-      "CreateSessionDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "number"
-          },
-          "createdAt": {
-            "format": "date-time",
-            "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
-          },
-          "updatedAt": {
-            "format": "date-time",
-            "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
-          }
-        }
-      },
-      "UpdateSessionDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "number"
-          },
-          "createdAt": {
-            "format": "date-time",
-            "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
-          },
-          "updatedAt": {
-            "format": "date-time",
-            "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
           }
         }
       },
@@ -2220,12 +2358,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-05-07T06:49:53.494Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-05-07T06:49:53.494Z"
           },
           "name": {
             "type": "string"
@@ -2273,12 +2411,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-05-07T06:49:53.494Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-05-07T06:49:53.494Z"
           },
           "name": {
             "type": "string"
@@ -2326,12 +2464,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-05-07T06:49:53.494Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-05-07T06:49:53.494Z"
           },
           "name": {
             "type": "string"
@@ -2379,12 +2517,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-05-07T06:49:53.494Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-05-07T06:49:53.494Z"
           },
           "name": {
             "type": "string"
@@ -2402,7 +2540,14 @@
             "type": "string"
           },
           "status": {
-            "type": "string"
+            "type": "string",
+            "enum": [
+              "pending",
+              "serving",
+              "waiting",
+              "is_closed"
+            ],
+            "default": "pending"
           },
           "eventId": {
             "type": "number"
@@ -2418,12 +2563,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-05-07T06:49:53.494Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-05-07T06:49:53.494Z"
           },
           "name": {
             "type": "string"
@@ -2457,12 +2602,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-05-07T06:49:53.494Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-04-23T01:20:45.413Z"
+            "default": "2023-05-07T06:49:53.494Z"
           },
           "name": {
             "type": "string"
@@ -2480,7 +2625,14 @@
             "type": "string"
           },
           "status": {
-            "type": "string"
+            "type": "string",
+            "enum": [
+              "pending",
+              "serving",
+              "waiting",
+              "is_closed"
+            ],
+            "default": "pending"
           },
           "eventId": {
             "type": "number"
@@ -2490,35 +2642,16 @@
       "CreateEnrollQueueDto": {
         "type": "object",
         "properties": {
-          "startServe": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "endServe": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "enrollTime": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "status": {
-            "type": "string"
-          },
           "note": {
             "type": "string"
           },
-          "queueId": {
-            "type": "number"
-          },
-          "sessionId": {
-            "type": "number"
+          "queueCode": {
+            "type": "string"
           }
-        }
-      },
-      "Queue": {
-        "type": "object",
-        "properties": {}
+        },
+        "required": [
+          "queueCode"
+        ]
       },
       "Session": {
         "type": "object",
@@ -2527,6 +2660,12 @@
       "EnrollQueueDto": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string"
+          },
+          "sequenceNumber": {
+            "type": "number"
+          },
           "startServe": {
             "format": "date-time",
             "type": "string"
@@ -2546,39 +2685,10 @@
             "type": "string"
           },
           "queue": {
-            "$ref": "#/components/schemas/Queue"
+            "$ref": "#/components/schemas/QueueDto"
           },
           "session": {
             "$ref": "#/components/schemas/Session"
-          }
-        }
-      },
-      "UpdateEnrollQueueDto": {
-        "type": "object",
-        "properties": {
-          "startServe": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "endServe": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "enrollTime": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "status": {
-            "type": "string"
-          },
-          "note": {
-            "type": "string"
-          },
-          "queueId": {
-            "type": "number"
-          },
-          "sessionId": {
-            "type": "number"
           }
         }
       }

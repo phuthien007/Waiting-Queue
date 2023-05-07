@@ -14,6 +14,7 @@ import {
 import { LoginDto } from './dto/login.dto';
 import { LocalAuthGuard } from './local-auth.guard';
 import {
+  ApiBody,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiTags,
@@ -90,8 +91,24 @@ export class AuthController {
    */
   @Post('finish-reset-password/:token')
   @HasRole()
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        password: {
+          type: 'string',
+        },
+        confirmPassword: {
+          type: 'string',
+        },
+      },
+    },
+  })
   @ApiCreatedResponse({ description: 'Finish reset password success' })
-  finishResetPassword(@Param('token') token: string, @Body() resetPassword) {
+  finishResetPassword(
+    @Param('token') token: string,
+    @Body() resetPassword: any,
+  ) {
     return this.authService.finishResetPassword(token, resetPassword);
   }
   // logout endpoint

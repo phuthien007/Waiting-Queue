@@ -10,7 +10,7 @@ import { loadCurrentAccount, selectUser } from "store/userSlice";
 
 const layout = {
   labelCol: {
-    span: 4,
+    span: 6,
   },
   wrapperCol: {
     span: 16,
@@ -69,6 +69,7 @@ const Profile = () => {
         }
       >
         <Form
+          labelWrap
           {...layout}
           style={{ marginBottom: 0 }}
           form={form}

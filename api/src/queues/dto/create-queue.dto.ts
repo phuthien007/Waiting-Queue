@@ -28,12 +28,16 @@ export class CreateQueueDto extends BaseDto {
   @IsString()
   description: string;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({
+    enum: QueueEnum,
+    default: QueueEnum.PENDING,
+  })
   @IsEnum(QueueEnum)
   status: string;
 
   // relations
 
   @ApiPropertyOptional()
+  @IsNotEmpty({ message: 'Event ID không được để trống' })
   eventId: number;
 }

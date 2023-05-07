@@ -1,5 +1,13 @@
 import { DeleteOutlined, QuestionCircleOutlined } from "@ant-design/icons";
-import { useEventsControllerFindAllEvent } from "@api/waitingQueue";
+import {
+  useEventsControllerFindAllEvent,
+  useQueuesControllerCreateQueue,
+  useQueuesControllerFindAllQueue,
+  useQueuesControllerFindAllQueueUserCanSee,
+  useQueuesControllerRemoveQueue,
+  useQueuesControllerUpdateQueue,
+} from "@api/waitingQueue";
+import { QueueDto } from "@api/waitingQueue.schemas";
 import {
   Button,
   Card,
@@ -11,87 +19,92 @@ import {
   Table,
   Tag,
   Tooltip,
+  notification,
 } from "antd";
+import UserOperateQueue from "components/administration/QueueForm/UserOperateQueue";
 import type { ColumnsType } from "antd/es/table";
 import Search from "antd/lib/input/Search";
 import QueueForm from "components/administration/QueueForm";
 import TenantForm from "components/administration/TenantForm";
+import _ from "lodash";
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
-
-interface DataType {
-  key: string;
-  name: string;
-  age: number;
-  address: string;
-  tags: string[];
-}
-
-const data: DataType[] = [
-  {
-    key: "1",
-    name: "John Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park",
-    tags: ["nice", "developer"],
-  },
-  {
-    key: "2",
-    name: "Jim Green",
-    age: 42,
-    address: "London No. 1 Lake Park",
-    tags: ["loser"],
-  },
-  {
-    key: "3",
-    name: "Joe Black",
-    age: 32,
-    address: "Sidney No. 1 Lake Park",
-    tags: ["cool", "teacher"],
-  },
-];
+import { Link, useParams } from "react-router-dom";
+import { DEFAULT_PAGE_SIZE, STATUS_QUEUE_ENUM } from "services/utils/constants";
+import { StatusQueueRender } from "services/utils/format";
+import { selectUser } from "store/userSlice";
+import { useSelector } from "react-redux";
 
 const ManagementQueues: React.FC = () => {
-  const { refetch: getAllEvent, isFetching: loadingData } =
-    useEventsControllerFindAllEvent({});
+  const params = useParams();
+  const { id } = params;
+  const [searchText, setSearchText] = React.useState("");
+  const onSearch = (value: string) => {
+    setSearchText(value);
+    setPage(1);
+  };
+  const [page, setPage] = React.useState<number>(1);
+  const { role } = useSelector(selectUser);
+  const {
+    refetch: getAllQueueByEventId,
+    isFetching: loadingQueue,
+    data: queueData,
+  } = useQueuesControllerFindAllQueue({
+    eq: [`event.id:${id}`],
+    like: [`name:${searchText}`],
+  });
 
-  const columns: ColumnsType<DataType> = [
+  const {
+    refetch: getAllMyQueueByEventId,
+    isFetching: loadingMyQueue,
+    data: queueMyData,
+  } = useQueuesControllerFindAllQueueUserCanSee({
+    eventId: _.toSafeInteger(id),
+    search: `${searchText}`,
+    page: page,
+    size: DEFAULT_PAGE_SIZE,
+  });
+
+  const { isLoading: loadingCreate, mutateAsync: createQueue } =
+    useQueuesControllerCreateQueue();
+
+  const { isLoading: loadingUpdate, mutateAsync: updateQueue } =
+    useQueuesControllerUpdateQueue();
+
+  const { isLoading: loadingDelete, mutateAsync: deleteQueue } =
+    useQueuesControllerRemoveQueue();
+
+  const columns: ColumnsType<QueueDto> = [
     {
-      title: "Name",
+      title: "Tên hàng đợi",
       dataIndex: "name",
       key: "name",
-      render: (text) => <Link to="/event/1/queue/1">{text}</Link>,
-    },
-    {
-      title: "Age",
-      dataIndex: "age",
-      key: "age",
-    },
-    {
-      title: "Address",
-      dataIndex: "address",
-      key: "address",
-    },
-    {
-      title: "Tags",
-      key: "tags",
-      dataIndex: "tags",
-      render: (_, { tags }) => (
-        <>
-          {tags.map((tag) => {
-            let color = tag.length > 5 ? "geekblue" : "green";
-            if (tag === "loser") {
-              color = "volcano";
-            }
-            return (
-              <Tag color={color} key={tag}>
-                {tag.toUpperCase()}
-              </Tag>
-            );
-          })}
-        </>
+      render: (text, record) => (
+        <Link to={`/event/${id}/queue/${record.id}`}>{text}</Link>
       ),
     },
+    {
+      title: "Vị trí hàng đợi",
+      dataIndex: "coord",
+      key: "coord",
+    },
+    {
+      title: "Mô tả",
+      dataIndex: "description",
+      key: "description",
+    },
+
+    {
+      title: "Trạng thái",
+      dataIndex: "status",
+      key: "status",
+      render: (status: string) => StatusQueueRender(status),
+    },
+    {
+      title: "Người điều hành",
+      key: "operateUser",
+      render: (record: QueueDto) => <UserOperateQueue id={record.id} />,
+    },
+
     {
       title: "Hành động",
       fixed: "right",
@@ -100,51 +113,86 @@ const ManagementQueues: React.FC = () => {
       render: (record) => {
         return (
           <>
-            <Space>
+            {role === "ADMIN" && (
+              <Space>
+                <QueueForm
+                  reloadData={handleReloadData}
+                  saveData={updateQueue}
+                  loading={loadingUpdate}
+                  type="edit"
+                  data={record}
+                />
+
+                <Tooltip title="Xóa">
+                  <Popconfirm
+                    title="XÁC NHẬN XÓA"
+                    onConfirm={() => handleDelete(record.id)}
+                    okText="Xóa"
+                    okButtonProps={{
+                      loading: loadingDelete,
+                    }}
+                    cancelText="Hủy"
+                    icon={
+                      <QuestionCircleOutlined
+                        style={{
+                          color: "red",
+                        }}
+                      />
+                    }
+                  >
+                    <Button
+                      className="ant-btn-danger"
+                      shape="circle"
+                      icon={<DeleteOutlined />}
+                    />
+                  </Popconfirm>
+                </Tooltip>
+              </Space>
+            )}
+            {role === "OPERATOR" && (
               <QueueForm
-                // reloadData={refetch}
-                // saveData={updateUser}
-                // loading={loadingUpdate}
-                type="edit"
+                reloadData={handleReloadData}
+                saveData={updateQueue}
+                loading={loadingUpdate}
+                type="view"
                 data={record}
               />
-
-              <Tooltip title="Xóa">
-                <Popconfirm
-                  title="XÁC NHẬN XÓA"
-                  // onConfirm={() => handleDelete(record.id)}
-                  okText="Xóa"
-                  okButtonProps={
-                    {
-                      // loading: loadingDelete,
-                    }
-                  }
-                  cancelText="Hủy"
-                  icon={
-                    <QuestionCircleOutlined
-                      style={{
-                        color: "red",
-                      }}
-                    />
-                  }
-                >
-                  <Button
-                    className="ant-btn-danger"
-                    shape="circle"
-                    icon={<DeleteOutlined />}
-                  />
-                </Popconfirm>
-              </Tooltip>
-            </Space>
+            )}
           </>
         );
       },
     },
   ];
+  const handleReloadData = () => {
+    setPage(1);
+    setSearchText("");
+    if (role === "ADMIN") {
+      getAllQueueByEventId();
+    } else if (role === "OPERATOR") {
+      getAllMyQueueByEventId();
+    }
+  };
+  const handleDelete = async (id: string) => {
+    await deleteQueue({
+      id: _.parseInt(id),
+    }).then(() => {
+      if (!loadingDelete) {
+        notification.success({
+          message: "Thành công",
+          description: "Xóa hàng đợi thành công",
+        });
+        handleReloadData();
+      }
+    });
+  };
 
   useEffect(() => {
-    getAllEvent();
-  }, []);
+    if (role === "ADMIN") {
+      getAllQueueByEventId();
+    } else if (role === "OPERATOR") {
+      getAllMyQueueByEventId();
+    }
+  }, [searchText, page]);
 
   return (
     <>
@@ -159,27 +207,45 @@ const ManagementQueues: React.FC = () => {
           <Search
             allowClear
             placeholder="Tìm kiếm theo tên"
-            // onSearch={onSearch}
+            onSearch={onSearch}
             style={{ width: "100%" }}
           />
         </Col>
         <Col span={12} style={{ display: "flex", justifyContent: "end" }}>
           {" "}
-          <QueueForm
-            // saveData={createTenant}
-            // loading={loadingCreate}
-            type="add"
-            // reloadData={refetch}
-            data={{
-              status: 1,
-              isWorking: true,
-            }}
-          />
+          {role === "ADMIN" && (
+            <QueueForm
+              saveData={createQueue}
+              loading={loadingCreate}
+              type="add"
+              reloadData={handleReloadData}
+              data={{
+                status: STATUS_QUEUE_ENUM.PENDING,
+              }}
+            />
+          )}
         </Col>
       </Row>
       <Row>
         <Card style={{ width: "100%" }}>
-          <Table columns={columns} dataSource={data} />
+          <Table
+            scroll={{ x: 1000 }}
+            loading={loadingQueue || loadingMyQueue}
+            columns={columns}
+            dataSource={role === "ADMIN" ? queueData?.data : queueMyData?.data}
+            pagination={{
+              current: page,
+              pageSize: DEFAULT_PAGE_SIZE,
+              showSizeChanger: false,
+              total:
+                (role === "ADMIN"
+                  ? queueData?.pagination?.total
+                  : queueMyData?.pagination?.total) || 0,
+            }}
+            onChange={(pagination) => {
+              setPage(pagination.current);
+            }}
+          />
         </Card>
       </Row>
     </>

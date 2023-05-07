@@ -1,3 +1,5 @@
+import { ALLOW_UPLOAD_FILE } from './constants';
+
 type Operator = (value: string) => any;
 interface Obj {
   [key: string]: Obj | Operator;
@@ -34,3 +36,22 @@ export function deepStringToObject(
 
   return obj;
 }
+
+// validate type file
+/**
+ * check type is valid
+ * @param type type to validate
+ * @returns true if type is valid
+ */
+export const validateTypeImage = (type: string) => {
+  return ALLOW_UPLOAD_FILE.includes(type);
+};
+
+/**
+ * check size is valid
+ * @param size size to validate (byte)
+ * @returns true if size is valid
+ */
+export const validateSizeImage = (size: number) => {
+  return 1024 * 1024 * 50 >= size;
+};

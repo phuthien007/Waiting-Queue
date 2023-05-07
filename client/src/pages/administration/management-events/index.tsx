@@ -1,5 +1,11 @@
 import { DeleteOutlined, QuestionCircleOutlined } from "@ant-design/icons";
-import { useEventsControllerFindAllEvent } from "@api/waitingQueue";
+import {
+  useEventsControllerCreateEvent,
+  useEventsControllerFindAllEventUserCanSee,
+  useEventsControllerUpdateEvent,
+  useEventsControllerFindAllEvent,
+} from "@api/waitingQueue";
+import { EventDto } from "@api/waitingQueue.schemas";
 import {
   Button,
   Card,
@@ -16,81 +22,83 @@ import type { ColumnsType } from "antd/es/table";
 import Search from "antd/lib/input/Search";
 import EventForm from "components/administration/EventForm";
 import TenantForm from "components/administration/TenantForm";
-import React, { useEffect } from "react";
+import _ from "lodash";
+import moment from "moment";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-
-interface DataType {
-  key: string;
-  name: string;
-  age: number;
-  address: string;
-  tags: string[];
-}
-
-const data: DataType[] = [
-  {
-    key: "1",
-    name: "John Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park",
-    tags: ["nice", "developer"],
-  },
-  {
-    key: "2",
-    name: "Jim Green",
-    age: 42,
-    address: "London No. 1 Lake Park",
-    tags: ["loser"],
-  },
-  {
-    key: "3",
-    name: "Joe Black",
-    age: 32,
-    address: "Sidney No. 1 Lake Park",
-    tags: ["cool", "teacher"],
-  },
-];
+import {
+  DEFAULT_PAGE_SIZE,
+  FORMAT_DATE_MINUTE,
+} from "services/utils/constants";
+import { selectUser } from "store/userSlice";
 
 const ManagementEvents: React.FC = () => {
-  const { refetch: getAllEvent, isFetching: loadingData } =
-    useEventsControllerFindAllEvent({});
+  const [searchText, setSearchText] = React.useState<string>("");
+  const { role } = useSelector(selectUser);
+  const [page, setPage] = useState<number>(1);
 
-  const columns: ColumnsType<DataType> = [
+  const {
+    refetch: getAllMyEvent,
+    isFetching: loadingMyData,
+    data: myEvent,
+  } = useEventsControllerFindAllEventUserCanSee({
+    search: `${searchText}`,
+    page: page,
+    size: DEFAULT_PAGE_SIZE,
+  });
+  const {
+    refetch: getAllEvent,
+    isFetching: loadingData,
+    data: dataEvent,
+  } = useEventsControllerFindAllEvent({
+    like: [`name:${searchText}`],
+    page: page,
+    size: DEFAULT_PAGE_SIZE,
+  });
+
+  const { isLoading: loadingUpdate, mutateAsync: updateEvent } =
+    useEventsControllerUpdateEvent();
+  const { isLoading: loadingCreate, mutateAsync: createEvent } =
+    useEventsControllerCreateEvent();
+
+  const columns: ColumnsType<EventDto> = [
     {
-      title: "Name",
+      title: "Tên sự kiện",
       dataIndex: "name",
       key: "name",
-      render: (text) => <Link to="/event/1">{text}</Link>,
+      render: (text, record) => <Link to={`/event/${record.id}`}>{text}</Link>,
     },
     {
-      title: "Age",
-      dataIndex: "age",
-      key: "age",
+      title: "Trạng thái",
+      dataIndex: "status",
+      key: "status",
+      render: (text) => {
+        return _.toString(text) === "1" ? (
+          <Tag color="green">Hoạt động</Tag>
+        ) : (
+          <Tag color="red">Đã đóng</Tag>
+        );
+      },
     },
     {
-      title: "Address",
-      dataIndex: "address",
-      key: "address",
+      title: "Mô tả",
+      dataIndex: "description",
+      key: "description",
     },
     {
-      title: "Tags",
-      key: "tags",
-      dataIndex: "tags",
-      render: (_, { tags }) => (
-        <>
-          {tags.map((tag) => {
-            let color = tag.length > 5 ? "geekblue" : "green";
-            if (tag === "loser") {
-              color = "volcano";
-            }
-            return (
-              <Tag color={color} key={tag}>
-                {tag.toUpperCase()}
-              </Tag>
-            );
-          })}
-        </>
-      ),
+      title: "Thời gian",
+      key: "time",
+      render: (record) => {
+        if (record.daily) return <Tag color="blue">Hàng ngày</Tag>;
+
+        return (
+          <>
+            Từ {moment(record.from).format(FORMAT_DATE_MINUTE)} đến{" "}
+            {moment(record.to).format(FORMAT_DATE_MINUTE)}
+          </>
+        );
+      },
     },
     {
       title: "Hành động",
@@ -100,51 +108,70 @@ const ManagementEvents: React.FC = () => {
       render: (record) => {
         return (
           <>
-            <Space>
+            {role === "ADMIN" && (
+              <Space>
+                <EventForm
+                  reloadData={handleReloadData}
+                  saveData={updateEvent}
+                  loading={loadingUpdate}
+                  type="edit"
+                  data={record}
+                />
+
+                <Tooltip title="Xóa">
+                  <Popconfirm
+                    title="XÁC NHẬN XÓA"
+                    // onConfirm={() => handleDelete(record.id)}
+                    okText="Xóa"
+                    okButtonProps={
+                      {
+                        // loading: loadingDelete,
+                      }
+                    }
+                    cancelText="Hủy"
+                    icon={
+                      <QuestionCircleOutlined
+                        style={{
+                          color: "red",
+                        }}
+                      />
+                    }
+                  >
+                    <Button
+                      className="ant-btn-danger"
+                      shape="circle"
+                      icon={<DeleteOutlined />}
+                    />
+                  </Popconfirm>
+                </Tooltip>
+              </Space>
+            )}
+            {role === "OPERATOR" && (
               <EventForm
-                // reloadData={refetch}
-                // saveData={updateUser}
+                // reloadData={handleReloadData}
+                // saveData={updateEvent}
                 // loading={loadingUpdate}
-                type="edit"
+                type="view"
                 data={record}
               />
-
-              <Tooltip title="Xóa">
-                <Popconfirm
-                  title="XÁC NHẬN XÓA"
-                  // onConfirm={() => handleDelete(record.id)}
-                  okText="Xóa"
-                  okButtonProps={
-                    {
-                      // loading: loadingDelete,
-                    }
-                  }
-                  cancelText="Hủy"
-                  icon={
-                    <QuestionCircleOutlined
-                      style={{
-                        color: "red",
-                      }}
-                    />
-                  }
-                >
-                  <Button
-                    className="ant-btn-danger"
-                    shape="circle"
-                    icon={<DeleteOutlined />}
-                  />
-                </Popconfirm>
-              </Tooltip>
-            </Space>
+            )}
           </>
         );
       },
     },
   ];
 
+  const handleReloadData = () => {
+    setPage(1);
+    setSearchText("");
+    if (role === "ADMIN") getAllEvent();
+    else if (role === "OPERATOR") getAllMyEvent();
+  };
+
   useEffect(() => {
-    getAllEvent();
-  }, []);
+    if (role === "ADMIN") getAllEvent();
+    else if (role === "OPERATOR") getAllMyEvent();
+  }, [searchText, page]);
 
   return (
     <>
@@ -159,27 +186,48 @@ const ManagementEvents: React.FC = () => {
           <Search
             allowClear
             placeholder="Tìm kiếm theo tên"
-            // onSearch={onSearch}
+            onSearch={(e) => {
+              setSearchText(e);
+              setPage(1);
+            }}
             style={{ width: "100%" }}
           />
         </Col>
         <Col span={12} style={{ display: "flex", justifyContent: "end" }}>
           {" "}
-          <EventForm
-            // saveData={createTenant}
-            // loading={loadingCreate}
-            type="add"
-            // reloadData={refetch}
-            data={{
-              status: 1,
-              isWorking: true,
-            }}
-          />
+          {role === "ADMIN" && (
+            <EventForm
+              saveData={createEvent}
+              loading={loadingCreate}
+              type="add"
+              reloadData={handleReloadData}
+              data={{
+                status: true,
+              }}
+            />
+          )}
         </Col>
       </Row>
       <Row>
-        <Card style={{ width: "100%" }}>
-          <Table columns={columns} dataSource={data} />
+        <Card className="br-8" style={{ width: "100%" }}>
+          <Table
+            loading={loadingData || loadingMyData}
+            columns={columns}
+            dataSource={role === "ADMIN" ? dataEvent?.data : myEvent?.data}
+            scroll={{ x: 1000 }}
+            pagination={{
+              current: page,
+              pageSize: DEFAULT_PAGE_SIZE,
+              showSizeChanger: false,
+              total:
+                (role === "ADMIN"
+                  ? dataEvent?.pagination?.total
+                  : myEvent?.pagination?.total) || 0,
+            }}
+            onChange={(pagination) => {
+              setPage(pagination.current);
+            }}
+          />
         </Card>
       </Row>
     </>

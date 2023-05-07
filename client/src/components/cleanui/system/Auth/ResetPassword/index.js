@@ -1,47 +1,49 @@
 import { Input, Button, Form, notification } from "antd";
 // import { useCompletePasswordReset } from "@api/auth";
 import { history } from "index";
-import { Navigate, useSearchParams } from "react-router-dom";
+import { Navigate, useParams, useSearchParams } from "react-router-dom";
 import store from "store";
 import { ValidatePassword } from "services/utils/validates";
 import style from "../style.module.scss";
+import { useAuthControllerFinishResetPassword } from "@api/waitingQueue";
+import React from "react";
 
 const ResetPassword = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  // const { isLoading, mutateAsync } = useCompletePasswordReset();
-  const key = searchParams.get("key");
-
-  function handleRecaptcha(value) {
-    store.set("captcha-response", value);
-  }
+  const { isLoading, mutateAsync } = useAuthControllerFinishResetPassword();
+  const { token } = useParams();
 
   const onFinish = async (values) => {
-    const { newPassword } = values;
-    const payload = { key, newPassword };
+    const { newPassword, againNewPassword } = values;
 
-    // mutateAsync({
-    //   data: payload,
-    // })
-    //   .then(() => {
-    //     if (!isLoading) {
-    //       notification.success({
-    //         message: "Thành công",
-    //         description: "Đổi mật khẩu mới thành công",
-    //       });
-    //       history.push("/auth/login");
-    //     }
-    //   })
-    //   .catch((err) => console.log(err));
+    mutateAsync({
+      token,
+      data: {
+        newPassword: newPassword,
+        replyPassword: againNewPassword,
+      },
+    })
+      .then(() => {
+        if (!isLoading) {
+          notification.success({
+            message: "Thành công",
+            description: "Đổi mật khẩu mới thành công",
+          });
+          history.push("/auth/login");
+        }
+      })
+      .catch((err) => console.log(err));
   };
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
 
-  if (!key) {
-    console.log("key not exist");
-    return <Navigate to="/auth/login" />;
-  }
+  React.useEffect(() => {
+    if (!token) {
+      history.push("/auth/login");
+    }
+  }, [token]);
 
   return (
     <div>
@@ -124,7 +126,7 @@ const ResetPassword = () => {
           </Form.Item> */}
           <Button
             type="primary"
-            // loading={isLoading}
+            loading={isLoading}
             htmlType="submit"
             size="large"
             className="text-center w-100"

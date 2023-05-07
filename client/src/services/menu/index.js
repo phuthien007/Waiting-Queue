@@ -12,7 +12,7 @@ export default [
     key: "management-event",
     url: "/manage/event",
     icon: "fa fa-calendar",
-    roles: ["ADMIN"],
+    roles: ["ADMIN", "OPERATOR"],
   },
   {
     title: "Danh sách đối tác",

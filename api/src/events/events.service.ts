@@ -18,6 +18,10 @@ import { partialMapping } from 'src/common/algorithm';
 import { OperatorQueryEnum } from 'src/common/enum';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
+import { UsersRepository } from 'src/users/users.repository';
+import { TenantsRepository } from 'src/tenants/tenants.repository';
+import { QueuesRepository } from 'src/queues/queues.repository';
+import { PaginateDto } from 'src/common/paginate.dto';
 
 /**
  * Events service class for events endpoints (create, update, delete, etc.)
@@ -28,6 +32,9 @@ export class EventsService {
     private readonly eventRepository: EventsRepository,
     private readonly log: LoggerService,
     @Inject(REQUEST) private readonly request: Request,
+    private readonly userRepository: UsersRepository,
+    private readonly tenantRepository: TenantsRepository,
+    private readonly queueRepository: QueuesRepository,
   ) {}
 
   /**
@@ -36,11 +43,17 @@ export class EventsService {
    * @returns created event DTO object
    */
   async create(createEventDto: CreateEventDto) {
-    // TODO: get user from request, tenant from user
     // create event
+    // get current user
+    const tenantInReq = await this.tenantRepository.findOne({
+      where: { tenantCode: (this.request?.user as any)?.tenantCode },
+    });
+
     const event = plainToInstance(Event, {
       ...createEventDto,
     });
+
+    event.tenant = tenantInReq;
 
     const savedEvent = await this.eventRepository.save(event);
     return plainToInstance(EventDto, savedEvent, {
@@ -53,7 +66,7 @@ export class EventsService {
    * @param search search query from request query
    * @returns   array of event DTO objects
    */
-  async findAll(search: any) {
+  async findAll(search: any): Promise<PaginateDto<EventDto>> {
     // start create search
     const filterObj = new FilterOperator();
 
@@ -66,19 +79,26 @@ export class EventsService {
 
     // transform to filter
     Object.keys(search).forEach((key) => {
-      if (search[key] instanceof Array) {
-        search[key].forEach((tmp: any) => {
-          filterObj.addOperator(key, tmp);
-        });
-      } else {
-        filterObj.addOperator(key, search[key]);
+      if (key !== 'page' && key !== 'size' && key !== 'sort') {
+        if (search[key] instanceof Array) {
+          search[key].forEach((tmp: any) => {
+            filterObj.addOperator(key, tmp);
+          });
+        } else {
+          filterObj.addOperator(key, search[key]);
+        }
       }
     });
+    filterObj.sort = search?.sort;
+
     let events: Event[] = [];
+    let totalCount: number;
+
     try {
-      events = await this.eventRepository.find({
+      [events, totalCount] = await this.eventRepository.findAndCount({
         relations: ['tenant'],
         where: filterObj.transformToQuery(),
+        order: filterObj.parseSortToOrder(),
       });
     } catch (error) {
       this.log.error(error);
@@ -91,10 +111,61 @@ export class EventsService {
       );
     }
 
-    return events.map((event: Event) =>
+    const result = events.map((event: Event) =>
       plainToInstance(EventDto, event, {
         excludeExtraneousValues: true,
       }),
+    );
+
+    return new PaginateDto<EventDto>(
+      result,
+      search.page,
+      result.length === search.size ? search.size : result.length,
+      totalCount,
+    );
+  }
+
+  async findAllEventUserCanSee(
+    search: string,
+    userId: number,
+    page: number,
+    size: number,
+  ): Promise<PaginateDto<EventDto>> {
+    // start create search
+
+    const userInReq = this.request?.user as any;
+
+    let events: Event[] = [];
+    let totalCount: number;
+    try {
+      [events, totalCount] = await this.eventRepository.queryEventUserCanSee(
+        search,
+        userId,
+        page,
+        size,
+      );
+    } catch (error) {
+      this.log.error(error);
+
+      throw new BadRequestException(
+        transformError(
+          `Search: ${JSON.stringify(search)}`,
+          ERROR_TYPE.IN_VALID,
+        ),
+      );
+    }
+
+    const result = events.map((event: Event) =>
+      plainToInstance(EventDto, event, {
+        excludeExtraneousValues: true,
+      }),
+    );
+
+    return new PaginateDto<EventDto>(
+      result,
+      page,
+      result.length === size ? size : result.length,
+      totalCount,
     );
   }
 

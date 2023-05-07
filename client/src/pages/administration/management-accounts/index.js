@@ -24,11 +24,12 @@ import { toInteger } from "lodash";
 import React, { useEffect, useState } from "react";
 // import { CSVLink } from 'react-csv'
 import { Helmet } from "react-helmet";
+import { DEFAULT_PAGE_SIZE } from "services/utils/constants";
 import { RoleRender, StatusRender } from "services/utils/format";
 
 function ManagementAccounts() {
   const [keyword, setKeyword] = useState();
-
+  const [page, setPage] = useState(1);
   const { isLoading: loadingDelete, mutateAsync: deleteAccount } =
     useUsersControllerRemoveUser();
   const {
@@ -37,6 +38,9 @@ function ManagementAccounts() {
     data: dataAccount,
   } = useUsersControllerFindAllUser({
     like: keyword ? [`email:${keyword}`] : [],
+    page: page,
+    size: DEFAULT_PAGE_SIZE,
+    sort: ["createdAt,desc"],
   });
 
   const { isLoading: loadingCreate, mutateAsync: createUser } =
@@ -52,7 +56,7 @@ function ManagementAccounts() {
         notification.success({
           message: "Xóa thành công",
         });
-        refetch();
+        handleReloadData();
       }
     });
   };
@@ -102,7 +106,7 @@ function ManagementAccounts() {
           <>
             <Space>
               <AccountForm
-                reloadData={refetch}
+                reloadData={handleReloadData}
                 saveData={updateUser}
                 loading={loadingUpdate}
                 type="edit"
@@ -152,11 +156,18 @@ function ManagementAccounts() {
 
   const onSearch = (value) => {
     setKeyword(value);
+    setPage(1);
+  };
+
+  const handleReloadData = () => {
+    setPage(1);
+    setKeyword("");
+    refetch();
   };
 
   useEffect(() => {
     refetch();
-  }, [keyword]);
+  }, [keyword, page]);
 
   return (
     <>
@@ -179,7 +190,7 @@ function ManagementAccounts() {
         <Col span={12} style={{ display: "flex", justifyContent: "end" }}>
           {" "}
           <AccountForm
-            reloadData={refetch}
+            reloadData={handleReloadData}
             saveData={createUser}
             loading={loadingCreate}
             type="add"
@@ -193,14 +204,23 @@ function ManagementAccounts() {
         </Col>
       </Row>
       <Row>
-        <Card style={{ width: "100%" }}>
+        <Card className="br-8" style={{ width: "100%" }}>
           <Table
             scroll={{ x: 1200 }}
             rowKey="id"
             loading={isFetching}
             style={{ width: "100%" }}
-            dataSource={dataAccount}
+            dataSource={dataAccount?.data || []}
             columns={columns}
+            pagination={{
+              current: page,
+              pageSize: DEFAULT_PAGE_SIZE,
+              showSizeChanger: false,
+              total: dataAccount?.pagination.total || 0,
+            }}
+            onChange={(pagination) => {
+              setPage(pagination.current);
+            }}
           />
         </Card>
       </Row>

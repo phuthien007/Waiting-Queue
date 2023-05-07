@@ -33,7 +33,10 @@ export class Queue extends BaseEntity {
     nullable: true,
   })
   coord: string;
-  @Column({})
+
+  @Column({
+    unique: true,
+  })
   code: string;
 
   @Column({
@@ -59,15 +62,15 @@ export class Queue extends BaseEntity {
   @JoinTable({
     name: 'RelQueuesUsers',
     joinColumn: {
-      name: 'user_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
       name: 'queue_id',
       referencedColumnName: 'id',
     },
+    inverseJoinColumn: {
+      name: 'user_id',
+      referencedColumnName: 'id',
+    },
   })
-  users: Promise<User[]>;
+  users: User[];
 
   @OneToMany(() => EnrollQueue, (enrollQueue) => enrollQueue.queue)
   enrollQueues: Promise<EnrollQueue[]>;

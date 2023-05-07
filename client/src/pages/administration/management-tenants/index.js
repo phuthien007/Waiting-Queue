@@ -8,14 +8,16 @@ import { Card, Col, Divider, notification, Row, Table } from "antd";
 import Search from "antd/lib/input/Search";
 import TenantForm from "components/administration/TenantForm";
 // import FormAccount from 'components/admin/managements/FormAccount'
-import { toInteger } from "lodash";
+import _, { toInteger } from "lodash";
 import React, { useEffect, useState } from "react";
 // import { CSVLink } from 'react-csv'
 import { Helmet } from "react-helmet";
+import { DEFAULT_PAGE_SIZE } from "services/utils/constants";
 import { RoleRender, StatusRender } from "services/utils/format";
 
 function ManagementTenants() {
   const [keyword, setKeyword] = useState("");
+  const [page, setPage] = useState(1);
 
   const { isLoading: loadingCreate, mutateAsync: createTenant } =
     useTenantsControllerCreateTenant();
@@ -27,6 +29,9 @@ function ManagementTenants() {
     data: dataTenant,
   } = useTenantsControllerFindAllTenant({
     like: keyword ? [`contactEmail:${keyword}`] : [],
+    page: page,
+    size: DEFAULT_PAGE_SIZE,
+    sort: ["createdAt,desc"],
   });
 
   const columns = [
@@ -66,7 +71,7 @@ function ManagementTenants() {
         return (
           <>
             <TenantForm
-              reloadData={refetch}
+              reloadData={handleReloadData}
               saveData={updateTenant}
               loading={loadingUpdate}
               type="edit"
@@ -80,11 +85,18 @@ function ManagementTenants() {
 
   const onSearch = (value) => {
     setKeyword(value);
+    setPage(1);
+  };
+
+  const handleReloadData = () => {
+    setPage(1);
+    refetch();
+    setKeyword("");
   };
 
   useEffect(() => {
     refetch();
-  }, [keyword]);
+  }, [keyword, page]);
 
   return (
     <>
@@ -110,7 +122,7 @@ function ManagementTenants() {
             saveData={createTenant}
             loading={loadingCreate}
             type="add"
-            reloadData={refetch}
+            reloadData={handleReloadData}
             data={{
               status: 1,
               isWorking: true,
@@ -119,14 +131,23 @@ function ManagementTenants() {
         </Col>
       </Row>
       <Row>
-        <Card style={{ width: "100%" }}>
+        <Card style={{ width: "100%" }} className="br-8">
           <Table
             scroll={{ x: 1200 }}
             rowKey="id"
             loading={isFetching}
             style={{ width: "100%" }}
-            dataSource={dataTenant}
+            dataSource={dataTenant?.data || []}
             columns={columns}
+            pagination={{
+              current: _.toSafeInteger(dataTenant?.pagination.page) || 1,
+              pageSize: DEFAULT_PAGE_SIZE,
+              showSizeChanger: false,
+              total: dataTenant?.pagination.total || 0,
+            }}
+            onChange={(pagination) => {
+              setPage(pagination.current);
+            }}
           />
         </Card>
       </Row>

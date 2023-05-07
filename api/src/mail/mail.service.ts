@@ -15,7 +15,7 @@ export class MailService {
   async sendResetToken(token: string, user: User) {
     const url = `${
       process.env.CLIENT_URL || 'http://localhost:80'
-    }/reset-password/${token}`;
+    }/auth/reset-password/${token}`;
     try {
       this.mailerService.sendMail({
         to: user.email,

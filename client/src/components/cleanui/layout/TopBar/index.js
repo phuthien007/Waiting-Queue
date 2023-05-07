@@ -4,6 +4,7 @@ import { Button } from "antd";
 import LanguageSwitcher from "./LanguageSwitcher";
 import UserMenu from "./UserMenu";
 import style from "./style.module.scss";
+import QrCodeComponent from "components/dashboard/QrCode";
 
 const TopBar = () => {
   const user = useSelector(selectUser);
@@ -32,17 +33,11 @@ const TopBar = () => {
       </div> */}
       {!user.authorized ? (
         <div className="mt-2 mr-5">
-          <Button
-            className="mr-2"
-            icon={<i className="fa fa-camera mr-2" />}
-            type="primary"
-          >
-            Mở camera
-          </Button>
+          <QrCodeComponent />
           <Button
             className="mr-2"
             icon={<i className="fe fe-log-in mr-2" />}
-            type="primary"
+            type="link"
             href="/auth/login"
           >
             Đăng nhập

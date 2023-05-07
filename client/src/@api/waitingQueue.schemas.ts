@@ -2,17 +2,42 @@
 /**
  * 
  */
+export type FilesControllerFindOneParams = {
+fileName: string;
+};
+
+export type FilesControllerRemoveParams = {
+fileName: string;
+};
+
+export type FilesControllerUploadFileBody = {
+  file?: Blob;
+};
+
+export type EnrollQueuesControllerFindAllEnrollQueueStatus = typeof EnrollQueuesControllerFindAllEnrollQueueStatus[keyof typeof EnrollQueuesControllerFindAllEnrollQueueStatus];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const EnrollQueuesControllerFindAllEnrollQueueStatus = {
+  pending: 'pending',
+  serving: 'serving',
+  done: 'done',
+  is_blocked: 'is_blocked',
+} as const;
+
 export type EnrollQueuesControllerFindAllEnrollQueueParams = {
-eq?: string[];
-ne?: string[];
-gt?: string[];
-gte?: string[];
-lt?: string[];
-lte?: string[];
-in?: string[];
-notIn?: string[];
-like?: string[];
-notLike?: string[];
+page: number;
+size: number;
+queueId: number;
+status?: EnrollQueuesControllerFindAllEnrollQueueStatus;
+sort?: string;
+};
+
+export type QueuesControllerFindAllQueueUserCanSeeParams = {
+search?: string;
+eventId?: number;
+page: number;
+size: number;
 };
 
 export type QueuesControllerFindAllQueueParams = {
@@ -26,6 +51,18 @@ in?: string[];
 notIn?: string[];
 like?: string[];
 notLike?: string[];
+page?: number;
+size?: number;
+sort?: string;
+};
+
+export type EventsControllerFindAllEventUserCanSeeParams = {
+/**
+ * Search query name with operator LIKE
+ */
+search?: string;
+page: number;
+size: number;
 };
 
 export type EventsControllerFindAllEventParams = {
@@ -39,6 +76,14 @@ in?: string[];
 notIn?: string[];
 like?: string[];
 notLike?: string[];
+page?: number;
+size?: number;
+sort?: string;
+};
+
+export type AuthControllerFinishResetPasswordBody = {
+  password?: string;
+  confirmPassword?: string;
 };
 
 export type UsersControllerFindAllUserParams = {
@@ -52,6 +97,9 @@ in?: string[];
 notIn?: string[];
 like?: string[];
 notLike?: string[];
+page?: number;
+size?: number;
+sort?: string;
 };
 
 export type TenantsControllerFindAllTenantParams = {
@@ -65,41 +113,40 @@ in?: string[];
 notIn?: string[];
 like?: string[];
 notLike?: string[];
+page?: number;
+size?: number;
+sort?: string;
 };
-
-export interface UpdateEnrollQueueDto {
-  startServe?: string;
-  endServe?: string;
-  enrollTime?: string;
-  status?: string;
-  note?: string;
-  queueId?: number;
-  sessionId?: number;
-}
 
 export interface Session { [key: string]: any }
 
-export interface Queue { [key: string]: any }
-
 export interface EnrollQueueDto {
+  id?: string;
+  sequenceNumber?: number;
   startServe?: string;
   endServe?: string;
   enrollTime?: string;
   status?: string;
   note?: string;
-  queue?: Queue;
+  queue?: QueueDto;
   session?: Session;
 }
 
 export interface CreateEnrollQueueDto {
-  startServe?: string;
-  endServe?: string;
-  enrollTime?: string;
-  status?: string;
   note?: string;
-  queueId?: number;
-  sessionId?: number;
+  queueCode: string;
 }
+
+export type UpdateQueueDtoStatus = typeof UpdateQueueDtoStatus[keyof typeof UpdateQueueDtoStatus];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const UpdateQueueDtoStatus = {
+  pending: 'pending',
+  serving: 'serving',
+  waiting: 'waiting',
+  is_closed: 'is_closed',
+} as const;
 
 export interface UpdateQueueDto {
   id?: number;
@@ -110,7 +157,7 @@ export interface UpdateQueueDto {
   coord?: string;
   code?: string;
   description?: string;
-  status?: string;
+  status?: UpdateQueueDtoStatus;
   eventId?: number;
 }
 
@@ -127,6 +174,17 @@ export interface QueueDto {
   event?: EventDto;
 }
 
+export type CreateQueueDtoStatus = typeof CreateQueueDtoStatus[keyof typeof CreateQueueDtoStatus];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const CreateQueueDtoStatus = {
+  pending: 'pending',
+  serving: 'serving',
+  waiting: 'waiting',
+  is_closed: 'is_closed',
+} as const;
+
 export interface CreateQueueDto {
   id?: number;
   createdAt?: string;
@@ -136,7 +194,7 @@ export interface CreateQueueDto {
   coord?: string;
   code?: string;
   description?: string;
-  status?: string;
+  status?: CreateQueueDtoStatus;
   eventId?: number;
 }
 
@@ -210,18 +268,6 @@ export interface LoginDto {
   tenantCode: string;
   email: string;
   password: string;
-}
-
-export interface UpdateSessionDto {
-  id?: number;
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-export interface CreateSessionDto {
-  id?: number;
-  createdAt?: string;
-  updatedAt?: string;
 }
 
 export type UserMeDtoRole = typeof UserMeDtoRole[keyof typeof UserMeDtoRole];

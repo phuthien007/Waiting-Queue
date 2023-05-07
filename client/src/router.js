@@ -93,7 +93,7 @@ const routes = [
   },
   // detail event
   {
-    path: "/event/:eventId/queue/:queueID",
+    path: "/event/:eventId/queue/:queueId",
     Component: lazy(() =>
       import("pages/administration/management-events/detail-event/detail-queue")
     ),
@@ -161,7 +161,7 @@ const routes = [
     exact: true,
   },
   {
-    path: "auth/reset-password",
+    path: "auth/reset-password/:token",
     Component: lazy(() => import("pages/auth/reset-password")),
     exact: true,
   },

@@ -66,6 +66,22 @@ export const createResetTokenPassword = () => {
   // random token
   const token = randomPassword();
   // hash token
-  const hashToken = bcrypt.hash(token, 10);
-  return hashToken;
+  // const hashToken = bcrypt.hash(token, 10);
+  return token;
+};
+
+/**
+ * function create code queue
+ * @param parmas a list of params
+ * @returns a random code queue with length is 5
+ */
+export const createCodeQueue = (...parmas) => {
+  let result = '';
+  const characters =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const charactersLength = characters.length;
+  for (let i = 0; i < 5; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
 };
