@@ -42,7 +42,7 @@ jobs:
           name: build-client
           path: client/build
   
-  deploy:
+  # deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
