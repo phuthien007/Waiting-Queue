@@ -45,7 +45,9 @@ export class EnrollQueuesService {
     }
     // check and get sessionId from sesionsService
     const sessionId = await this.sessionsService.createOrRetrieve();
-
+    if (!sessionId) {
+      throw new BadRequestException('Không thể tạo hoặc lấy được session');
+    }
     // check exist enrollInQueue
     const existEnrollQueue = await this.enrollQueueRepository.findOne({
       where: { queue: { id: existQueue.id }, session: { id: sessionId } },
@@ -56,6 +58,10 @@ export class EnrollQueuesService {
       });
     }
 
+    const sequenceNumberCurrent = await this.enrollQueueRepository.count({
+      where: { queue: { id: existQueue.id } },
+    });
+
     // not exist create enrollQueue
 
     const newEnrollQueue = new EnrollQueue();
@@ -63,6 +69,8 @@ export class EnrollQueuesService {
     newEnrollQueue.queue = existQueue;
     newEnrollQueue.session = new Session();
     newEnrollQueue.session.id = sessionId;
+    newEnrollQueue.sequenceNumber = sequenceNumberCurrent + 1;
+
     // default is pending
     // newEnrollQueue.status = EnrollQueueEnum.PENDING;
     newEnrollQueue.enrollTime = new Date();

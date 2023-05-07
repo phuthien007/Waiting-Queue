@@ -4,10 +4,11 @@ import {
   EditOutlined,
 } from "@ant-design/icons";
 import { EventDto } from "@api/waitingQueue.schemas";
-import { Button, Card, Descriptions, Divider, Row, Tag } from "antd";
+import { Button, Card, Descriptions, Divider, Image, Row, Tag } from "antd";
 import moment from "moment";
 import React from "react";
 import { Link } from "react-router-dom";
+import { serveImage } from "services/utils";
 import { FORMAT_DATE_MINUTE } from "services/utils/constants";
 
 export type Props = {
@@ -25,6 +26,15 @@ const EventCard: React.FC<Props> = ({ data }) => {
           </Button>
         }
       >
+        <Row justify="center">
+          <Image
+            // width={200}
+            height={180}
+            src={serveImage(data?.drawImagePath)}
+          />
+        </Row>
+
+        <hr />
         <Descriptions column={1}>
           <Descriptions.Item label="Thời gian">
             {data?.daily

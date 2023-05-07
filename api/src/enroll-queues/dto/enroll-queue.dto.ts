@@ -19,6 +19,10 @@ export class EnrollQueueDto {
 
   @ApiPropertyOptional()
   @Expose()
+  sequenceNumber: number;
+
+  @ApiPropertyOptional()
+  @Expose()
   startServe: Date;
 
   @ApiPropertyOptional()

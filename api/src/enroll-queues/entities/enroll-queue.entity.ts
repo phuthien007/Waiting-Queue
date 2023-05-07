@@ -9,6 +9,12 @@ export class EnrollQueue {
   id: string;
 
   @Column({
+    name: 'sequence_number',
+    nullable: true,
+  })
+  sequenceNumber: number;
+
+  @Column({
     name: 'start_serve',
     nullable: true,
   })

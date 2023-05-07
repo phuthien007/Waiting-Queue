@@ -21,17 +21,18 @@ export class SessionsService {
    */
   async createOrRetrieve() {
     // if not have session id in cookie then create new session
-    if (this.getCurrentSession() === null) {
+    if ((await this.getCurrentSession()) === null) {
       const headersReq = this.request.rawHeaders;
       const newCreateSession = new Session();
       const indexUserAgent = headersReq.findIndex(
         (item) => item === 'User-Agent',
       );
-
       newCreateSession.browser = headersReq[indexUserAgent + 1];
       newCreateSession.createdAt = new Date();
       newCreateSession.updatedAt = new Date();
       const newSession = await this.sessionRepository.save(newCreateSession);
+
+      console.log('new session:', newSession.id);
 
       // create a cookie http only and max age is left hour of that day with the session id and return it
       const date = new Date();
@@ -40,7 +41,7 @@ export class SessionsService {
         (date.getHours() * 60 * 60 * 1000 +
           date.getMinutes() * 60 * 1000 +
           date.getSeconds() * 1000);
-      const cookie = `sessionId=${newSession.id}; HttpOnly; Max-Age=${maxAge}; Path=/; SameSite=None; Secure`;
+      const cookie = `sessionId=${newSession.id}; HttpOnly; Max-Age=${maxAge}; Securel SameSite=None; Path=/; Domain=${process.env.DOMAIN}`;
 
       // set cookie to response
       this.request.res.setHeader('Set-Cookie', cookie);
@@ -72,25 +73,23 @@ export class SessionsService {
    */
   private async getCurrentSession() {
     // get sessionId in header request
-    const headersReq = this.request.rawHeaders;
-    const indexCookie = headersReq.findIndex((item) => item === 'Cookie');
-    const tokenArr = headersReq[indexCookie + 1]
-      .split(';')
-      .map((item) => item.split('='));
-    const indexSessionId = tokenArr.findIndex(
-      (item) => item[0].trim() === 'sessionId',
-    );
+    console.log('request:', this.request.rawHeaders);
+    console.log('request:', this.request.cookies);
 
-    // if have sessionId in cookie then return it
-    if (tokenArr[indexSessionId][1]) {
-      // check tokenArr in bd
-      const existSession = await this.sessionRepository.findOne({
-        where: { id: tokenArr[indexSessionId][1] },
-      });
-      if (!existSession) {
-        return null;
+    if (this.request.cookies) {
+      const tokenObj = this.request.cookies as any;
+      if (tokenObj.sessionId) {
+        // if have sessionId in cookie then return it
+
+        // check tokenArr in bd
+        const existSession = await this.sessionRepository.findOne({
+          where: { id: tokenObj.sessionId },
+        });
+        if (!existSession) {
+          return null;
+        }
+        return tokenObj.sessionId;
       }
-      return tokenArr[indexSessionId][1];
     }
 
     return null;
