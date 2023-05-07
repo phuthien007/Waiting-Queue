@@ -42,19 +42,3 @@ jobs:
           name: build-client
           path: client/build
   
-  # deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set up SSH
-          uses: webfactory/ssh-agent@v0.5.0
-          with:
-            ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-            known_hosts: ${{ secrets.KNOWN_HOSTS }}
-
-      - name: Deploy to server
-        run: ssh -p 26022 dev@xephang.online  "pwd"
-      # - name: Test
-      #   run: npm test
-      # - name: Lint
-      #   run: npm run lint
