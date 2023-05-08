@@ -7,6 +7,7 @@ import {
   StatusEnrollQueueRenderColor,
   StatusQueueRender,
 } from "services/utils/format";
+import { QRCodeCanvas, QRCodeSVG } from "qrcode.react";
 
 const PublicDashboard = () => {
   const { isFetching, refetch, data } =

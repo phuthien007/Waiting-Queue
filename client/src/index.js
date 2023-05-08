@@ -94,7 +94,7 @@ root.render(
   <Provider store={store}>
     <Localization>
       <QueryClientProvider client={queryClient}>
-        <ReactQueryDevtools initialIsOpen={false} position="top-left" />
+        <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
         <AppRouter history={history} />
       </QueryClientProvider>
     </Localization>

@@ -136,6 +136,7 @@ const ManagementEnrollQueues: React.FC<Props> = ({ status }) => {
       <Row>
         <Card style={{ width: "100%" }} className="br-8">
           <Table
+            scroll={{ x: 800 }}
             // loading={isFetching}
             columns={columns}
             dataSource={dataSource?.data}
