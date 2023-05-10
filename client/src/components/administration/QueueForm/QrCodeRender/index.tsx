@@ -1,14 +1,28 @@
 import { QrcodeOutlined } from "@ant-design/icons";
-import { Button, Card, Col, Drawer, Row } from "antd";
+import { useQueuesControllerGetQrCode } from "@api/waitingQueue";
+import { Button, Card, Col, Drawer, Row, Typography } from "antd";
+import Title from "antd/lib/skeleton/Title";
+import Paragraph from "antd/lib/typography/Paragraph";
 import html2canvas from "html2canvas";
+import _ from "lodash";
 import { QRCodeSVG, QRCodeCanvas } from "qrcode.react";
-import React from "react";
+import React, { useEffect } from "react";
+import { useParams } from "react-router-dom";
 
-const QrCodeRender = () => {
+const QrCodeRender: React.FC = () => {
+  const { queueId } = useParams();
+
   const [isQrCodeOpen, setIsQrCodeOpen] = React.useState<boolean>(false);
   const [valueUrl, setValueUrl] = React.useState<string>(
     "https://picturesofpeoplescanningqrcodes.tumblr.com/"
   ); // [1
+
+  const { refetch } = useQueuesControllerGetQrCode(_.toSafeInteger(queueId), {
+    query: {
+      enabled: false,
+    },
+  });
+
   const showModalQrCode = () => {
     setIsQrCodeOpen(true);
   };
@@ -28,12 +42,22 @@ const QrCodeRender = () => {
     });
   };
 
+  useEffect(() => {
+    refetch().then((res) => {
+      if (res) {
+        console.log("res", res);
+        setValueUrl(res.data);
+      }
+    });
+  }, []);
+
   return (
     <>
       <Button
         onClick={showModalQrCode}
         type="primary"
-        icon={<QrcodeOutlined />}
+        // style={{ width: "100%" }}
+        // icon={<QrcodeOutlined />}
       >
         Hiện mã QRCode
       </Button>

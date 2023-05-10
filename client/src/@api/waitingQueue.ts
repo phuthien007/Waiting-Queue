@@ -1789,6 +1789,57 @@ export const useQueuesControllerGetAllUserOperateQueue = <TData = Awaited<Return
 }
 
 
+export const useQueuesControllerGetQrCodeHook = () => {
+        const queuesControllerGetQrCode = useCustomInstance<string>();
+
+        return (
+    id: number,
+ signal?: AbortSignal
+) => {
+        return queuesControllerGetQrCode(
+          {url: `/api/queues/${id}/qrcode`, method: 'get', signal
+    },
+          );
+        }
+      }
+    
+
+export const getQueuesControllerGetQrCodeQueryKey = (id: number,) => [`/api/queues/${id}/qrcode`] as const;
+  
+
+    
+export const useQueuesControllerGetQrCodeQueryOptions = <TData = Awaited<ReturnType<ReturnType<typeof useQueuesControllerGetQrCodeHook>>>, TError = void>(id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerGetQrCodeHook>>>, TError, TData>, }
+): UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerGetQrCodeHook>>>, TError, TData> & { queryKey: QueryKey } => {
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getQueuesControllerGetQrCodeQueryKey(id);
+
+  const queuesControllerGetQrCode =  useQueuesControllerGetQrCodeHook();
+  
+    const queryFn: QueryFunction<Awaited<ReturnType<ReturnType<typeof useQueuesControllerGetQrCodeHook>>>> = ({ signal }) => queuesControllerGetQrCode(id, signal);
+    
+      
+      
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions}}
+
+export type QueuesControllerGetQrCodeQueryResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useQueuesControllerGetQrCodeHook>>>>
+export type QueuesControllerGetQrCodeQueryError = void
+
+export const useQueuesControllerGetQrCode = <TData = Awaited<ReturnType<ReturnType<typeof useQueuesControllerGetQrCodeHook>>>, TError = void>(
+ id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerGetQrCodeHook>>>, TError, TData>, }
+
+  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+
+  const queryOptions = useQueuesControllerGetQrCodeQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+
 export const useEnrollQueuesControllerCreateEnrollQueueHook = () => {
         const enrollQueuesControllerCreateEnrollQueue = useCustomInstance<void>();
 

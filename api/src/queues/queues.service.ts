@@ -32,6 +32,18 @@ export class QueuesService {
   ) {}
 
   /**
+   * Find queue by id with queue data
+   * @param id - id of queue to find
+   */
+  async getQrCode(id: number) {
+    const queue = await this.queueRepository.findOne({
+      where: { id },
+    });
+    const url = `${process.env.CLIENT_URL}/public/queues/enroll?q=${queue.code}`;
+    return url;
+  }
+
+  /**
    * Create a new queue with createQueueDto
    * @param createQueueDto - CreateQueueDto object from request body
    * @returns QueueDto object with created queue data

@@ -113,7 +113,15 @@ const ManagementEnrollQueues: React.FC<Props> = ({ status }) => {
         setDataSource((prev) => {
           if (prev) {
             if (res.data.data.length > prev.data.length) {
-              message.success("Có người đăng ký mới tham gia hàng đợi");
+              const newItemData = res.data.data.filter(
+                (item) => !prev.data.find((prevItem) => prevItem.id === item.id)
+              );
+              if (
+                newItemData[0].status ===
+                EnrollQueuesControllerFindAllEnrollQueueStatus.pending
+              ) {
+                message.success("Có người đăng ký mới tham gia hàng đợi");
+              }
             }
           }
           return res.data;

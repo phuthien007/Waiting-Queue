@@ -204,4 +204,17 @@ export class QueuesController {
   ): Promise<UserDto[]> {
     return this.queuesService.getAllUserOperateQueue(id);
   }
+
+  /**
+   * gen url qrcode
+   * @param id  - id of queue to gen url qrcode
+   * @returns  url qrcode
+   * @throws {BadRequestException} - if id is invalid
+   */
+  @Get('/:id/qrcode')
+  @ApiOkResponse({ type: String })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  getQrCode(@Param('id', ParseIntPipe) id: number): Promise<string> {
+    return this.queuesService.getQrCode(id);
+  }
 }

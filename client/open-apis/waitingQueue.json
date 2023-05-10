@@ -1679,6 +1679,39 @@
         ]
       }
     },
+    "/api/queues/{id}/qrcode": {
+      "get": {
+        "operationId": "QueuesController_getQrCode",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        },
+        "tags": [
+          "queues"
+        ]
+      }
+    },
     "/api/enroll-queues": {
       "post": {
         "operationId": "EnrollQueuesController_createEnrollQueue",
@@ -1943,12 +1976,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-07T06:49:53.494Z"
+            "default": "2023-05-09T16:29:20.515Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-07T06:49:53.494Z"
+            "default": "2023-05-09T16:29:20.515Z"
           },
           "name": {
             "type": "string"
@@ -1989,12 +2022,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-07T06:49:53.494Z"
+            "default": "2023-05-09T16:29:20.515Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-07T06:49:53.494Z"
+            "default": "2023-05-09T16:29:20.515Z"
           },
           "name": {
             "type": "string"
@@ -2034,12 +2067,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-07T06:49:53.494Z"
+            "default": "2023-05-09T16:29:20.515Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-07T06:49:53.494Z"
+            "default": "2023-05-09T16:29:20.515Z"
           },
           "name": {
             "type": "string"
@@ -2080,12 +2113,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-07T06:49:53.494Z"
+            "default": "2023-05-09T16:29:20.515Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-07T06:49:53.494Z"
+            "default": "2023-05-09T16:29:20.515Z"
           },
           "email": {
             "type": "string"
@@ -2133,12 +2166,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-07T06:49:53.494Z"
+            "default": "2023-05-09T16:29:20.515Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-07T06:49:53.494Z"
+            "default": "2023-05-09T16:29:20.515Z"
           },
           "email": {
             "type": "string"
@@ -2184,12 +2217,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-07T06:49:53.494Z"
+            "default": "2023-05-09T16:29:20.515Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-07T06:49:53.494Z"
+            "default": "2023-05-09T16:29:20.515Z"
           },
           "email": {
             "type": "string"
@@ -2250,12 +2283,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-07T06:49:53.494Z"
+            "default": "2023-05-09T16:29:20.515Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-07T06:49:53.494Z"
+            "default": "2023-05-09T16:29:20.515Z"
           },
           "email": {
             "type": "string"
@@ -2358,12 +2391,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-07T06:49:53.494Z"
+            "default": "2023-05-09T16:29:20.515Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-07T06:49:53.494Z"
+            "default": "2023-05-09T16:29:20.515Z"
           },
           "name": {
             "type": "string"
@@ -2411,12 +2444,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-07T06:49:53.494Z"
+            "default": "2023-05-09T16:29:20.515Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-07T06:49:53.494Z"
+            "default": "2023-05-09T16:29:20.515Z"
           },
           "name": {
             "type": "string"
@@ -2464,12 +2497,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-07T06:49:53.494Z"
+            "default": "2023-05-09T16:29:20.515Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-07T06:49:53.494Z"
+            "default": "2023-05-09T16:29:20.515Z"
           },
           "name": {
             "type": "string"
@@ -2517,12 +2550,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-07T06:49:53.494Z"
+            "default": "2023-05-09T16:29:20.515Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-07T06:49:53.494Z"
+            "default": "2023-05-09T16:29:20.515Z"
           },
           "name": {
             "type": "string"
@@ -2563,12 +2596,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-07T06:49:53.494Z"
+            "default": "2023-05-09T16:29:20.515Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-07T06:49:53.494Z"
+            "default": "2023-05-09T16:29:20.515Z"
           },
           "name": {
             "type": "string"
@@ -2602,12 +2635,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-07T06:49:53.494Z"
+            "default": "2023-05-09T16:29:20.515Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-07T06:49:53.494Z"
+            "default": "2023-05-09T16:29:20.515Z"
           },
           "name": {
             "type": "string"

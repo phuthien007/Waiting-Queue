@@ -24,6 +24,13 @@ const PublicDashboard = () => {
 
   return (
     <>
+      <Row justify="center">
+        {data && data?.length <= 0 && (
+          <Typography.Title level={4}>
+            Bạn chưa tham gia hàng đợi nào
+          </Typography.Title>
+        )}
+      </Row>
       <Card style={{ borderRadius: 5 }}>
         <Row justify="center">
           {data && data?.length > 0 && (
