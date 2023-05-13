@@ -27,6 +27,8 @@ import { QueueDto } from './dto/queue.dto';
 import { FilterOperator } from 'src/common/filters.vm';
 import { RoleGuard } from 'src/auth/role.guard';
 import { UserDto } from 'src/users/dto/user.dto';
+import { HasRole } from 'src/common/decorators';
+import { EnrollQueueDto } from 'src/enroll-queues/dto/enroll-queue.dto';
 /**
  * QueuesController class for queues controller with CRUD operations for queues
  */
@@ -216,5 +218,24 @@ export class QueuesController {
   @ApiBadRequestResponse({ description: 'Bad Request' })
   getQrCode(@Param('id', ParseIntPipe) id: number): Promise<string> {
     return this.queuesService.getQrCode(id);
+  }
+
+  /**
+   * Get next enroll queue
+   * @param id  - id of queue to get next enroll queue
+   * @returns EnrollQueueDto object with enroll queue data
+   * @throws {BadRequestException} - if id is invalid
+   * @throws {InternalServerErrorException} - if error occurs during getting next enroll queue
+   * @throws {NotFoundException} - if queue with id not found
+   */
+  @Get('/:id/next-enroll-queue')
+  @HasRole('admin')
+  @ApiOkResponse({ type: EnrollQueueDto })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  @ApiNotFoundResponse({ description: 'Not Found' })
+  getNextEnrollQueue(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<EnrollQueueDto> {
+    return this.queuesService.getNextEnrollQueue(id);
   }
 }

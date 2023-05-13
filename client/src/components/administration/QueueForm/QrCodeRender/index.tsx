@@ -45,7 +45,6 @@ const QrCodeRender: React.FC = () => {
   useEffect(() => {
     refetch().then((res) => {
       if (res) {
-        console.log("res", res);
         setValueUrl(res.data);
       }
     });

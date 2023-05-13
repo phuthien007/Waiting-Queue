@@ -6,6 +6,7 @@ import { Request } from 'express';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Session } from './entities/session.entity';
 import { Repository } from 'typeorm';
+import moment from 'moment';
 
 @Injectable()
 export class SessionsService {
@@ -31,8 +32,6 @@ export class SessionsService {
       newCreateSession.createdAt = new Date();
       newCreateSession.updatedAt = new Date();
       const newSession = await this.sessionRepository.save(newCreateSession);
-
-      console.log('new session:', newSession.id);
 
       // create a cookie http only and max age is left hour of that day with the session id and return it
       const date = new Date();
@@ -73,8 +72,6 @@ export class SessionsService {
    */
   private async getCurrentSession() {
     // get sessionId in header request
-    console.log('request:', this.request.rawHeaders);
-    console.log('request:', this.request.cookies);
 
     if (this.request.cookies) {
       const tokenObj = this.request.cookies as any;

@@ -10,6 +10,7 @@ import {
   Query,
   UseGuards,
   ParseUUIDPipe,
+  Put,
 } from '@nestjs/common';
 import { EnrollQueuesService } from './enroll-queues.service';
 import { CreateEnrollQueueDto } from './dto/create-enroll-queue.dto';
@@ -124,12 +125,44 @@ export class EnrollQueuesController {
    * @param id id of enroll queue
    * @returns
    */
-  @HasRole()
+  @HasRole('admin')
   @Delete(':id')
   @ApiOkResponse({ description: 'OK' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
   removeEnrollQueue(@Param('id', ParseUUIDPipe) id: string) {
     return this.enrollQueuesService.remove(id);
+  }
+  /**
+   *  delete enroll queue for user public
+   * @param id id of enroll queue
+   * @returns
+   */
+  @HasRole()
+  @Delete(':id/myEnroll')
+  @ApiOkResponse({ description: 'OK' })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  @ApiNotFoundResponse({ description: 'Not Found' })
+  removeMyEnrollQueue(@Param('id', ParseUUIDPipe) id: string) {
+    return this.enrollQueuesService.remove(id);
+  }
+
+  /**
+   * update status of enroll queue
+   * @param id id of enroll queue
+   * @param updateEnrollQueueDto dto for update status
+   * @returns
+   * */
+  @HasRole('admin')
+  @Put('/status/:id/finish')
+  @ApiOkResponse({ type: EnrollQueueDto })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  @ApiNotFoundResponse({ description: 'Not Found' })
+  @ApiQuery({ name: 'status', required: true, enum: EnrollQueueEnum })
+  updateStatusEnrollQueue(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Query('status') status: EnrollQueueEnum,
+  ) {
+    return this.enrollQueuesService.updateStatus(id, status);
   }
 }

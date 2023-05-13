@@ -87,13 +87,10 @@ const NotificationSettingForm = ({ type }) => {
   };
 
   const onCheck = (checkedKeysValue) => {
-    console.log(checkedKeysValue);
     setCheckedKeys(checkedKeysValue);
   };
 
   const onSelect = (selectedKeysValue, info) => {
-    console.log("onSelect", info);
-    console.log("selectedKeysValue", selectedKeysValue);
     setSelectedKeys(selectedKeysValue);
   };
   const tProps = {
@@ -267,7 +264,6 @@ const NotificationSettingForm = ({ type }) => {
                               window.open(res.data, "_blank");
                             })
                             .catch((err) => {
-                              console.log(err);
                               notification.error({
                                 message: "Lỗi",
                                 description:

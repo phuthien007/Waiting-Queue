@@ -197,19 +197,31 @@ export class EnrollQueuesService {
             },
           },
         });
+
         if (existEnrollQueue) {
           return this.enrollQueueRepository.delete({ id: id });
         }
       }
-    }
-    // check is owner by sessionId
-    const sessionId = await this.sessionsService.createOrRetrieve();
-    const enrollQueue = await this.enrollQueueRepository.findOne({
-      where: { id: id, session: { id: sessionId } },
-    });
-    if (enrollQueue) {
-      return this.enrollQueueRepository.delete({ id: id });
+    } else {
+      // check is owner by sessionId
+      const sessionId = await this.sessionsService.createOrRetrieve();
+      const enrollQueue = await this.enrollQueueRepository.findOne({
+        where: { id: id, session: { id: sessionId } },
+      });
+      if (enrollQueue) {
+        return this.enrollQueueRepository.delete({ id: id });
+      }
     }
     throw new BadRequestException('Bạn không thể xóa số thứ tự này');
+  }
+
+  async updateStatus(id: string, status: string) {
+    console.log('updateStatus', id, status);
+
+    const enrollQueueUpdate = await this.enrollQueueRepository.update(
+      { id: id },
+      { status: status, endServe: new Date() },
+    );
+    console.log('enrollQueueUpdate', enrollQueueUpdate);
   }
 }

@@ -1,9 +1,22 @@
+import { RightCircleOutlined } from "@ant-design/icons";
 import {
   useEnrollQueuesControllerFindAllEnrollQueue,
+  useEnrollQueuesControllerUpdateStatusEnrollQueue,
   useEventsControllerFindOneEvent,
   useQueuesControllerFindOneQueue,
+  useQueuesControllerGetNextEnrollQueue,
+  useQueuesControllerUpdateQueue,
+  useUsersControllerUpdateMe,
 } from "@api/waitingQueue";
 import {
+  EnrollQueueDto,
+  EnrollQueuesControllerFindAllEnrollQueueStatus,
+  UpdateQueueDto,
+  UpdateQueueDtoStatus,
+  UpdateUserDtoStatus,
+} from "@api/waitingQueue.schemas";
+import {
+  Badge,
   Breadcrumb,
   Button,
   Card,
@@ -13,6 +26,7 @@ import {
   Menu,
   Row,
   Tabs,
+  Typography,
 } from "antd";
 import InformationEventCard from "components/administration/EventForm/InformationEventCard";
 import ManagementQueues from "components/administration/EventForm/QueueDataTable";
@@ -20,17 +34,34 @@ import ManagementEnrollQueues from "components/administration/QueueForm/EnrollQu
 import InformationQueueCard from "components/administration/QueueForm/InformationQueueCard";
 import StatisticData from "components/administration/QueueForm/StatisticData";
 import _ from "lodash";
-import React from "react";
+import moment from "moment";
+import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import {
   DEFAULT_PAGE_SIZE,
   STATUS_ENROLL_QUEUE_ENUM,
+  STATUS_QUEUE_ENUM,
 } from "services/utils/constants";
+import { loadCurrentAccount, selectUser } from "store/userSlice";
 
 const DetailEvent = () => {
   const params = useParams();
+  const user = useSelector(selectUser);
+  const [time, setTime] = useState(0);
+
+  const [currentSerial, setCurrentSerial] = React.useState<EnrollQueueDto>();
+  const dispatch = useDispatch();
+  const { isLoading: loadingHandleWorking, mutateAsync: updateWorking } =
+    useUsersControllerUpdateMe();
+  const {
+    isLoading: loadingUpdateStatusEnrollQueue,
+    mutateAsync: updateStatusEnrollQueue,
+  } = useEnrollQueuesControllerUpdateStatusEnrollQueue();
   const { eventId, queueId } = params;
+
+  const { mutateAsync: updateStatusQueue } = useQueuesControllerUpdateQueue();
 
   const {
     refetch: getDataEvent,
@@ -50,6 +81,134 @@ const DetailEvent = () => {
       enabled: false,
     },
   });
+
+  const { isFetching: loadingGetNextUser, refetch: getNextUser } =
+    useQueuesControllerGetNextEnrollQueue(_.parseInt(queueId) || 0, {
+      query: {
+        enabled: false,
+      },
+    });
+
+  const formatTime = (time) => {
+    const hours = Math.floor(time / 3600000)
+      .toString()
+      .padStart(2, "0");
+    const minutes = Math.floor((time % 3600000) / 60000)
+      .toString()
+      .padStart(2, "0");
+    const seconds = Math.floor((time % 60000) / 1000)
+      .toString()
+      .padStart(2, "0");
+    return `${hours}:${minutes}:${seconds}`;
+  };
+
+  /**
+   * Handle update working
+   */
+  const handleUpdateWorking = async () => {
+    // update status working
+    updateWorking({
+      data: {
+        isWorking: !user?.isWorking,
+      },
+    }).then(async (res) => {
+      if (res) {
+        // check
+        if (res.isWorking === false) {
+          // if have current serial
+          if (currentSerial) {
+            // update status current serial to done
+            await updateStatusEnrollQueue({
+              id: currentSerial.id,
+              params: {
+                status: EnrollQueuesControllerFindAllEnrollQueueStatus.done,
+              },
+            });
+
+            // set current serial to undefined
+            setCurrentSerial(undefined);
+          }
+
+          // update queue to pending
+          await updateStatusQueue({
+            id: _.parseInt(queueId) || 0,
+            data: {
+              ...dataQueue,
+              status: UpdateQueueDtoStatus.pending,
+            } as UpdateQueueDto,
+          });
+          // update queue to pending
+        }
+
+        // reload current account
+        dispatch(loadCurrentAccount());
+      }
+    });
+  };
+
+  const handleNextSerial = async () => {
+    // if have current serial
+    if (currentSerial) {
+      // update status current serial to done
+      await updateStatusEnrollQueue({
+        id: currentSerial.id,
+        params: {
+          status: EnrollQueuesControllerFindAllEnrollQueueStatus.done,
+        },
+      });
+    }
+
+    // get next user
+    getNextUser().then((res) => {
+      // if have next user
+      if (res.data && res.data.id) {
+        // set count time
+        setTime(0);
+        // update status current serial to serving
+        setCurrentSerial(res.data);
+
+        // check status queue not serving then update to serving
+        if (dataQueue.status !== STATUS_QUEUE_ENUM.SERVING) {
+          getDataQueue();
+        }
+      } else {
+        setCurrentSerial(undefined);
+        // get new data queue
+        getDataQueue();
+      }
+    });
+  };
+
+  const { refetch: getCurrentServing } =
+    useEnrollQueuesControllerFindAllEnrollQueue({
+      page: 1,
+      size: 1,
+      queueId: _.parseInt(queueId) || 0,
+      status: EnrollQueuesControllerFindAllEnrollQueueStatus.serving,
+    });
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTime((prevTime) => prevTime + 1000);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [time]);
+
+  useEffect(() => {
+    getCurrentServing().then((res) => {
+      if (res.data && res.data.data.length > 0) {
+        setCurrentSerial(res.data.data[0]);
+        setTime(
+          res.data.data[0].startServe
+            ? moment() - moment(res.data.data[0].startServe)
+            : 0
+        );
+      } else {
+        setCurrentSerial(undefined);
+      }
+    });
+  }, []);
 
   React.useEffect(() => {
     getDataEvent();
@@ -87,14 +246,81 @@ const DetailEvent = () => {
         <StatisticData />
         {/* </Col> */}
       </Row>
-      <Row justify="center">
-        {/* // render card to display a number current serving */}
-        <Card className="br-8">
-          <h1>3</h1>
-        </Card>
-      </Row>
+      {user?.isWorking && (
+        <Row justify="center" gutter={[20, 20]}>
+          {/* // render card to display a number current serving */}
+          <Col
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              justifySelf: "center",
+              alignItems: "center",
+              flexDirection: "column",
+            }}
+            sm={24}
+            xs={24}
+            md={10}
+            lg={10}
+            xl={10}
+            xxl={10}
+          >
+            {/* <Card className="br-8" title="Thời gian phục vụ"> */}
+            <Typography.Title level={4}>Thời gian phục vụ:</Typography.Title>
+            {currentSerial?.sequenceNumber && formatTime(time)}
+            {/* </Card> */}
+          </Col>
+          <Col>
+            <Card
+              className={`br-8  ${
+                currentSerial?.sequenceNumber ? "box-shadow-ant" : ""
+              }`}
+            >
+              <h1 style={{ fontSize: "7rem" }}>
+                {currentSerial?.sequenceNumber || 0}
+              </h1>
+            </Card>
+          </Col>
+          <Col
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              justifySelf: "center",
+              alignItems: "center",
+              flexDirection: "column",
+            }}
+            sm={24}
+            xs={24}
+            md={10}
+            lg={10}
+            xl={10}
+            xxl={10}
+          >
+            <Button
+              loading={loadingGetNextUser}
+              style={{ width: "50%" }}
+              type="primary"
+              onClick={handleNextSerial}
+              icon={<RightCircleOutlined style={{ fontSize: 15 }} />}
+            >
+              Tiếp theo
+            </Button>
+          </Col>
+        </Row>
+      )}
       <Divider />
-
+      {user?.isWorking ? (
+        <Button onClick={handleUpdateWorking} loading={loadingHandleWorking}>
+          Dừng làm việc
+        </Button>
+      ) : (
+        <Button
+          onClick={handleUpdateWorking}
+          loading={loadingHandleWorking}
+          type="primary"
+        >
+          Bắt đầu làm việc
+        </Button>
+      )}
       <Card title="Danh sách người đợi" className="mt-2 br-8">
         <Tabs defaultActiveKey="2">
           <Tabs.TabPane tab="Tất cả" key="1">
@@ -107,7 +333,9 @@ const DetailEvent = () => {
             <ManagementEnrollQueues status={STATUS_ENROLL_QUEUE_ENUM.DONE} />
           </Tabs.TabPane>
           {/* <Tabs.TabPane tab="Đã hủy" key="4">
-            <ManagementEnrollQueues status={STATUS_ENROLL_QUEUE_ENUM.BLOCKED} />
+            <ManagementEnrollQueues
+              status={STATUS_ENROLL_QUEUE_ENUM.IS_BLOCKED}
+            />
           </Tabs.TabPane> */}
         </Tabs>
       </Card>

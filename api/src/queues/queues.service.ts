@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -14,11 +15,16 @@ import { Queue } from './entities/queue.entity';
 import { QueueDto } from './dto/queue.dto';
 import { FilterOperator } from 'src/common/filters.vm';
 import { createCodeQueue, partialMapping } from 'src/common/algorithm';
-import { QueueEnum, commonEnum } from 'src/common/enum';
+import { EnrollQueueEnum, QueueEnum, commonEnum } from 'src/common/enum';
 import { Equal, Not } from 'typeorm';
 import { UserDto } from 'src/users/dto/user.dto';
 import { User } from 'src/users/entities/user.entity';
 import { PaginateDto } from 'src/common/paginate.dto';
+import { EnrollQueueDto } from 'src/enroll-queues/dto/enroll-queue.dto';
+import { REQUEST } from '@nestjs/core';
+import { Request } from 'express';
+import { EnrollQueuesRepository } from 'src/enroll-queues/enroll-queues.repository';
+import moment from 'moment';
 
 /**
  * QueuesService class for queues service with CRUD operations for queues and other operations
@@ -28,7 +34,9 @@ export class QueuesService {
   constructor(
     private readonly queueRepository: QueuesRepository,
     private readonly eventRepository: EventsRepository,
+    @Inject(REQUEST) private readonly request: Request,
     private readonly log: LoggerService,
+    private readonly enrollQueueRepository: EnrollQueuesRepository,
   ) {}
 
   /**
@@ -182,7 +190,8 @@ export class QueuesService {
 
       data.event = eventExist;
     }
-
+    updateQueueDto.createdAt = data.createdAt;
+    updateQueueDto.updatedAt = new Date();
     data = partialMapping(data, updateQueueDto) as Queue;
 
     return plainToInstance(QueueDto, this.queueRepository.save(data), {
@@ -296,5 +305,78 @@ export class QueuesService {
       result.length === size ? size : result.length,
       totalCount,
     );
+  }
+
+  /**
+   * get next enroll queue
+   * @param queueId - id of queue want to get next enroll
+   * @returns QueueDto object with queue data
+   * @throws NotFoundException if queue not found
+   * @throws BadRequestException if queue is closed
+   * @throws BadRequestException if queue is not enroll
+   * @throws BadRequestException if queue is not in event
+   */
+  async getNextEnrollQueue(queueId: number): Promise<EnrollQueueDto> {
+    const userInReq = this.request.user as any;
+    const queueExist = await this.queueRepository.findOne({
+      where: {
+        id: queueId,
+        status: Not(Equal(QueueEnum.IS_CLOSED)),
+        event: {
+          tenant: {
+            tenantCode: Equal(userInReq.tenantCode),
+          },
+        },
+      },
+    });
+
+    if (!queueExist) {
+      throw new NotFoundException(
+        transformError(`Id: ${queueId}`, ERROR_TYPE.NOT_FOUND),
+      );
+    }
+
+    // check have user waiting in queue
+    const enrollQueueExist = await this.enrollQueueRepository.find({
+      where: {
+        queue: {
+          id: queueId,
+        },
+        status: EnrollQueueEnum.PENDING,
+      },
+      order: {
+        sequenceNumber: 'ASC',
+      },
+    });
+
+    if (!enrollQueueExist || enrollQueueExist.length === 0) {
+      // no have user in queue, change queue status to waiting
+      await this.queueRepository.update(
+        { id: queueId },
+        { status: QueueEnum.WAITING },
+      );
+      return new EnrollQueueDto();
+    }
+
+    // find out next enroll queue
+    const nextEnrollQueue = enrollQueueExist[0];
+    // update status of next enroll queue to serving
+    await this.enrollQueueRepository.update(
+      { id: nextEnrollQueue.id },
+      {
+        status: EnrollQueueEnum.SERVING,
+        startServe: new Date(),
+      },
+    );
+    // update status of queue to serving if not yet
+    if (queueExist.status !== QueueEnum.SERVING) {
+      await this.queueRepository.update(
+        { id: queueId },
+        { status: QueueEnum.SERVING },
+      );
+    }
+    return plainToInstance(EnrollQueueDto, nextEnrollQueue, {
+      excludeExtraneousValues: true,
+    });
   }
 }

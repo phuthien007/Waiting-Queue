@@ -67,6 +67,7 @@ const STATUS_ENROLL_QUEUE_ENUM = {
   PENDING: "pending",
   SERVING: "serving",
   DONE: "done",
+  IS_BLOCKED: "is_blocked",
 };
 
 const WHITE_LIST_IMAGE = [

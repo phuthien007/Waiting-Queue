@@ -38,9 +38,10 @@ import type {
   QueuesControllerFindAllQueueParams,
   QueuesControllerFindAllQueueUserCanSeeParams,
   UpdateQueueDto,
-  CreateEnrollQueueDto,
   EnrollQueueDto,
+  CreateEnrollQueueDto,
   EnrollQueuesControllerFindAllEnrollQueueParams,
+  EnrollQueuesControllerUpdateStatusEnrollQueueParams,
   FilesControllerUploadFileBody,
   FilesControllerRemoveParams,
   FilesControllerFindOneParams
@@ -1840,6 +1841,57 @@ export const useQueuesControllerGetQrCode = <TData = Awaited<ReturnType<ReturnTy
 }
 
 
+export const useQueuesControllerGetNextEnrollQueueHook = () => {
+        const queuesControllerGetNextEnrollQueue = useCustomInstance<EnrollQueueDto>();
+
+        return (
+    id: number,
+ signal?: AbortSignal
+) => {
+        return queuesControllerGetNextEnrollQueue(
+          {url: `/api/queues/${id}/next-enroll-queue`, method: 'get', signal
+    },
+          );
+        }
+      }
+    
+
+export const getQueuesControllerGetNextEnrollQueueQueryKey = (id: number,) => [`/api/queues/${id}/next-enroll-queue`] as const;
+  
+
+    
+export const useQueuesControllerGetNextEnrollQueueQueryOptions = <TData = Awaited<ReturnType<ReturnType<typeof useQueuesControllerGetNextEnrollQueueHook>>>, TError = void>(id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerGetNextEnrollQueueHook>>>, TError, TData>, }
+): UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerGetNextEnrollQueueHook>>>, TError, TData> & { queryKey: QueryKey } => {
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getQueuesControllerGetNextEnrollQueueQueryKey(id);
+
+  const queuesControllerGetNextEnrollQueue =  useQueuesControllerGetNextEnrollQueueHook();
+  
+    const queryFn: QueryFunction<Awaited<ReturnType<ReturnType<typeof useQueuesControllerGetNextEnrollQueueHook>>>> = ({ signal }) => queuesControllerGetNextEnrollQueue(id, signal);
+    
+      
+      
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions}}
+
+export type QueuesControllerGetNextEnrollQueueQueryResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useQueuesControllerGetNextEnrollQueueHook>>>>
+export type QueuesControllerGetNextEnrollQueueQueryError = void
+
+export const useQueuesControllerGetNextEnrollQueue = <TData = Awaited<ReturnType<ReturnType<typeof useQueuesControllerGetNextEnrollQueueHook>>>, TError = void>(
+ id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerGetNextEnrollQueueHook>>>, TError, TData>, }
+
+  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+
+  const queryOptions = useQueuesControllerGetNextEnrollQueueQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+
 export const useEnrollQueuesControllerCreateEnrollQueueHook = () => {
         const enrollQueuesControllerCreateEnrollQueue = useCustomInstance<void>();
 
@@ -2039,6 +2091,106 @@ export const useEnrollQueuesControllerRemoveEnrollQueueMutationOptions = <TError
 ) => {
     
       const mutationOptions = useEnrollQueuesControllerRemoveEnrollQueueMutationOptions(options);
+     
+      return useMutation(mutationOptions);
+    }
+    
+export const useEnrollQueuesControllerRemoveMyEnrollQueueHook = () => {
+        const enrollQueuesControllerRemoveMyEnrollQueue = useCustomInstance<void>();
+
+        return (
+    id: string,
+ ) => {
+        return enrollQueuesControllerRemoveMyEnrollQueue(
+          {url: `/api/enroll-queues/${id}/myEnroll`, method: 'delete'
+    },
+          );
+        }
+      }
+    
+
+
+export const useEnrollQueuesControllerRemoveMyEnrollQueueMutationOptions = <TError = unknown,
+    
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerRemoveMyEnrollQueueHook>>>, TError,{id: string}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerRemoveMyEnrollQueueHook>>>, TError,{id: string}, TContext> => {
+ const {mutation: mutationOptions} = options ?? {};
+
+      const enrollQueuesControllerRemoveMyEnrollQueue =  useEnrollQueuesControllerRemoveMyEnrollQueueHook()
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerRemoveMyEnrollQueueHook>>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  enrollQueuesControllerRemoveMyEnrollQueue(id,)
+        }
+
+        
+
+ 
+   return  { mutationFn, ...mutationOptions }}
+
+    export type EnrollQueuesControllerRemoveMyEnrollQueueMutationResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerRemoveMyEnrollQueueHook>>>>
+    
+    export type EnrollQueuesControllerRemoveMyEnrollQueueMutationError = unknown
+
+    export const useEnrollQueuesControllerRemoveMyEnrollQueue = <TError = unknown,
+    
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerRemoveMyEnrollQueueHook>>>, TError,{id: string}, TContext>, }
+) => {
+    
+      const mutationOptions = useEnrollQueuesControllerRemoveMyEnrollQueueMutationOptions(options);
+     
+      return useMutation(mutationOptions);
+    }
+    
+export const useEnrollQueuesControllerUpdateStatusEnrollQueueHook = () => {
+        const enrollQueuesControllerUpdateStatusEnrollQueue = useCustomInstance<EnrollQueueDto>();
+
+        return (
+    id: string,
+    params: EnrollQueuesControllerUpdateStatusEnrollQueueParams,
+ ) => {
+        return enrollQueuesControllerUpdateStatusEnrollQueue(
+          {url: `/api/enroll-queues/status/${id}/finish`, method: 'put',
+        params
+    },
+          );
+        }
+      }
+    
+
+
+export const useEnrollQueuesControllerUpdateStatusEnrollQueueMutationOptions = <TError = void,
+    
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerUpdateStatusEnrollQueueHook>>>, TError,{id: string;params: EnrollQueuesControllerUpdateStatusEnrollQueueParams}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerUpdateStatusEnrollQueueHook>>>, TError,{id: string;params: EnrollQueuesControllerUpdateStatusEnrollQueueParams}, TContext> => {
+ const {mutation: mutationOptions} = options ?? {};
+
+      const enrollQueuesControllerUpdateStatusEnrollQueue =  useEnrollQueuesControllerUpdateStatusEnrollQueueHook()
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerUpdateStatusEnrollQueueHook>>>, {id: string;params: EnrollQueuesControllerUpdateStatusEnrollQueueParams}> = (props) => {
+          const {id,params} = props ?? {};
+
+          return  enrollQueuesControllerUpdateStatusEnrollQueue(id,params,)
+        }
+
+        
+
+ 
+   return  { mutationFn, ...mutationOptions }}
+
+    export type EnrollQueuesControllerUpdateStatusEnrollQueueMutationResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerUpdateStatusEnrollQueueHook>>>>
+    
+    export type EnrollQueuesControllerUpdateStatusEnrollQueueMutationError = void
+
+    export const useEnrollQueuesControllerUpdateStatusEnrollQueue = <TError = void,
+    
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerUpdateStatusEnrollQueueHook>>>, TError,{id: string;params: EnrollQueuesControllerUpdateStatusEnrollQueueParams}, TContext>, }
+) => {
+    
+      const mutationOptions = useEnrollQueuesControllerUpdateStatusEnrollQueueMutationOptions(options);
      
       return useMutation(mutationOptions);
     }

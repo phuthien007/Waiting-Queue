@@ -106,7 +106,6 @@ const EventForm: React.FC<Props> = ({
       values?.drawImagePath &&
       values?.drawImagePath?.fileList?.length === 0
     ) {
-      console.log("Success:", values);
       notification.error({
         message: "Lỗi",
         description: "Bạn được chọn 1 hình ảnh",

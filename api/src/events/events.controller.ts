@@ -9,6 +9,7 @@ import {
   Query,
   ParseIntPipe,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
@@ -25,12 +26,15 @@ import { EventDto } from './dto/event.dto';
 import { FilterOperator } from 'src/common/filters.vm';
 import { RoleEnum } from 'src/common/enum';
 import { PaginateDto } from 'src/common/paginate.dto';
+import { RoleGuard } from 'src/auth/role.guard';
+import { HasRole } from 'src/common/decorators';
 
 /**
  * Events controller class for events endpoints (create, update, delete, etc.)
  */
 @ApiTags('events')
 @Controller('/api/events')
+@UseGuards(RoleGuard)
 export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
 
@@ -40,6 +44,7 @@ export class EventsController {
    * @returns Created event DTO object
    */
   @Post()
+  @HasRole('admin')
   @ApiCreatedResponse({ type: EventDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   createEvent(@Body() createEventDto: CreateEventDto) {
@@ -58,6 +63,7 @@ export class EventsController {
     type: FilterOperator,
     description: 'Search query',
   })
+  @HasRole('admin')
   @ApiOkResponse({ type: [EventDto] })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   findAllEvent(@Query() search: any): Promise<PaginateDto<EventDto>> {

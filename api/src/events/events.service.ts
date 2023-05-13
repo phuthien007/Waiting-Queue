@@ -204,6 +204,9 @@ export class EventsService {
       );
     }
 
+    updateEventDto.createdAt = data.createdAt;
+    updateEventDto.updatedAt = new Date();
+
     data = partialMapping(data, updateEventDto) as Event;
 
     return plainToInstance(EventDto, this.eventRepository.save(data), {

@@ -8,6 +8,7 @@ import {
   StatusQueueRender,
 } from "services/utils/format";
 import { QRCodeCanvas, QRCodeSVG } from "qrcode.react";
+import { EnrollQueuesControllerUpdateStatusEnrollQueueStatus } from "@api/waitingQueue.schemas";
 
 const PublicDashboard = () => {
   const { isFetching, refetch, data } =
@@ -40,49 +41,77 @@ const PublicDashboard = () => {
           )}
         </Row>
         <Row justify="center" gutter={[20, 20]}>
-          {data?.map((item) => {
-            return (
-              <Col sm={12} xs={24} md={8} lg={8} xl={6} xxl={6}>
-                <Badge.Ribbon
-                  text={StatusEnrollQueueRender(item.status)}
-                  color={StatusEnrollQueueRenderColor(item.status)}
-                >
-                  <Card
-                    className="br-8"
-                    title={
-                      <Typography.Title level={5} ellipsis>
-                        Sự kiện: {item.queue.event.name}
-                      </Typography.Title>
-                    }
+          {data
+            .sort((a, b) => {
+              if (
+                a.status ===
+                  EnrollQueuesControllerUpdateStatusEnrollQueueStatus.serving &&
+                b.status ===
+                  EnrollQueuesControllerUpdateStatusEnrollQueueStatus.serving
+              ) {
+                return a.enrollTime > b.enrollTime;
+              } else if (
+                a.status ===
+                EnrollQueuesControllerUpdateStatusEnrollQueueStatus.serving
+              ) {
+                return -1;
+              } else if (
+                b.status ===
+                EnrollQueuesControllerUpdateStatusEnrollQueueStatus.serving
+              ) {
+                return 1;
+              } else {
+                return a.enrollTime > b.enrollTime;
+              }
+            })
+            ?.map((item) => {
+              return (
+                <Col sm={12} xs={24} md={8} lg={8} xl={6} xxl={6}>
+                  <Badge.Ribbon
+                    text={StatusEnrollQueueRender(item.status)}
+                    color={StatusEnrollQueueRenderColor(item.status)}
                   >
-                    <Row justify="center">
-                      <Typography.Title level={1} ellipsis>
-                        Số {item.sequenceNumber}
-                      </Typography.Title>
-                    </Row>
-                    <Divider />
-                    <Row justify="center">
-                      <Descriptions
-                        title={
-                          // <Typography.Title level={5} ellipsis>
-                          `Tên hàng đợi: ${item.queue.name}`
-                          // </Typography.Title>
-                        }
-                        column={1}
-                      >
-                        <Descriptions.Item label="Mô tả">
-                          {item.queue.description}
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Trạng thái hàng đợi">
-                          {StatusQueueRender(item.queue.status)}
-                        </Descriptions.Item>
-                      </Descriptions>
-                    </Row>
-                  </Card>
-                </Badge.Ribbon>
-              </Col>
-            );
-          })}
+                    <Card
+                      className={`br-8 ${
+                        item.status ===
+                        EnrollQueuesControllerUpdateStatusEnrollQueueStatus.serving
+                          ? "box-shadow-ant"
+                          : ""
+                      }`}
+                      title={
+                        <Typography.Title level={5} ellipsis>
+                          Sự kiện: {item.queue.event.name}
+                        </Typography.Title>
+                      }
+                    >
+                      <Row justify="center">
+                        <Typography.Title level={1} ellipsis>
+                          Số {item.sequenceNumber}
+                        </Typography.Title>
+                      </Row>
+                      <Divider />
+                      <Row justify="center">
+                        <Descriptions
+                          title={
+                            // <Typography.Title level={5} ellipsis>
+                            `Tên hàng đợi: ${item.queue.name}`
+                            // </Typography.Title>
+                          }
+                          column={1}
+                        >
+                          <Descriptions.Item label="Mô tả">
+                            {item.queue.description}
+                          </Descriptions.Item>
+                          <Descriptions.Item label="Trạng thái hàng đợi">
+                            {StatusQueueRender(item.queue.status)}
+                          </Descriptions.Item>
+                        </Descriptions>
+                      </Row>
+                    </Card>
+                  </Badge.Ribbon>
+                </Col>
+              );
+            })}
         </Row>
       </Card>
     </>

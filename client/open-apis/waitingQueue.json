@@ -1712,6 +1712,42 @@
         ]
       }
     },
+    "/api/queues/{id}/next-enroll-queue": {
+      "get": {
+        "operationId": "QueuesController_getNextEnrollQueue",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrollQueueDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "tags": [
+          "queues"
+        ]
+      }
+    },
     "/api/enroll-queues": {
       "post": {
         "operationId": "EnrollQueuesController_createEnrollQueue",
@@ -1870,6 +1906,85 @@
         ]
       }
     },
+    "/api/enroll-queues/{id}/myEnroll": {
+      "delete": {
+        "operationId": "EnrollQueuesController_removeMyEnrollQueue",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "tags": [
+          "enroll-queues"
+        ]
+      }
+    },
+    "/api/enroll-queues/status/{id}/finish": {
+      "put": {
+        "operationId": "EnrollQueuesController_updateStatusEnrollQueue",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "pending",
+                "serving",
+                "done",
+                "is_blocked"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrollQueueDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "tags": [
+          "enroll-queues"
+        ]
+      }
+    },
     "/api/files": {
       "post": {
         "operationId": "FilesController_uploadFile",
@@ -1976,12 +2091,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-09T16:29:20.515Z"
+            "default": "2023-05-13T10:41:48.749Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-09T16:29:20.515Z"
+            "default": "2023-05-13T10:41:48.749Z"
           },
           "name": {
             "type": "string"
@@ -2022,12 +2137,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-09T16:29:20.515Z"
+            "default": "2023-05-13T10:41:48.749Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-09T16:29:20.515Z"
+            "default": "2023-05-13T10:41:48.749Z"
           },
           "name": {
             "type": "string"
@@ -2067,12 +2182,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-09T16:29:20.515Z"
+            "default": "2023-05-13T10:41:48.749Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-09T16:29:20.515Z"
+            "default": "2023-05-13T10:41:48.749Z"
           },
           "name": {
             "type": "string"
@@ -2113,12 +2228,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-09T16:29:20.515Z"
+            "default": "2023-05-13T10:41:48.749Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-09T16:29:20.515Z"
+            "default": "2023-05-13T10:41:48.749Z"
           },
           "email": {
             "type": "string"
@@ -2166,12 +2281,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-09T16:29:20.515Z"
+            "default": "2023-05-13T10:41:48.749Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-09T16:29:20.515Z"
+            "default": "2023-05-13T10:41:48.749Z"
           },
           "email": {
             "type": "string"
@@ -2217,12 +2332,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-09T16:29:20.515Z"
+            "default": "2023-05-13T10:41:48.749Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-09T16:29:20.515Z"
+            "default": "2023-05-13T10:41:48.749Z"
           },
           "email": {
             "type": "string"
@@ -2283,12 +2398,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-09T16:29:20.515Z"
+            "default": "2023-05-13T10:41:48.749Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-09T16:29:20.515Z"
+            "default": "2023-05-13T10:41:48.749Z"
           },
           "email": {
             "type": "string"
@@ -2391,12 +2506,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-09T16:29:20.515Z"
+            "default": "2023-05-13T10:41:48.749Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-09T16:29:20.515Z"
+            "default": "2023-05-13T10:41:48.749Z"
           },
           "name": {
             "type": "string"
@@ -2444,12 +2559,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-09T16:29:20.515Z"
+            "default": "2023-05-13T10:41:48.749Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-09T16:29:20.515Z"
+            "default": "2023-05-13T10:41:48.749Z"
           },
           "name": {
             "type": "string"
@@ -2497,12 +2612,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-09T16:29:20.515Z"
+            "default": "2023-05-13T10:41:48.749Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-09T16:29:20.515Z"
+            "default": "2023-05-13T10:41:48.749Z"
           },
           "name": {
             "type": "string"
@@ -2550,12 +2665,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-09T16:29:20.515Z"
+            "default": "2023-05-13T10:41:48.749Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-09T16:29:20.515Z"
+            "default": "2023-05-13T10:41:48.749Z"
           },
           "name": {
             "type": "string"
@@ -2596,12 +2711,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-09T16:29:20.515Z"
+            "default": "2023-05-13T10:41:48.749Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-09T16:29:20.515Z"
+            "default": "2023-05-13T10:41:48.749Z"
           },
           "name": {
             "type": "string"
@@ -2635,12 +2750,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-09T16:29:20.515Z"
+            "default": "2023-05-13T10:41:48.749Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-09T16:29:20.515Z"
+            "default": "2023-05-13T10:41:48.749Z"
           },
           "name": {
             "type": "string"
@@ -2671,20 +2786,6 @@
             "type": "number"
           }
         }
-      },
-      "CreateEnrollQueueDto": {
-        "type": "object",
-        "properties": {
-          "note": {
-            "type": "string"
-          },
-          "queueCode": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "queueCode"
-        ]
       },
       "Session": {
         "type": "object",
@@ -2724,6 +2825,20 @@
             "$ref": "#/components/schemas/Session"
           }
         }
+      },
+      "CreateEnrollQueueDto": {
+        "type": "object",
+        "properties": {
+          "note": {
+            "type": "string"
+          },
+          "queueCode": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "queueCode"
+        ]
       }
     }
   }

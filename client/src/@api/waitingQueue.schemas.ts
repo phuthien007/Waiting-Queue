@@ -14,6 +14,21 @@ export type FilesControllerUploadFileBody = {
   file?: Blob;
 };
 
+export type EnrollQueuesControllerUpdateStatusEnrollQueueStatus = typeof EnrollQueuesControllerUpdateStatusEnrollQueueStatus[keyof typeof EnrollQueuesControllerUpdateStatusEnrollQueueStatus];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const EnrollQueuesControllerUpdateStatusEnrollQueueStatus = {
+  pending: 'pending',
+  serving: 'serving',
+  done: 'done',
+  is_blocked: 'is_blocked',
+} as const;
+
+export type EnrollQueuesControllerUpdateStatusEnrollQueueParams = {
+status: EnrollQueuesControllerUpdateStatusEnrollQueueStatus;
+};
+
 export type EnrollQueuesControllerFindAllEnrollQueueStatus = typeof EnrollQueuesControllerFindAllEnrollQueueStatus[keyof typeof EnrollQueuesControllerFindAllEnrollQueueStatus];
 
 
@@ -118,24 +133,12 @@ size?: number;
 sort?: string;
 };
 
-export interface Session { [key: string]: any }
-
-export interface EnrollQueueDto {
-  id?: string;
-  sequenceNumber?: number;
-  startServe?: string;
-  endServe?: string;
-  enrollTime?: string;
-  status?: string;
-  note?: string;
-  queue?: QueueDto;
-  session?: Session;
-}
-
 export interface CreateEnrollQueueDto {
   note?: string;
   queueCode: string;
 }
+
+export interface Session { [key: string]: any }
 
 export type UpdateQueueDtoStatus = typeof UpdateQueueDtoStatus[keyof typeof UpdateQueueDtoStatus];
 
@@ -172,6 +175,18 @@ export interface QueueDto {
   description?: string;
   status?: string;
   event?: EventDto;
+}
+
+export interface EnrollQueueDto {
+  id?: string;
+  sequenceNumber?: number;
+  startServe?: string;
+  endServe?: string;
+  enrollTime?: string;
+  status?: string;
+  note?: string;
+  queue?: QueueDto;
+  session?: Session;
 }
 
 export type CreateQueueDtoStatus = typeof CreateQueueDtoStatus[keyof typeof CreateQueueDtoStatus];
