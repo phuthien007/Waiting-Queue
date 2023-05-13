@@ -41,28 +41,31 @@ const PublicDashboard = () => {
           )}
         </Row>
         <Row justify="center" gutter={[20, 20]}>
+          {/* sort data follow status serving is top  */}
           {data
-            .sort((a, b) => {
+            ?.sort((a, b) => {
               if (
                 a.status ===
+                  EnrollQueuesControllerUpdateStatusEnrollQueueStatus.serving &&
+                b.status !==
+                  EnrollQueuesControllerUpdateStatusEnrollQueueStatus.serving
+              ) {
+                return -1;
+              } else if (
+                a.status !==
                   EnrollQueuesControllerUpdateStatusEnrollQueueStatus.serving &&
                 b.status ===
                   EnrollQueuesControllerUpdateStatusEnrollQueueStatus.serving
               ) {
-                return a.enrollTime > b.enrollTime;
-              } else if (
-                a.status ===
-                EnrollQueuesControllerUpdateStatusEnrollQueueStatus.serving
-              ) {
-                return -1;
-              } else if (
-                b.status ===
-                EnrollQueuesControllerUpdateStatusEnrollQueueStatus.serving
-              ) {
                 return 1;
-              } else {
-                return a.enrollTime > b.enrollTime;
+              } else if (a.status === b.status) {
+                if (a.enrollTime < b.enrollTime) {
+                  return -1;
+                } else if (a.enrollTime > b.enrollTime) {
+                  return 1;
+                }
               }
+              return 0;
             })
             ?.map((item) => {
               return (

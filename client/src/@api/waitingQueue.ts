@@ -40,6 +40,7 @@ import type {
   UpdateQueueDto,
   EnrollQueueDto,
   CreateEnrollQueueDto,
+  EnrollQueuesControllerCreateEnrollQueueParams,
   EnrollQueuesControllerFindAllEnrollQueueParams,
   EnrollQueuesControllerUpdateStatusEnrollQueueParams,
   FilesControllerUploadFileBody,
@@ -1897,11 +1898,13 @@ export const useEnrollQueuesControllerCreateEnrollQueueHook = () => {
 
         return (
     createEnrollQueueDto: CreateEnrollQueueDto,
+    params: EnrollQueuesControllerCreateEnrollQueueParams,
  ) => {
         return enrollQueuesControllerCreateEnrollQueue(
           {url: `/api/enroll-queues`, method: 'post',
       headers: {'Content-Type': 'application/json', },
-      data: createEnrollQueueDto
+      data: createEnrollQueueDto,
+        params
     },
           );
         }
@@ -1911,17 +1914,17 @@ export const useEnrollQueuesControllerCreateEnrollQueueHook = () => {
 
 export const useEnrollQueuesControllerCreateEnrollQueueMutationOptions = <TError = unknown,
     
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerCreateEnrollQueueHook>>>, TError,{data: CreateEnrollQueueDto}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerCreateEnrollQueueHook>>>, TError,{data: CreateEnrollQueueDto}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerCreateEnrollQueueHook>>>, TError,{data: CreateEnrollQueueDto;params: EnrollQueuesControllerCreateEnrollQueueParams}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerCreateEnrollQueueHook>>>, TError,{data: CreateEnrollQueueDto;params: EnrollQueuesControllerCreateEnrollQueueParams}, TContext> => {
  const {mutation: mutationOptions} = options ?? {};
 
       const enrollQueuesControllerCreateEnrollQueue =  useEnrollQueuesControllerCreateEnrollQueueHook()
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerCreateEnrollQueueHook>>>, {data: CreateEnrollQueueDto}> = (props) => {
-          const {data} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerCreateEnrollQueueHook>>>, {data: CreateEnrollQueueDto;params: EnrollQueuesControllerCreateEnrollQueueParams}> = (props) => {
+          const {data,params} = props ?? {};
 
-          return  enrollQueuesControllerCreateEnrollQueue(data,)
+          return  enrollQueuesControllerCreateEnrollQueue(data,params,)
         }
 
         
@@ -1935,7 +1938,7 @@ export const useEnrollQueuesControllerCreateEnrollQueueMutationOptions = <TError
 
     export const useEnrollQueuesControllerCreateEnrollQueue = <TError = unknown,
     
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerCreateEnrollQueueHook>>>, TError,{data: CreateEnrollQueueDto}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useEnrollQueuesControllerCreateEnrollQueueHook>>>, TError,{data: CreateEnrollQueueDto;params: EnrollQueuesControllerCreateEnrollQueueParams}, TContext>, }
 ) => {
     
       const mutationOptions = useEnrollQueuesControllerCreateEnrollQueueMutationOptions(options);

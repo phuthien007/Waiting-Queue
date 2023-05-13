@@ -48,6 +48,10 @@ status?: EnrollQueuesControllerFindAllEnrollQueueStatus;
 sort?: string;
 };
 
+export type EnrollQueuesControllerCreateEnrollQueueParams = {
+h: string;
+};
+
 export type QueuesControllerFindAllQueueUserCanSeeParams = {
 search?: string;
 eventId?: number;
