@@ -1,5 +1,6 @@
 import * as bcrypt from 'bcrypt';
-
+import * as CryptoJS from 'crypto-js';
+import * as moment from 'moment';
 // random code tenant
 /**
  * function random code tenant
@@ -76,6 +77,54 @@ export const createResetTokenPassword = () => {
  * @returns a random code queue with length is 5
  */
 export const createCodeQueue = (...parmas) => {
+  let result = '';
+  const characters =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const charactersLength = characters.length;
+  for (let i = 0; i < 5; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+};
+
+export const handleHashQueue = (randomQueueCode: string) => {
+  console.log('moment');
+  console.log('moment', moment());
+  const date = moment()
+    .add(process.env.TIMEOUT_VERIFY, 'seconds')
+    .toISOString();
+  const plainText = `${randomQueueCode}, time=${date}`;
+  return encryptAES(plainText);
+};
+export const handleValidateHashQueue = (hashQueue: string) => {
+  const plainText = decryptAES(hashQueue);
+  const parts = plainText.split(', time=');
+  return [parts[0], parts[1]];
+};
+
+export function encryptAES(text) {
+  const iv = CryptoJS.lib.WordArray.random(16); // tạo vector khởi tạo ngẫu nhiên 16 byte
+
+  // Mã hóa thông điệp
+  const ciphertext = CryptoJS.AES.encrypt(text, process.env.JWT_SECRET, {
+    iv: iv,
+  });
+  const encryptedMessage = iv.toString() + ':' + ciphertext.toString();
+  return encryptedMessage;
+}
+
+// Giải mã văn bản
+export function decryptAES(text) {
+  const parts = text.split(':');
+  const decipher = CryptoJS.AES.decrypt(parts[1], process.env.JWT_SECRET, {
+    iv: CryptoJS.enc.Hex.parse(parts[0]),
+  });
+  const decryptedMessage = decipher.toString(CryptoJS.enc.Utf8);
+  return decryptedMessage;
+}
+
+// random queue code
+export const getRandomQueueCode = () => {
   let result = '';
   const characters =
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

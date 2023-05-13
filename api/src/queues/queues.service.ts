@@ -14,7 +14,12 @@ import { plainToInstance } from 'class-transformer';
 import { Queue } from './entities/queue.entity';
 import { QueueDto } from './dto/queue.dto';
 import { FilterOperator } from 'src/common/filters.vm';
-import { createCodeQueue, partialMapping } from 'src/common/algorithm';
+import {
+  createCodeQueue,
+  getRandomQueueCode,
+  handleHashQueue,
+  partialMapping,
+} from 'src/common/algorithm';
 import { EnrollQueueEnum, QueueEnum, commonEnum } from 'src/common/enum';
 import { Equal, Not } from 'typeorm';
 import { UserDto } from 'src/users/dto/user.dto';
@@ -24,7 +29,7 @@ import { EnrollQueueDto } from 'src/enroll-queues/dto/enroll-queue.dto';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 import { EnrollQueuesRepository } from 'src/enroll-queues/enroll-queues.repository';
-import moment from 'moment';
+import * as moment from 'moment';
 
 /**
  * QueuesService class for queues service with CRUD operations for queues and other operations
@@ -47,7 +52,29 @@ export class QueuesService {
     const queue = await this.queueRepository.findOne({
       where: { id },
     });
-    const url = `${process.env.CLIENT_URL}/public/queues/enroll?q=${queue.code}`;
+    if (!queue) {
+      throw new NotFoundException('Không tìm thấy queue');
+    }
+
+    let hashQueue = '';
+
+    // if queue not have randomCode
+    if (!queue.randomCode) {
+      const randomCodeQueue = getRandomQueueCode();
+      // update randomCode for queue
+      await this.queueRepository.update(queue.id, {
+        ...queue,
+        randomCode: randomCodeQueue,
+      });
+      // handle hash queue
+      hashQueue = handleHashQueue(randomCodeQueue);
+    } else {
+      hashQueue = handleHashQueue(queue.randomCode);
+    }
+
+    const url = `${process.env.CLIENT_URL}/public/queues/enroll?q=${
+      queue.code
+    }&h=${encodeURIComponent(hashQueue)}`;
     return url;
   }
 

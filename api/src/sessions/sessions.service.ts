@@ -6,7 +6,7 @@ import { Request } from 'express';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Session } from './entities/session.entity';
 import { Repository } from 'typeorm';
-import moment from 'moment';
+import * as moment from 'moment';
 
 @Injectable()
 export class SessionsService {

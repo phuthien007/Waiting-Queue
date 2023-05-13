@@ -14,6 +14,11 @@ import { EnrollQueueDto } from './dto/enroll-queue.dto';
 import { EnrollQueuesRepository } from './enroll-queues.repository';
 import { EnrollQueue } from './entities/enroll-queue.entity';
 import { Equal, FindOptionsOrder } from 'typeorm';
+import {
+  getRandomQueueCode,
+  handleValidateHashQueue,
+} from 'src/common/algorithm';
+import * as moment from 'moment';
 
 @Injectable()
 export class EnrollQueuesService {
@@ -31,7 +36,7 @@ export class EnrollQueuesService {
    * @param createEnrollQueueDto  dto for create enroll queue
    * @returns
    */
-  async create(createEnrollQueueDto: CreateEnrollQueueDto) {
+  async create(createEnrollQueueDto: CreateEnrollQueueDto, h: string) {
     // check exist queueCode
     const existQueue = await this.queuesRepository.findOne({
       where: { code: createEnrollQueueDto.queueCode },
@@ -43,6 +48,28 @@ export class EnrollQueuesService {
           ' không tồn tại',
       );
     }
+    // check hash queue random
+    const [randomCodeQueue, timeValid] = handleValidateHashQueue(h);
+    // check have hash queue and time valid
+    if (!randomCodeQueue || !timeValid) {
+      throw new BadRequestException('Hash queue không hợp lệ');
+    }
+
+    // check time valid
+    if (moment(timeValid).isBefore(moment())) {
+      const randomCodeQueue = getRandomQueueCode();
+      await this.queuesRepository.update(existQueue.id, {
+        ...existQueue,
+        randomCode: randomCodeQueue,
+      });
+      throw new BadRequestException('Hash queue đã hết hạn');
+    }
+
+    // check random queue
+    if (existQueue.randomCode !== randomCodeQueue) {
+      throw new BadRequestException('Hash queue không hợp lệ');
+    }
+
     // check and get sessionId from sesionsService
     const sessionId = await this.sessionsService.createOrRetrieve();
     if (!sessionId) {
@@ -75,6 +102,9 @@ export class EnrollQueuesService {
     // newEnrollQueue.status = EnrollQueueEnum.PENDING;
     newEnrollQueue.enrollTime = new Date();
     const result = await this.enrollQueueRepository.save(newEnrollQueue);
+
+    // change random queue code after create enroll queue last
+
     return plainToInstance(EnrollQueueDto, result, {
       excludeExtraneousValues: true,
     });

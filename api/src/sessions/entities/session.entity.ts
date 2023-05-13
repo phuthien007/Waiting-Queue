@@ -1,4 +1,5 @@
-import moment from 'moment';
+import * as moment from 'moment';
+
 import { BaseEntity } from 'src/common/base.entity';
 import { EnrollQueue } from 'src/enroll-queues/entities/enroll-queue.entity';
 import {

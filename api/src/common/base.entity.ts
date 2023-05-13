@@ -1,4 +1,5 @@
-import moment from 'moment';
+import * as moment from 'moment';
+
 import {
   BeforeInsert,
   BeforeUpdate,

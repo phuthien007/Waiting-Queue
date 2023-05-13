@@ -48,8 +48,14 @@ export class EnrollQueuesController {
   @HasRole()
   @ApiCreatedResponse({ description: 'Created' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  createEnrollQueue(@Body() createEnrollQueueDto: CreateEnrollQueueDto) {
-    return this.enrollQueuesService.create(createEnrollQueueDto);
+  createEnrollQueue(
+    @Body() createEnrollQueueDto: CreateEnrollQueueDto,
+    @Query('h') h: string,
+  ) {
+    return this.enrollQueuesService.create(
+      createEnrollQueueDto,
+      decodeURIComponent(h),
+    );
   }
 
   /**

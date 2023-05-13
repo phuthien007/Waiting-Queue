@@ -9,7 +9,7 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import moment from 'moment';
+import * as moment from 'moment';
 
 /**
  * AllExceptionsFilter catches all exceptions and returns a standard response
