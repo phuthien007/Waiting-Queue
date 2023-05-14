@@ -1474,6 +1474,168 @@
         ]
       }
     },
+    "/api/queues/count": {
+      "get": {
+        "operationId": "QueuesController_countFindAllQueue",
+        "parameters": [
+          {
+            "required": false,
+            "name": "eq",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "required": false,
+            "name": "ne",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "required": false,
+            "name": "gt",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "required": false,
+            "name": "gte",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "required": false,
+            "name": "lt",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "required": false,
+            "name": "lte",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "required": false,
+            "name": "in",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "required": false,
+            "name": "notIn",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "required": false,
+            "name": "like",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "required": false,
+            "name": "notLike",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "required": false,
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "required": false,
+            "name": "size",
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "example": "id:ASC,created_at:DESC",
+            "required": false,
+            "name": "sort",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        },
+        "tags": [
+          "queues"
+        ]
+      }
+    },
     "/api/queues/my-queues": {
       "get": {
         "operationId": "QueuesController_findAllQueueUserCanSee",
@@ -1523,6 +1685,65 @@
                   "items": {
                     "$ref": "#/components/schemas/QueueDto"
                   }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        },
+        "tags": [
+          "queues"
+        ]
+      }
+    },
+    "/api/queues/count/my-queues": {
+      "get": {
+        "operationId": "QueuesController_countFindAllQueueUserCanSee",
+        "parameters": [
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "eventId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "example": 1,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "size",
+            "required": true,
+            "in": "query",
+            "example": 10,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "number"
                 }
               }
             }
@@ -2133,12 +2354,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-14T03:54:30.916Z"
+            "default": "2023-05-14T16:13:44.512Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-14T03:54:30.917Z"
+            "default": "2023-05-14T16:13:44.513Z"
           },
           "name": {
             "type": "string"
@@ -2179,12 +2400,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-14T03:54:30.916Z"
+            "default": "2023-05-14T16:13:44.512Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-14T03:54:30.917Z"
+            "default": "2023-05-14T16:13:44.513Z"
           },
           "name": {
             "type": "string"
@@ -2224,12 +2445,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-14T03:54:30.916Z"
+            "default": "2023-05-14T16:13:44.512Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-14T03:54:30.917Z"
+            "default": "2023-05-14T16:13:44.513Z"
           },
           "name": {
             "type": "string"
@@ -2270,12 +2491,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-14T03:54:30.916Z"
+            "default": "2023-05-14T16:13:44.512Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-14T03:54:30.917Z"
+            "default": "2023-05-14T16:13:44.513Z"
           },
           "email": {
             "type": "string"
@@ -2323,12 +2544,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-14T03:54:30.916Z"
+            "default": "2023-05-14T16:13:44.512Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-14T03:54:30.917Z"
+            "default": "2023-05-14T16:13:44.513Z"
           },
           "email": {
             "type": "string"
@@ -2374,12 +2595,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-14T03:54:30.916Z"
+            "default": "2023-05-14T16:13:44.512Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-14T03:54:30.917Z"
+            "default": "2023-05-14T16:13:44.513Z"
           },
           "email": {
             "type": "string"
@@ -2440,12 +2661,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-14T03:54:30.916Z"
+            "default": "2023-05-14T16:13:44.512Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-14T03:54:30.917Z"
+            "default": "2023-05-14T16:13:44.513Z"
           },
           "email": {
             "type": "string"
@@ -2548,12 +2769,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-14T03:54:30.916Z"
+            "default": "2023-05-14T16:13:44.512Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-14T03:54:30.917Z"
+            "default": "2023-05-14T16:13:44.513Z"
           },
           "name": {
             "type": "string"
@@ -2601,12 +2822,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-14T03:54:30.916Z"
+            "default": "2023-05-14T16:13:44.512Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-14T03:54:30.917Z"
+            "default": "2023-05-14T16:13:44.513Z"
           },
           "name": {
             "type": "string"
@@ -2654,12 +2875,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-14T03:54:30.916Z"
+            "default": "2023-05-14T16:13:44.512Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-14T03:54:30.917Z"
+            "default": "2023-05-14T16:13:44.513Z"
           },
           "name": {
             "type": "string"
@@ -2707,12 +2928,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-14T03:54:30.916Z"
+            "default": "2023-05-14T16:13:44.512Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-14T03:54:30.917Z"
+            "default": "2023-05-14T16:13:44.513Z"
           },
           "name": {
             "type": "string"
@@ -2753,12 +2974,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-14T03:54:30.916Z"
+            "default": "2023-05-14T16:13:44.512Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-14T03:54:30.917Z"
+            "default": "2023-05-14T16:13:44.513Z"
           },
           "name": {
             "type": "string"
@@ -2792,12 +3013,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-14T03:54:30.916Z"
+            "default": "2023-05-14T16:13:44.512Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-14T03:54:30.917Z"
+            "default": "2023-05-14T16:13:44.513Z"
           },
           "name": {
             "type": "string"
@@ -2839,8 +3060,9 @@
           "id": {
             "type": "string"
           },
-          "waitTimeAvg": {
-            "type": "number"
+          "willEnrollWhen": {
+            "format": "date-time",
+            "type": "string"
           },
           "serveTimeAvg": {
             "type": "number"

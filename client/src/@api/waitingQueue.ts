@@ -36,7 +36,9 @@ import type {
   QueueDto,
   CreateQueueDto,
   QueuesControllerFindAllQueueParams,
+  QueuesControllerCountFindAllQueueParams,
   QueuesControllerFindAllQueueUserCanSeeParams,
+  QueuesControllerCountFindAllQueueUserCanSeeParams,
   UpdateQueueDto,
   EnrollQueueDto,
   StatisticQueueDto,
@@ -1537,6 +1539,58 @@ export const useQueuesControllerAssignMemberMutationOptions = <TError = unknown,
       return useMutation(mutationOptions);
     }
     
+export const useQueuesControllerCountFindAllQueueHook = () => {
+        const queuesControllerCountFindAllQueue = useCustomInstance<number>();
+
+        return (
+    params?: QueuesControllerCountFindAllQueueParams,
+ signal?: AbortSignal
+) => {
+        return queuesControllerCountFindAllQueue(
+          {url: `/api/queues/count`, method: 'get',
+        params, signal
+    },
+          );
+        }
+      }
+    
+
+export const getQueuesControllerCountFindAllQueueQueryKey = (params?: QueuesControllerCountFindAllQueueParams,) => [`/api/queues/count`, ...(params ? [params]: [])] as const;
+  
+
+    
+export const useQueuesControllerCountFindAllQueueQueryOptions = <TData = Awaited<ReturnType<ReturnType<typeof useQueuesControllerCountFindAllQueueHook>>>, TError = void>(params?: QueuesControllerCountFindAllQueueParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerCountFindAllQueueHook>>>, TError, TData>, }
+): UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerCountFindAllQueueHook>>>, TError, TData> & { queryKey: QueryKey } => {
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getQueuesControllerCountFindAllQueueQueryKey(params);
+
+  const queuesControllerCountFindAllQueue =  useQueuesControllerCountFindAllQueueHook();
+  
+    const queryFn: QueryFunction<Awaited<ReturnType<ReturnType<typeof useQueuesControllerCountFindAllQueueHook>>>> = ({ signal }) => queuesControllerCountFindAllQueue(params, signal);
+    
+      
+      
+   return  { queryKey, queryFn, ...queryOptions}}
+
+export type QueuesControllerCountFindAllQueueQueryResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useQueuesControllerCountFindAllQueueHook>>>>
+export type QueuesControllerCountFindAllQueueQueryError = void
+
+export const useQueuesControllerCountFindAllQueue = <TData = Awaited<ReturnType<ReturnType<typeof useQueuesControllerCountFindAllQueueHook>>>, TError = void>(
+ params?: QueuesControllerCountFindAllQueueParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerCountFindAllQueueHook>>>, TError, TData>, }
+
+  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+
+  const queryOptions = useQueuesControllerCountFindAllQueueQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+
 export const useQueuesControllerFindAllQueueUserCanSeeHook = () => {
         const queuesControllerFindAllQueueUserCanSee = useCustomInstance<QueueDto[]>();
 
@@ -1580,6 +1634,58 @@ export const useQueuesControllerFindAllQueueUserCanSee = <TData = Awaited<Return
   ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
 
   const queryOptions = useQueuesControllerFindAllQueueUserCanSeeQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+
+export const useQueuesControllerCountFindAllQueueUserCanSeeHook = () => {
+        const queuesControllerCountFindAllQueueUserCanSee = useCustomInstance<number>();
+
+        return (
+    params: QueuesControllerCountFindAllQueueUserCanSeeParams,
+ signal?: AbortSignal
+) => {
+        return queuesControllerCountFindAllQueueUserCanSee(
+          {url: `/api/queues/count/my-queues`, method: 'get',
+        params, signal
+    },
+          );
+        }
+      }
+    
+
+export const getQueuesControllerCountFindAllQueueUserCanSeeQueryKey = (params: QueuesControllerCountFindAllQueueUserCanSeeParams,) => [`/api/queues/count/my-queues`, ...(params ? [params]: [])] as const;
+  
+
+    
+export const useQueuesControllerCountFindAllQueueUserCanSeeQueryOptions = <TData = Awaited<ReturnType<ReturnType<typeof useQueuesControllerCountFindAllQueueUserCanSeeHook>>>, TError = void>(params: QueuesControllerCountFindAllQueueUserCanSeeParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerCountFindAllQueueUserCanSeeHook>>>, TError, TData>, }
+): UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerCountFindAllQueueUserCanSeeHook>>>, TError, TData> & { queryKey: QueryKey } => {
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getQueuesControllerCountFindAllQueueUserCanSeeQueryKey(params);
+
+  const queuesControllerCountFindAllQueueUserCanSee =  useQueuesControllerCountFindAllQueueUserCanSeeHook();
+  
+    const queryFn: QueryFunction<Awaited<ReturnType<ReturnType<typeof useQueuesControllerCountFindAllQueueUserCanSeeHook>>>> = ({ signal }) => queuesControllerCountFindAllQueueUserCanSee(params, signal);
+    
+      
+      
+   return  { queryKey, queryFn, ...queryOptions}}
+
+export type QueuesControllerCountFindAllQueueUserCanSeeQueryResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useQueuesControllerCountFindAllQueueUserCanSeeHook>>>>
+export type QueuesControllerCountFindAllQueueUserCanSeeQueryError = void
+
+export const useQueuesControllerCountFindAllQueueUserCanSee = <TData = Awaited<ReturnType<ReturnType<typeof useQueuesControllerCountFindAllQueueUserCanSeeHook>>>, TError = void>(
+ params: QueuesControllerCountFindAllQueueUserCanSeeParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerCountFindAllQueueUserCanSeeHook>>>, TError, TData>, }
+
+  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+
+  const queryOptions = useQueuesControllerCountFindAllQueueUserCanSeeQueryOptions(params,options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 

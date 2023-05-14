@@ -52,11 +52,34 @@ export type EnrollQueuesControllerCreateEnrollQueueParams = {
 h: string;
 };
 
+export type QueuesControllerCountFindAllQueueUserCanSeeParams = {
+search?: string;
+eventId?: number;
+page: number;
+size: number;
+};
+
 export type QueuesControllerFindAllQueueUserCanSeeParams = {
 search?: string;
 eventId?: number;
 page: number;
 size: number;
+};
+
+export type QueuesControllerCountFindAllQueueParams = {
+eq?: string[];
+ne?: string[];
+gt?: string[];
+gte?: string[];
+lt?: string[];
+lte?: string[];
+in?: string[];
+notIn?: string[];
+like?: string[];
+notLike?: string[];
+page?: number;
+size?: number;
+sort?: string;
 };
 
 export type QueuesControllerFindAllQueueParams = {
@@ -185,7 +208,7 @@ export interface QueueDto {
 
 export interface EnrollQueueDto {
   id?: string;
-  waitTimeAvg?: number;
+  willEnrollWhen?: string;
   serveTimeAvg?: number;
   sequenceNumber?: number;
   startServe?: string;
