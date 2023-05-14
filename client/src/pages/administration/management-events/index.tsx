@@ -94,8 +94,12 @@ const ManagementEvents: React.FC = () => {
 
         return (
           <>
-            Từ {moment(record.from).format(FORMAT_DATE_MINUTE)} đến{" "}
-            {moment(record.to).format(FORMAT_DATE_MINUTE)}
+            Từ{" "}
+            {(record.from && moment(record.from).format(FORMAT_DATE_MINUTE)) ??
+              "..."}{" "}
+            đến{" "}
+            {(record.to && moment(record.to).format(FORMAT_DATE_MINUTE)) ??
+              "..."}
           </>
         );
       },

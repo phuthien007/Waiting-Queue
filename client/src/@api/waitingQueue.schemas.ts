@@ -142,6 +142,8 @@ export interface CreateEnrollQueueDto {
   queueCode: string;
 }
 
+export interface StatisticQueueDto { [key: string]: any }
+
 export interface Session { [key: string]: any }
 
 export type UpdateQueueDtoStatus = typeof UpdateQueueDtoStatus[keyof typeof UpdateQueueDtoStatus];
@@ -183,6 +185,8 @@ export interface QueueDto {
 
 export interface EnrollQueueDto {
   id?: string;
+  waitTimeAvg?: number;
+  serveTimeAvg?: number;
   sequenceNumber?: number;
   startServe?: string;
   endServe?: string;

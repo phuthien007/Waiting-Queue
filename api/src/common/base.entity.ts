@@ -12,11 +12,13 @@ import {
 export abstract class BaseEntity {
   @Column({
     name: 'created_at',
+    type: 'timestamp',
   })
   createdAt: Date;
 
   @Column({
     name: 'updated_at',
+    type: 'timestamp',
   })
   updatedAt: Date;
 

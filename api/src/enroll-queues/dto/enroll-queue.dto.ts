@@ -19,6 +19,14 @@ export class EnrollQueueDto {
 
   @ApiPropertyOptional()
   @Expose()
+  waitTimeAvg: number;
+
+  @ApiPropertyOptional()
+  @Expose()
+  serveTimeAvg: number;
+
+  @ApiPropertyOptional()
+  @Expose()
   sequenceNumber: number;
 
   @ApiPropertyOptional()

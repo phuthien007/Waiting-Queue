@@ -54,6 +54,7 @@ export class User extends BaseEntity {
   @Column({
     name: 'reset_date_password',
     nullable: true,
+    type: 'timestamp',
   })
   resetDatePassword: Date;
 

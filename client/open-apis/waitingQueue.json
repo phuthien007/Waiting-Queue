@@ -1748,6 +1748,39 @@
         ]
       }
     },
+    "/api/queues/{id}/statistic": {
+      "get": {
+        "operationId": "QueuesController_getStatisticQueue",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatisticQueueDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        },
+        "tags": [
+          "queues"
+        ]
+      }
+    },
     "/api/enroll-queues": {
       "post": {
         "operationId": "EnrollQueuesController_createEnrollQueue",
@@ -2100,12 +2133,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-13T15:17:41.675Z"
+            "default": "2023-05-14T03:54:30.916Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-13T15:17:41.675Z"
+            "default": "2023-05-14T03:54:30.917Z"
           },
           "name": {
             "type": "string"
@@ -2146,12 +2179,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-13T15:17:41.675Z"
+            "default": "2023-05-14T03:54:30.916Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-13T15:17:41.675Z"
+            "default": "2023-05-14T03:54:30.917Z"
           },
           "name": {
             "type": "string"
@@ -2191,12 +2224,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-13T15:17:41.675Z"
+            "default": "2023-05-14T03:54:30.916Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-13T15:17:41.675Z"
+            "default": "2023-05-14T03:54:30.917Z"
           },
           "name": {
             "type": "string"
@@ -2237,12 +2270,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-13T15:17:41.675Z"
+            "default": "2023-05-14T03:54:30.916Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-13T15:17:41.675Z"
+            "default": "2023-05-14T03:54:30.917Z"
           },
           "email": {
             "type": "string"
@@ -2290,12 +2323,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-13T15:17:41.675Z"
+            "default": "2023-05-14T03:54:30.916Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-13T15:17:41.675Z"
+            "default": "2023-05-14T03:54:30.917Z"
           },
           "email": {
             "type": "string"
@@ -2341,12 +2374,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-13T15:17:41.675Z"
+            "default": "2023-05-14T03:54:30.916Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-13T15:17:41.675Z"
+            "default": "2023-05-14T03:54:30.917Z"
           },
           "email": {
             "type": "string"
@@ -2407,12 +2440,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-13T15:17:41.675Z"
+            "default": "2023-05-14T03:54:30.916Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-13T15:17:41.675Z"
+            "default": "2023-05-14T03:54:30.917Z"
           },
           "email": {
             "type": "string"
@@ -2515,12 +2548,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-13T15:17:41.675Z"
+            "default": "2023-05-14T03:54:30.916Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-13T15:17:41.675Z"
+            "default": "2023-05-14T03:54:30.917Z"
           },
           "name": {
             "type": "string"
@@ -2568,12 +2601,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-13T15:17:41.675Z"
+            "default": "2023-05-14T03:54:30.916Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-13T15:17:41.675Z"
+            "default": "2023-05-14T03:54:30.917Z"
           },
           "name": {
             "type": "string"
@@ -2621,12 +2654,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-13T15:17:41.675Z"
+            "default": "2023-05-14T03:54:30.916Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-13T15:17:41.675Z"
+            "default": "2023-05-14T03:54:30.917Z"
           },
           "name": {
             "type": "string"
@@ -2674,12 +2707,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-13T15:17:41.675Z"
+            "default": "2023-05-14T03:54:30.916Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-13T15:17:41.675Z"
+            "default": "2023-05-14T03:54:30.917Z"
           },
           "name": {
             "type": "string"
@@ -2720,12 +2753,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-13T15:17:41.675Z"
+            "default": "2023-05-14T03:54:30.916Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-13T15:17:41.675Z"
+            "default": "2023-05-14T03:54:30.917Z"
           },
           "name": {
             "type": "string"
@@ -2759,12 +2792,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-13T15:17:41.675Z"
+            "default": "2023-05-14T03:54:30.916Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-13T15:17:41.675Z"
+            "default": "2023-05-14T03:54:30.917Z"
           },
           "name": {
             "type": "string"
@@ -2806,6 +2839,12 @@
           "id": {
             "type": "string"
           },
+          "waitTimeAvg": {
+            "type": "number"
+          },
+          "serveTimeAvg": {
+            "type": "number"
+          },
           "sequenceNumber": {
             "type": "number"
           },
@@ -2834,6 +2873,10 @@
             "$ref": "#/components/schemas/Session"
           }
         }
+      },
+      "StatisticQueueDto": {
+        "type": "object",
+        "properties": {}
       },
       "CreateEnrollQueueDto": {
         "type": "object",

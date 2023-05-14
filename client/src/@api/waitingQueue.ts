@@ -39,6 +39,7 @@ import type {
   QueuesControllerFindAllQueueUserCanSeeParams,
   UpdateQueueDto,
   EnrollQueueDto,
+  StatisticQueueDto,
   CreateEnrollQueueDto,
   EnrollQueuesControllerCreateEnrollQueueParams,
   EnrollQueuesControllerFindAllEnrollQueueParams,
@@ -1884,6 +1885,57 @@ export const useQueuesControllerGetNextEnrollQueue = <TData = Awaited<ReturnType
   ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
 
   const queryOptions = useQueuesControllerGetNextEnrollQueueQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+
+export const useQueuesControllerGetStatisticQueueHook = () => {
+        const queuesControllerGetStatisticQueue = useCustomInstance<StatisticQueueDto>();
+
+        return (
+    id: number,
+ signal?: AbortSignal
+) => {
+        return queuesControllerGetStatisticQueue(
+          {url: `/api/queues/${id}/statistic`, method: 'get', signal
+    },
+          );
+        }
+      }
+    
+
+export const getQueuesControllerGetStatisticQueueQueryKey = (id: number,) => [`/api/queues/${id}/statistic`] as const;
+  
+
+    
+export const useQueuesControllerGetStatisticQueueQueryOptions = <TData = Awaited<ReturnType<ReturnType<typeof useQueuesControllerGetStatisticQueueHook>>>, TError = void>(id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerGetStatisticQueueHook>>>, TError, TData>, }
+): UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerGetStatisticQueueHook>>>, TError, TData> & { queryKey: QueryKey } => {
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getQueuesControllerGetStatisticQueueQueryKey(id);
+
+  const queuesControllerGetStatisticQueue =  useQueuesControllerGetStatisticQueueHook();
+  
+    const queryFn: QueryFunction<Awaited<ReturnType<ReturnType<typeof useQueuesControllerGetStatisticQueueHook>>>> = ({ signal }) => queuesControllerGetStatisticQueue(id, signal);
+    
+      
+      
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions}}
+
+export type QueuesControllerGetStatisticQueueQueryResult = NonNullable<Awaited<ReturnType<ReturnType<typeof useQueuesControllerGetStatisticQueueHook>>>>
+export type QueuesControllerGetStatisticQueueQueryError = void
+
+export const useQueuesControllerGetStatisticQueue = <TData = Awaited<ReturnType<ReturnType<typeof useQueuesControllerGetStatisticQueueHook>>>, TError = void>(
+ id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useQueuesControllerGetStatisticQueueHook>>>, TError, TData>, }
+
+  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+
+  const queryOptions = useQueuesControllerGetStatisticQueueQueryOptions(id,options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 

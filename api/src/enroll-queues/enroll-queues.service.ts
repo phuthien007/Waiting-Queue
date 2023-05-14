@@ -19,6 +19,7 @@ import {
   handleValidateHashQueue,
 } from 'src/common/algorithm';
 import * as moment from 'moment';
+import { QueuesService } from 'src/queues/queues.service';
 
 @Injectable()
 export class EnrollQueuesService {
@@ -29,6 +30,7 @@ export class EnrollQueuesService {
     private readonly sessionsService: SessionsService,
     private readonly queuesRepository: QueuesRepository,
     @Inject(REQUEST) private readonly request: Request,
+    private readonly queuesService: QueuesService,
   ) {}
 
   /**
@@ -123,9 +125,22 @@ export class EnrollQueuesService {
       where: { session: { id: sessionId } },
       relations: ['queue', 'queue.event'],
     });
-    return result.map((item) =>
+
+    const enrollQueuesDTO = result.map((item) =>
       plainToInstance(EnrollQueueDto, item, { excludeExtraneousValues: true }),
     );
+    const newArr = [];
+    for (let i = 0; i < enrollQueuesDTO.length; i++) {
+      const statisticQueueDto = await this.queuesService.getStatisticQueue(
+        enrollQueuesDTO[i].queue.id,
+      );
+      enrollQueuesDTO[i].waitTimeAvg = statisticQueueDto?.timeWaitAvg || 0;
+      enrollQueuesDTO[i].serveTimeAvg = statisticQueueDto?.timeServeAvg || 0;
+      newArr.push(enrollQueuesDTO[i]);
+      // return item;
+    }
+
+    return newArr;
   }
 
   /**
@@ -153,7 +168,7 @@ export class EnrollQueuesService {
     }
 
     const sortObj: FindOptionsOrder<EnrollQueue> = {
-      enrollTime: 'ASC',
+      sequenceNumber: 'ASC',
     };
     if (sort) {
       const sortArr = sort.split(',');
@@ -252,6 +267,6 @@ export class EnrollQueuesService {
       { id: id },
       { status: status, endServe: new Date() },
     );
-    console.log('enrollQueueUpdate', enrollQueueUpdate);
+    return enrollQueueUpdate;
   }
 }

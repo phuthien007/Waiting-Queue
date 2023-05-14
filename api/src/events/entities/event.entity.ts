@@ -25,11 +25,13 @@ export class Event extends BaseEntity {
 
   @Column({
     nullable: true,
+    type: 'timestamp',
   })
   from: Date;
 
   @Column({
     nullable: true,
+    type: 'timestamp',
   })
   to: Date;
 

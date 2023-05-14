@@ -30,6 +30,7 @@ import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 import { EnrollQueuesRepository } from 'src/enroll-queues/enroll-queues.repository';
 import * as moment from 'moment';
+import { StatisticQueueDto } from './dto/statistic-queue.dto';
 
 /**
  * QueuesService class for queues service with CRUD operations for queues and other operations
@@ -57,13 +58,13 @@ export class QueuesService {
     }
 
     let hashQueue = '';
-
     // if queue not have randomCode
     if (!queue.randomCode) {
       const randomCodeQueue = getRandomQueueCode();
       // update randomCode for queue
       await this.queueRepository.update(queue.id, {
         ...queue,
+
         randomCode: randomCodeQueue,
       });
       // handle hash queue
@@ -405,5 +406,54 @@ export class QueuesService {
     return plainToInstance(EnrollQueueDto, nextEnrollQueue, {
       excludeExtraneousValues: true,
     });
+  }
+
+  /**
+   * get statistic of queue
+   * @param queueId - id of queue want to get statistic
+   * @returns StatisticQueueDto object with statistic data
+   * @throws NotFoundException if queue not found
+   */
+  async getStatisticQueue(queueId: number): Promise<StatisticQueueDto> {
+    const existQueue = this.queueRepository.findOne({
+      where: { id: queueId, status: Not(Equal(QueueEnum.IS_CLOSED)) },
+    });
+
+    if (!existQueue) {
+      throw new NotFoundException(
+        transformError(`Id: ${queueId}`, ERROR_TYPE.NOT_FOUND),
+      );
+    }
+
+    const enrollQueues = await this.enrollQueueRepository.find({
+      where: {
+        queue: { id: queueId },
+        status: Equal(EnrollQueueEnum.DONE),
+      },
+    });
+
+    if (!enrollQueues || enrollQueues.length === 0) {
+      return new StatisticQueueDto();
+    }
+    const timeWait = enrollQueues.reduce((total, enrollQueue) => {
+      if (!enrollQueue.startServe) return total;
+      const timeW =
+        enrollQueue.startServe.getTime() - enrollQueue.enrollTime.getTime();
+      return total + timeW;
+    }, 0);
+    const timeServe = enrollQueues.reduce((total, enrollQueue) => {
+      if (!enrollQueue.startServe) return total;
+
+      const timeW =
+        enrollQueue.endServe.getTime() - enrollQueue.startServe.getTime();
+
+      return total + timeW;
+    }, 0);
+
+    const newStatistic = new StatisticQueueDto();
+    newStatistic.timeServeAvg = timeServe / 1000 / enrollQueues.length;
+    newStatistic.timeWaitAvg = timeWait / 1000 / enrollQueues.length;
+
+    return newStatistic;
   }
 }

@@ -29,6 +29,7 @@ import { RoleGuard } from 'src/auth/role.guard';
 import { UserDto } from 'src/users/dto/user.dto';
 import { HasRole } from 'src/common/decorators';
 import { EnrollQueueDto } from 'src/enroll-queues/dto/enroll-queue.dto';
+import { StatisticQueueDto } from './dto/statistic-queue.dto';
 /**
  * QueuesController class for queues controller with CRUD operations for queues
  */
@@ -237,5 +238,20 @@ export class QueuesController {
     @Param('id', ParseIntPipe) id: number,
   ): Promise<EnrollQueueDto> {
     return this.queuesService.getNextEnrollQueue(id);
+  }
+
+  /**
+   * get statistic queue
+   * @param id  - id of queue to get statistic queue
+   * @returns  StatisticQueueDto object with statistic queue data
+   */
+  @Get('/:id/statistic')
+  @HasRole()
+  @ApiOkResponse({ type: StatisticQueueDto })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  getStatisticQueue(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<StatisticQueueDto> {
+    return this.queuesService.getStatisticQueue(id);
   }
 }

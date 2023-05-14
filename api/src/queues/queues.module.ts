@@ -17,6 +17,6 @@ import { EnrollQueuesModule } from 'src/enroll-queues/enroll-queues.module';
   ],
   controllers: [QueuesController],
   providers: [QueuesService, QueuesRepository],
-  exports: [QueuesRepository],
+  exports: [QueuesRepository, QueuesService],
 })
 export class QueuesModule {}
