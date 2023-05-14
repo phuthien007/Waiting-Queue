@@ -92,6 +92,25 @@ export class QueuesController {
   findAllQueue(@Query() search: any) {
     return this.queuesService.findAll(search);
   }
+  /**
+   * count Find all queues with search query params
+   * @param search - search query params
+   * @returns array of QueueDto objects with queues data
+   * @throws {BadRequestException} - if search query params is invalid
+   * @throws {InternalServerErrorException} - if error occurs during finding queues
+   */
+  @Get('/count')
+  @ApiQuery({
+    name: 'search',
+    required: false,
+    type: FilterOperator,
+    description: 'Search query',
+  })
+  @ApiOkResponse({ type: Number })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  countFindAllQueue(@Query() search: any) {
+    return this.queuesService.countFindAll(search);
+  }
 
   /**
    * Find all queues endpoint (GET /my-queues) with search query
@@ -131,6 +150,51 @@ export class QueuesController {
     @Query('size') size?: number,
   ) {
     return this.queuesService.findAllQueueUserCanSee(
+      search,
+      req.user.id,
+      eventId,
+      page,
+      size,
+    );
+  }
+  /**
+   * count Find all queues endpoint (GET /my-queues) with search query
+   * @param search Search query from request query
+   * @returns Array of event DTO objects
+   */
+  @Get('/count/my-queues')
+  @ApiQuery({
+    name: 'search',
+    required: false,
+    type: String,
+  })
+  @ApiQuery({
+    name: 'eventId',
+    required: false,
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'page',
+    required: true,
+    type: Number,
+    example: 1,
+  })
+  @ApiQuery({
+    name: 'size',
+    required: true,
+    type: Number,
+    example: 10,
+  })
+  @ApiOkResponse({ type: Number })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  countFindAllQueueUserCanSee(
+    @Req() req: any,
+    @Query('search') search?: string,
+    @Query('eventId', ParseIntPipe) eventId?: number,
+    @Query('page') page?: number,
+    @Query('size') size?: number,
+  ) {
+    return this.queuesService.countFindAllQueueUserCanSee(
       search,
       req.user.id,
       eventId,

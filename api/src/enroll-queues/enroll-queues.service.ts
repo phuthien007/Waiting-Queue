@@ -13,13 +13,14 @@ import { CreateEnrollQueueDto } from './dto/create-enroll-queue.dto';
 import { EnrollQueueDto } from './dto/enroll-queue.dto';
 import { EnrollQueuesRepository } from './enroll-queues.repository';
 import { EnrollQueue } from './entities/enroll-queue.entity';
-import { Equal, FindOptionsOrder } from 'typeorm';
+import { Equal, FindOptionsOrder, LessThan, LessThanOrEqual } from 'typeorm';
 import {
   getRandomQueueCode,
   handleValidateHashQueue,
 } from 'src/common/algorithm';
 import * as moment from 'moment';
 import { QueuesService } from 'src/queues/queues.service';
+import { EnrollQueueEnum } from 'src/common/enum';
 
 @Injectable()
 export class EnrollQueuesService {
@@ -131,13 +132,31 @@ export class EnrollQueuesService {
     );
     const newArr = [];
     for (let i = 0; i < enrollQueuesDTO.length; i++) {
-      const statisticQueueDto = await this.queuesService.getStatisticQueue(
-        enrollQueuesDTO[i].queue.id,
-      );
-      enrollQueuesDTO[i].waitTimeAvg = statisticQueueDto?.timeWaitAvg || 0;
-      enrollQueuesDTO[i].serveTimeAvg = statisticQueueDto?.timeServeAvg || 0;
-      newArr.push(enrollQueuesDTO[i]);
-      // return item;
+      if (enrollQueuesDTO[i].status === EnrollQueueEnum.PENDING) {
+        const statisticQueueDto = await this.queuesService.getStatisticQueue(
+          enrollQueuesDTO[i].queue.id,
+        );
+
+        // count number sequence from current serving to this enroll queue
+        const countSequence = await this.enrollQueueRepository.count({
+          where: {
+            queue: { id: enrollQueuesDTO[i].queue.id },
+            sequenceNumber: LessThanOrEqual(enrollQueuesDTO[i].sequenceNumber),
+            status: Equal(EnrollQueueEnum.PENDING),
+          },
+          order: { sequenceNumber: 'ASC' },
+        });
+
+        enrollQueuesDTO[i].willEnrollWhen = new Date(
+          enrollQueuesDTO[i].enrollTime.getTime() +
+            statisticQueueDto.timeWaitAvg * 1000 * countSequence,
+        );
+        enrollQueuesDTO[i].serveTimeAvg = statisticQueueDto?.timeServeAvg || 0;
+        newArr.push(enrollQueuesDTO[i]);
+        // return item;
+      } else {
+        newArr.push(enrollQueuesDTO[i]);
+      }
     }
 
     return newArr;

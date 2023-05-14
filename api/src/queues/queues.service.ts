@@ -166,6 +166,50 @@ export class QueuesService {
       totalCount,
     );
   }
+  /**
+   * count Find all queues with search query params
+   * @param search - search query params
+   * @returns array of QueueDto objects with queues data
+   */
+  async countFindAll(search: any): Promise<number> {
+    // start create search
+    const filterObj = new FilterOperator();
+    // transform to filter
+    Object.keys(search).forEach((key) => {
+      if (key !== 'page' && key !== 'size' && key !== 'sort') {
+        if (search[key] instanceof Array) {
+          search[key].forEach((tmp: any) => {
+            filterObj.addOperator(key, tmp);
+          });
+        } else {
+          filterObj.addOperator(key, search[key]);
+        }
+      }
+    });
+    filterObj.sort = search?.sort;
+
+    let queues: Queue[] = [];
+    let totalCount: number;
+
+    try {
+      [queues, totalCount] = await this.queueRepository.findAndCount({
+        relations: ['event'],
+        where: filterObj.transformToQuery(),
+        order: filterObj.parseSortToOrder(),
+      });
+    } catch (error) {
+      this.log.error(error);
+
+      throw new BadRequestException(
+        transformError(
+          `Search: ${JSON.stringify(search)}`,
+          ERROR_TYPE.IN_VALID,
+        ),
+      );
+    }
+
+    return totalCount;
+  }
 
   /**
    * Find a queue by id
@@ -333,6 +377,45 @@ export class QueuesService {
       result.length === size ? size : result.length,
       totalCount,
     );
+  }
+  /**
+   * count get all queue user can see
+   * @param search - search query params
+   * @param userId - id of user
+   * @param eventId - id of event
+   * @returns array of QueueDto objects with queues data
+   * @throws BadRequestException if search query params is invalid
+   * @throws NotFoundException if event not found
+   */
+  async countFindAllQueueUserCanSee(
+    search: string,
+    userId: number,
+    eventId: number,
+    page: number,
+    size: number,
+  ): Promise<number> {
+    let queues: Queue[] = [];
+    let totalCount: number;
+    try {
+      [queues, totalCount] = await this.queueRepository.queueUserCanSee(
+        search,
+        userId,
+        eventId,
+        page,
+        size,
+      );
+    } catch (error) {
+      this.log.error(error);
+
+      throw new BadRequestException(
+        transformError(
+          `Search: ${JSON.stringify(search)}`,
+          ERROR_TYPE.IN_VALID,
+        ),
+      );
+    }
+
+    return totalCount;
   }
 
   /**

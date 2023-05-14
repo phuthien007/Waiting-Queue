@@ -19,7 +19,7 @@ export class EnrollQueueDto {
 
   @ApiPropertyOptional()
   @Expose()
-  waitTimeAvg: number;
+  willEnrollWhen: Date;
 
   @ApiPropertyOptional()
   @Expose()
