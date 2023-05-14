@@ -7,6 +7,21 @@ const previewStyle = {
   height: "100%",
   width: "100%",
 };
+
+const frontFacingConstraints = {
+  facingMode: "user",
+  frameRate: { ideal: 30, max: 60 },
+  height: { min: 720, ideal: 1080, max: 2160 },
+  width: { min: 1280, ideal: 1920, max: 3840 },
+};
+
+const rearFacingConstraints = {
+  facingMode: "environment",
+  frameRate: { ideal: 30, max: 60 },
+  height: { min: 720, ideal: 1080, max: 2160 },
+  width: { min: 1280, ideal: 1920, max: 3840 },
+};
+
 const QrCodeComponent: React.FC = () => {
   const [result, setResult] = React.useState<string>("");
   const [isOpenModal, setIsOpenModal] = React.useState<boolean>(false);
@@ -25,7 +40,6 @@ const QrCodeComponent: React.FC = () => {
   const handleCancel = () => {
     setIsOpenModal(false);
   };
-
   return (
     <div>
       <Button
@@ -57,6 +71,7 @@ const QrCodeComponent: React.FC = () => {
           Đổi camera
         </Button>
         <QrReader
+          videoStyle={{ width: "100%" }}
           onResult={(result, error) => {
             if (result && result.getText()) {
               setResult(result.getText());
@@ -66,9 +81,11 @@ const QrCodeComponent: React.FC = () => {
               console.info(error);
             }
           }}
-          constraints={{
-            facingMode: facingMode,
-          }}
+          constraints={
+            facingMode === "environment"
+              ? rearFacingConstraints
+              : frontFacingConstraints
+          }
           scanDelay={delay}
         />
         {/* Link to result text */}

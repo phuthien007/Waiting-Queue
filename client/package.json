@@ -41,6 +41,7 @@
     "@tanstack/react-query-devtools": "^4.29.6",
     "@types/moment": "^2.13.0",
     "@types/qs": "^6.9.7",
+    "@types/react-qr-reader": "^2.1.4",
     "@types/store": "^2.0.2",
     "antd": "^4.23.0",
     "axios": "^0.27.0",
