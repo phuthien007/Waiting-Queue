@@ -8,17 +8,134 @@ import {
   StatusQueueRender,
 } from "services/utils/format";
 import { QRCodeCanvas, QRCodeSVG } from "qrcode.react";
-import { EnrollQueuesControllerUpdateStatusEnrollQueueStatus } from "@api/waitingQueue.schemas";
+import {
+  EnrollQueueDto,
+  EnrollQueuesControllerUpdateStatusEnrollQueueStatus,
+} from "@api/waitingQueue.schemas";
 import EnrollQueuePublicCard from "components/dashboard/EnrollQueuePublicCard";
 
+const vibrateMobile = () => {
+  // if (navigator.vibrate) {
+  navigator.vibrate =
+    navigator.vibrate ||
+    navigator.webkitVibrate ||
+    navigator.mozVibrate ||
+    navigator.msVibrate;
+  try {
+    navigator.vibrate([
+      500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500,
+      500, 500,
+    ]);
+  } catch (error) {
+    console.log("er", error);
+  }
+  // }
+};
+
 const PublicDashboard = () => {
-  const { isFetching, refetch, data } =
+  const [data, setData] = React.useState<EnrollQueueDto[]>([]);
+  const { isFetching, refetch } =
     useEnrollQueuesControllerFindAllMyEnrollQueue();
 
   useEffect(() => {
+    refetch().then((res) => {
+      setData((prev) => {
+        // check prev data and new data is same status
+        // lọc các phần tử trước đó có status là pending và sau đó có status là serving
+        const filterData = res.data.filter((item) => {
+          const prevItem = prev?.find((prevItem) => prevItem.id === item.id);
+          if (
+            prevItem?.status ===
+              EnrollQueuesControllerUpdateStatusEnrollQueueStatus.pending &&
+            item.status ===
+              EnrollQueuesControllerUpdateStatusEnrollQueueStatus.serving
+          ) {
+            //
+            return true;
+          } else {
+            return false;
+          }
+        });
+        if (filterData.length > 0) {
+          // có phần tử thỏa mãn điều kiện
+          // show notification rung điện thoại
+          vibrateMobile();
+        }
+
+        // get new data to check have serving data
+        const newData = res.data.filter(
+          (item) => !prev?.map((imap) => imap.id).includes(item.id)
+        );
+        if (newData.length > 0) {
+          vibrateMobile();
+          // có phần tử thỏa mãn điều kiện
+          // show notification rung điện thoại
+        }
+
+        return res.data;
+      });
+    });
     const intervalEnrollQueue = setInterval(() => {
-      refetch();
-    }, 1000);
+      refetch().then((res) => {
+        setData((prev) => {
+          // check prev data and new data is same status
+          // lọc các phần tử trước đó có status là pending và sau đó có status là serving
+          const filterData = res.data.filter((item) => {
+            const prevItem = prev?.find((prevItem) => prevItem.id === item.id);
+            if (
+              prevItem?.status ===
+                EnrollQueuesControllerUpdateStatusEnrollQueueStatus.pending &&
+              item.status ===
+                EnrollQueuesControllerUpdateStatusEnrollQueueStatus.serving
+            ) {
+              //
+              return true;
+            } else {
+              return false;
+            }
+          });
+          if (filterData.length > 0) {
+            // có phần tử thỏa mãn điều kiện
+            // show notification rung điện thoại
+            vibrateMobile();
+          }
+
+          // get new data to check have serving data
+          const newData = res.data.filter(
+            (item) => !prev?.map((imap) => imap.id).includes(item.id)
+          );
+          if (newData.length > 0) {
+            vibrateMobile();
+            // có phần tử thỏa mãn điều kiện
+            // show notification rung điện thoại
+          }
+
+          // check rung trước đó 5 phút
+          // const filterDataBefore5Min = res.data.filter((item) => {
+          //   if (
+          //     item.status ===
+          //     EnrollQueuesControllerUpdateStatusEnrollQueueStatus.pending
+          //   ) {
+          //     const now = new Date();
+          //     const enrollTime = new Date(item.enrollTime);
+          //     const diff = enrollTime.getTime() - now.getTime();
+          //     if (diff <= 5 * 60 * 1000) {
+          //       return true;
+          //     }
+          //   }
+          //   return false;
+          // });
+
+          // if (filterDataBefore5Min.length > 0) {
+          //   vibrateMobile();
+          //   // có phần tử thỏa mãn điều kiện
+          //   // show notification rung điện thoại
+          // }
+
+          return res.data;
+        });
+      });
+    }, 3000);
     return () => {
       clearInterval(intervalEnrollQueue);
     };
