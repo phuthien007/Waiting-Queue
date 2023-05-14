@@ -70,9 +70,9 @@ const PublicDashboard = () => {
             })
             ?.map((item, index) => {
               return (
-                <div key={index}>
-                  <EnrollQueuePublicCard item={item} />
-                </div>
+                // <div key={index}>
+                <EnrollQueuePublicCard item={item} />
+                // </div>
               );
             })}
         </Row>

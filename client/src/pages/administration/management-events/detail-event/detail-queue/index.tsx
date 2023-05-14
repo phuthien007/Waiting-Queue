@@ -5,6 +5,7 @@ import {
   useEventsControllerFindOneEvent,
   useQueuesControllerFindOneQueue,
   useQueuesControllerGetNextEnrollQueue,
+  useQueuesControllerGetStatisticQueue,
   useQueuesControllerUpdateQueue,
   useUsersControllerUpdateMe,
 } from "@api/waitingQueue";
@@ -62,6 +63,13 @@ const DetailEvent = () => {
   const { eventId, queueId } = params;
 
   const { mutateAsync: updateStatusQueue } = useQueuesControllerUpdateQueue();
+
+  const { refetch: getStatisticQueue, data: dataStatistic } =
+    useQueuesControllerGetStatisticQueue(_.parseInt(queueId) || 0, {
+      query: {
+        enabled: false,
+      },
+    });
 
   const {
     refetch: getDataEvent,
@@ -208,6 +216,12 @@ const DetailEvent = () => {
         setCurrentSerial(undefined);
       }
     });
+
+    getStatisticQueue();
+    const statisticInterval = setInterval(() => {
+      getStatisticQueue();
+    }, 30000);
+    return () => clearInterval(statisticInterval);
   }, []);
 
   React.useEffect(() => {
@@ -243,7 +257,7 @@ const DetailEvent = () => {
       <Divider />
       <Row>
         {/* <Col span={24}> */}
-        <StatisticData />
+        <StatisticData dataStatistic={dataStatistic} />
         {/* </Col> */}
       </Row>
       {user?.isWorking && (

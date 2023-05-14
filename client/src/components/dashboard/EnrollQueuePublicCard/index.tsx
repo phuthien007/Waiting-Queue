@@ -21,7 +21,7 @@ const EnrollQueuePublicCard: React.FC<IEnrollQueuePublicCardProps> = ({
 }) => {
   return (
     <>
-      <Col sm={12} xs={24} md={8} lg={8} xl={6} xxl={6}>
+      <Col sm={12} xs={24} md={8} lg={8} xl={8} xxl={8}>
         <Badge.Ribbon
           text={StatusEnrollQueueRender(item?.status)}
           color={StatusEnrollQueueRenderColor(item?.status)}
@@ -54,18 +54,21 @@ const EnrollQueuePublicCard: React.FC<IEnrollQueuePublicCardProps> = ({
                 }
                 column={1}
               >
-                <Descriptions.Item label="Thời gian chờ trung bình">
+                <Descriptions.Item label="Chờ trung bình">
                   <b>
-                    {(item?.waitTimeAvg &&
-                      moment(item?.waitTimeAvg).format(FORMAT_DATE_MINUTE)) ??
+                    {(item?.waitTimeAvg && item?.waitTimeAvg) + " s" ??
                       "Chưa có dữ liệu"}
                   </b>
                 </Descriptions.Item>
-                <Descriptions.Item label="Trạng gian phục vụ trung bình">
+                <Descriptions.Item label="Dự tính lúc">
                   <b>
                     {(item?.waitTimeAvg &&
-                      moment().add(item?.waitTimeAvg, "seconds") -
-                        moment(item?.enrollTime)) ??
+                      moment()
+                        .add(
+                          item?.waitTimeAvg > 0 ? item?.waitTimeAvg : 0,
+                          "seconds"
+                        )
+                        .format(FORMAT_DATE_MINUTE)) ??
                       "Chưa có dữ liệu"}
                   </b>
                 </Descriptions.Item>

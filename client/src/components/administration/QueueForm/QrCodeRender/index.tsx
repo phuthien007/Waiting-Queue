@@ -49,6 +49,11 @@ const QrCodeRender: React.FC = () => {
   };
 
   useEffect(() => {
+    refetch().then((res) => {
+      if (res) {
+        setValueUrl(res.data);
+      }
+    });
     const refetchInterval = setInterval(() => {
       refetch().then((res) => {
         if (res) {
@@ -57,7 +62,7 @@ const QrCodeRender: React.FC = () => {
       });
     }, 30000);
     return () => clearInterval(refetchInterval);
-  }, [valueUrl]);
+  }, []);
 
   return (
     <>
