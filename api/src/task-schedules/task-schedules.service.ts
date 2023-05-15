@@ -14,7 +14,7 @@ export class TaskSchedulesService {
     private readonly enrollQueuesRepository: EnrollQueuesRepository,
   ) {}
 
-  @Cron('0 0 0 * * ?')
+  @Cron('0 0 0 * * *')
   handleCron() {
     this.logger.log('Run task every day at 12:00:00 AM');
     this.logger.log('Clear all data pending in database');
