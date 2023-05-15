@@ -242,12 +242,24 @@ const DetailEvent = () => {
       </Breadcrumb>
 
       <Row>
-        <Col className="p-2" sm={24} md={12} xl={12}>
+        <Col
+          style={{ display: "flex", alignItems: "stretch" }}
+          className="p-2"
+          sm={24}
+          md={12}
+          xl={12}
+        >
           <Card loading={loadingDataEvent} title="" className="mt-2 br-8">
             <InformationEventCard data={dataEvent} />
           </Card>
         </Col>
-        <Col className="p-2" sm={24} md={12} xl={12}>
+        <Col
+          style={{ display: "flex", alignItems: "stretch" }}
+          className="p-2"
+          sm={24}
+          md={12}
+          xl={12}
+        >
           <Card loading={loadingDataQueue} title="" className="mt-2 br-8">
             <InformationQueueCard data={dataQueue} />
           </Card>
