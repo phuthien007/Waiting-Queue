@@ -13,7 +13,13 @@ import { CreateEnrollQueueDto } from './dto/create-enroll-queue.dto';
 import { EnrollQueueDto } from './dto/enroll-queue.dto';
 import { EnrollQueuesRepository } from './enroll-queues.repository';
 import { EnrollQueue } from './entities/enroll-queue.entity';
-import { Equal, FindOptionsOrder, LessThan, LessThanOrEqual } from 'typeorm';
+import {
+  Equal,
+  FindOptionsOrder,
+  In,
+  LessThan,
+  LessThanOrEqual,
+} from 'typeorm';
 import {
   getRandomQueueCode,
   handleValidateHashQueue,
@@ -200,19 +206,31 @@ export class EnrollQueuesService {
     // get enroll queue with queueId and event contain queue and same tenant
     const [enrollQueues, totalCount] =
       await this.enrollQueueRepository.findAndCount({
-        where: {
-          ...payload,
-          queue: {
-            id: Equal(queueId),
-            event: {
-              user: {
-                tenant: {
-                  tenantCode: userInRequest.tenantCode,
+        where: [
+          {
+            ...payload,
+            queue: [
+              {
+                id: Equal(queueId),
+                event: {
+                  user: {
+                    tenant: {
+                      tenantCode: userInRequest.tenantCode,
+                    },
+                    id: Equal(userInRequest.id),
+                    role: 'admin',
+                  },
                 },
               },
-            },
+              {
+                id: Equal(queueId),
+                users: {
+                  id: In([userInRequest.id]),
+                },
+              },
+            ],
           },
-        },
+        ],
         relations: ['queue'],
         order: sortObj,
       });
