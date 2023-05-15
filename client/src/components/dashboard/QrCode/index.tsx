@@ -11,15 +11,11 @@ const previewStyle = {
 const frontFacingConstraints = {
   facingMode: "user",
   frameRate: { ideal: 30, max: 60 },
-  height: { min: 720, ideal: 1080, max: 2160 },
-  width: { min: 1280, ideal: 1920, max: 3840 },
 };
 
 const rearFacingConstraints = {
   facingMode: "environment",
   frameRate: { ideal: 30, max: 60 },
-  height: { min: 720, ideal: 1080, max: 2160 },
-  width: { min: 1280, ideal: 1920, max: 3840 },
 };
 
 const QrCodeComponent: React.FC = () => {
@@ -71,7 +67,7 @@ const QrCodeComponent: React.FC = () => {
           Đổi camera
         </Button>
         <QrReader
-          videoStyle={{ width: "100%" }}
+          videoStyle={previewStyle}
           onResult={(result, error) => {
             if (result && result.getText()) {
               setResult(result.getText());

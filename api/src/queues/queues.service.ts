@@ -186,13 +186,11 @@ export class QueuesService {
         }
       }
     });
-    filterObj.sort = search?.sort;
 
-    let queues: Queue[] = [];
     let totalCount: number;
 
     try {
-      [queues, totalCount] = await this.queueRepository.findAndCount({
+      totalCount = await this.queueRepository.count({
         relations: ['event'],
         where: filterObj.transformToQuery(),
         order: filterObj.parseSortToOrder(),
