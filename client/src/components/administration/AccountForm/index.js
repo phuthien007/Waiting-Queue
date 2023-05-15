@@ -242,7 +242,7 @@ const AccountForm = ({ type, data, saveData, loading, reloadData }) => {
           </Form.Item>
           <Form.Item
             style={{ marginBottom: 0 }}
-            label="Trạng thái tài khoản:"
+            label="Trạng thái hoạt động:"
             name="isWorking"
             rules={[
               {
@@ -251,7 +251,10 @@ const AccountForm = ({ type, data, saveData, loading, reloadData }) => {
               },
             ]}
           >
-            <Select placeholder="Trạng thái hoạt động">
+            <Select
+              disabled={type !== "add"}
+              placeholder="Trạng thái hoạt động"
+            >
               <Select.Option key="1" value={true}>
                 Đang làm việc
               </Select.Option>
