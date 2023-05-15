@@ -46,7 +46,7 @@ const handleError = (error) => {
         message: "Lỗi",
         description: "Không có quyền để sử dụng chức năng này",
       });
-      history.push("/error/403");
+      // history.push("/error/403");
     } else if (status === 401) {
       notification.error({
         message: "Lỗi",
