@@ -48,7 +48,7 @@ const ResetPassword = () => {
   return (
     <div>
       <div className={`card ${style.container}`}>
-        <img src="/resources/images/tf-logo.png" alt="Logo của bạn" />
+        <img src="/resources/images/tf-logo.jpg" alt="Logo của bạn" />
 
         <div className="text-dark font-size-24 mb-4 text-center  mt-5">
           <strong>Đặt lại mật khẩu</strong>
