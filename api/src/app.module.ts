@@ -32,6 +32,8 @@ import { MulterModule } from '@nestjs/platform-express';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { CacheModule } from '@nestjs/cache-manager';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TaskSchedulesModule } from './task-schedules/task-schedules.module';
 
 @Module({
   imports: [
@@ -50,7 +52,7 @@ import { CacheModule } from '@nestjs/cache-manager';
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
         synchronize: false,
-        logging: ['error', 'warn', 'migration'],
+        logging: ['error', 'warn', 'migration', 'log'],
         logger: 'file',
         cache: true,
         // entities
@@ -74,6 +76,7 @@ import { CacheModule } from '@nestjs/cache-manager';
       max: 1000,
       isCacheableValue: () => true,
     }),
+    ScheduleModule.forRoot(),
     TenantsModule,
     SessionsModule,
     AuthModule,
@@ -85,6 +88,7 @@ import { CacheModule } from '@nestjs/cache-manager';
     ExceptionModule,
     MailModule,
     FilesModule,
+    TaskSchedulesModule,
   ],
   controllers: [AppController],
   providers: [
