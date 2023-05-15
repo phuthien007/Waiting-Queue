@@ -42,11 +42,6 @@ const DashboardAlpha: FC = () => {
     sort: "id:DESC",
   });
 
-  const { refetch: getQueueCanSee, data: myDataQueue } =
-    useQueuesControllerCountFindAllQueueUserCanSee({
-      page: 1,
-      size: 5,
-    });
   const { refetch: getAllQueue, data: dataQueue } =
     useQueuesControllerCountFindAllQueue();
 
@@ -61,7 +56,6 @@ const DashboardAlpha: FC = () => {
       getAllEvent();
       getAllQueue();
     } else if (role === "OPERATOR") {
-      getQueueCanSee();
       getAllMyEvent();
     }
   }, []);
@@ -71,12 +65,13 @@ const DashboardAlpha: FC = () => {
       <Helmet title="Trang chủ" />
 
       <StatisticCard
+        role={role}
         totalEvent={
           role === "ADMIN"
             ? dataEvent?.pagination?.total
             : myEvent?.pagination?.total
         }
-        totalQueue={role === "ADMIN" ? dataQueue : myDataQueue}
+        totalQueue={dataQueue}
       />
       <Divider>
         <span style={{ fontSize: 22 }}> Danh sách sự kiện gần đây </span>

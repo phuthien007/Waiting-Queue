@@ -46,7 +46,14 @@ const handleError = (error) => {
         message: "Lỗi",
         description: "Không có quyền để sử dụng chức năng này",
       });
-    } else if (data.entityName === "authenticate" && status === 400) {
+      history.push("/error/403");
+    } else if (status === 401) {
+      notification.error({
+        message: "Lỗi",
+        description: "Phiên đăng nhập đã hết hạn",
+      });
+      history.push("/auth/login");
+    } else if (status === 400) {
       notification.error({
         message: "Lỗi",
         description: messageError,
