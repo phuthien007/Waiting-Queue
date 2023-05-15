@@ -1,6 +1,7 @@
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { AllExceptionsFilter } from './exception/exception.filter';
 import {
+  CacheInterceptor,
   ClassSerializerInterceptor,
   Module,
   ValidationPipe,
@@ -30,11 +31,13 @@ import { FilesModule } from './files/files.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: '.local.env',
+      envFilePath: '.env',
+      cache: true,
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -46,9 +49,10 @@ import { join } from 'path';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        synchronize: configService.get<boolean>('DB_SYNC'),
-        logging: true,
-        logger: 'simple-console',
+        synchronize: false,
+        logging: ['error', 'warn', 'migration'],
+        logger: 'file',
+        cache: true,
         // entities
         entities: [User, Tenant, Queue, EnrollQueue, Event, Session],
       }),
@@ -62,6 +66,13 @@ import { join } from 'path';
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'uploads'),
+    }),
+    CacheModule.register({
+      isGlobal: true,
+      ttl: 15 * 1000,
+      store: 'memory',
+      max: 1000,
+      isCacheableValue: () => true,
     }),
     TenantsModule,
     SessionsModule,
@@ -85,6 +96,10 @@ import { join } from 'path';
     {
       provide: APP_INTERCEPTOR,
       useClass: ClassSerializerInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: CacheInterceptor,
     },
     {
       provide: APP_GUARD,

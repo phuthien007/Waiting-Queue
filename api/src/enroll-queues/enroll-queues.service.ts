@@ -298,8 +298,6 @@ export class EnrollQueuesService {
   }
 
   async updateStatus(id: string, status: string) {
-    console.log('updateStatus', id, status);
-
     const enrollQueueUpdate = await this.enrollQueueRepository.update(
       { id: id },
       { status: status, endServe: new Date() },

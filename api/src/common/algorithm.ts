@@ -88,8 +88,6 @@ export const createCodeQueue = (...parmas) => {
 };
 
 export const handleHashQueue = (randomQueueCode: string) => {
-  console.log('moment');
-  console.log('moment', moment());
   const date = moment()
     .add(process.env.TIMEOUT_VERIFY, 'seconds')
     .toISOString();
