@@ -25,9 +25,10 @@ import { selectUser } from "store/userSlice";
 
 type Props = {
   id: number;
+  setDataUserInQueue: React.Dispatch<React.SetStateAction<UserDto[]>>;
 };
 
-const UserOperateQueue: React.FC<Props> = ({ id }) => {
+const UserOperateQueue: React.FC<Props> = ({ id, setDataUserInQueue }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const { role } = useSelector(selectUser);
   const [data, setData] = React.useState<UserDto[]>([]);
@@ -57,7 +58,6 @@ const UserOperateQueue: React.FC<Props> = ({ id }) => {
       getAllUser();
     }
     setIsModalOpen(true);
-    getAllUserInQueue();
   };
 
   const handleOk = () => {
@@ -79,10 +79,24 @@ const UserOperateQueue: React.FC<Props> = ({ id }) => {
 
   React.useEffect(() => {
     setData(dataUserInQueue);
+    setDataUserInQueue(dataUserInQueue);
   }, [dataUserInQueue?.length]);
+
+  React.useEffect(() => {
+    getAllUserInQueue();
+  }, [id]);
 
   return (
     <>
+      {!data ||
+        (data?.length === 0 && (
+          <Col span={24}>
+            <p>Chưa có người điều hành</p>
+          </Col>
+        ))}
+      {data && data?.length > 0 && (
+        <>{data.map((item) => item.fullName).join("; ")}</>
+      )}
       <Button onClick={showModal}>Xem danh sách</Button>
       <Modal
         open={isModalOpen}

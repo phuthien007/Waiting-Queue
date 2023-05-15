@@ -7,7 +7,7 @@ import {
   useQueuesControllerRemoveQueue,
   useQueuesControllerUpdateQueue,
 } from "@api/waitingQueue";
-import { QueueDto } from "@api/waitingQueue.schemas";
+import { QueueDto, UserDto } from "@api/waitingQueue.schemas";
 import {
   Button,
   Card,
@@ -42,6 +42,7 @@ const ManagementQueues: React.FC = () => {
     setSearchText(value);
     setPage(1);
   };
+  const [dataUserInQueue, setDataUserInQueue] = React.useState<UserDto[]>([]);
   const [page, setPage] = React.useState<number>(1);
   const { role } = useSelector(selectUser);
   const {
@@ -102,7 +103,14 @@ const ManagementQueues: React.FC = () => {
     {
       title: "Người điều hành",
       key: "operateUser",
-      render: (record: QueueDto) => <UserOperateQueue id={record.id} />,
+      render: (record: QueueDto) => (
+        <>
+          <UserOperateQueue
+            setDataUserInQueue={setDataUserInQueue}
+            id={record.id}
+          />
+        </>
+      ),
     },
 
     {
@@ -163,6 +171,9 @@ const ManagementQueues: React.FC = () => {
       },
     },
   ];
+  {
+    console.log("data", dataUserInQueue);
+  }
   const handleReloadData = () => {
     setPage(1);
     setSearchText("");
