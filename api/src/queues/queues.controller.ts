@@ -30,6 +30,7 @@ import { UserDto } from 'src/users/dto/user.dto';
 import { HasRole } from 'src/common/decorators';
 import { EnrollQueueDto } from 'src/enroll-queues/dto/enroll-queue.dto';
 import { StatisticQueueDto } from './dto/statistic-queue.dto';
+import { RoleEnum } from 'src/common/enum';
 /**
  * QueuesController class for queues controller with CRUD operations for queues
  */
@@ -48,6 +49,7 @@ export class QueuesController {
    * @throws {NotFoundException} - if event with id from createQueueDto.eventId not found
    */
   @Post()
+  @HasRole(RoleEnum.ADMIN)
   @ApiCreatedResponse({ type: QueueDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   createQueue(@Body() createQueueDto: CreateQueueDto) {
@@ -61,6 +63,7 @@ export class QueuesController {
    * @returns QueueDto object with queue data after assign member
    */
   @Post('/:id/assign-member')
+  @HasRole(RoleEnum.ADMIN)
   @ApiBody({ type: [Number] })
   @ApiCreatedResponse({
     description: 'Assign member into queue successfully',
@@ -81,6 +84,7 @@ export class QueuesController {
    * @throws {InternalServerErrorException} - if error occurs during finding queues
    */
   @Get()
+  @HasRole(RoleEnum.ADMIN, RoleEnum.OPERATOR)
   @ApiQuery({
     name: 'search',
     required: false,
@@ -106,6 +110,7 @@ export class QueuesController {
     type: FilterOperator,
     description: 'Search query',
   })
+  @HasRole(RoleEnum.ADMIN, RoleEnum.OPERATOR)
   @ApiOkResponse({ type: Number })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   countFindAllQueue(@Query() search: any) {
@@ -123,6 +128,7 @@ export class QueuesController {
     required: false,
     type: String,
   })
+  @HasRole(RoleEnum.OPERATOR, RoleEnum.ADMIN)
   @ApiQuery({
     name: 'eventId',
     required: false,
@@ -186,6 +192,7 @@ export class QueuesController {
     example: 10,
   })
   @ApiOkResponse({ type: Number })
+  @HasRole(RoleEnum.OPERATOR, RoleEnum.ADMIN)
   @ApiBadRequestResponse({ description: 'Bad Request' })
   countFindAllQueueUserCanSee(
     @Req() req: any,
@@ -215,6 +222,7 @@ export class QueuesController {
   @ApiOkResponse({ type: QueueDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
+  @HasRole(RoleEnum.ADMIN, RoleEnum.OPERATOR)
   findOneQueue(@Param('id', ParseIntPipe) id: number) {
     return this.queuesService.findOne(+id);
   }
@@ -232,6 +240,7 @@ export class QueuesController {
   @ApiOkResponse({ type: QueueDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
+  @HasRole(RoleEnum.ADMIN)
   updateQueue(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateQueueDto: UpdateQueueDto,
@@ -251,6 +260,7 @@ export class QueuesController {
   @ApiOkResponse({ description: 'OK' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
+  @HasRole(RoleEnum.ADMIN)
   removeQueue(@Param('id', ParseIntPipe) id: number) {
     return this.queuesService.remove(+id);
   }
@@ -266,6 +276,7 @@ export class QueuesController {
   @Get('/:id/user-operate-queue')
   @ApiOkResponse({ type: [UserDto] })
   @ApiBadRequestResponse({ description: 'Bad Request' })
+  @HasRole(RoleEnum.OPERATOR, RoleEnum.ADMIN)
   getAllUserOperateQueue(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<UserDto[]> {
@@ -280,6 +291,7 @@ export class QueuesController {
    */
   @Get('/:id/qrcode')
   @ApiOkResponse({ type: String })
+  @HasRole(RoleEnum.ADMIN, RoleEnum.OPERATOR)
   @ApiBadRequestResponse({ description: 'Bad Request' })
   getQrCode(@Param('id', ParseIntPipe) id: number): Promise<string> {
     return this.queuesService.getQrCode(id);

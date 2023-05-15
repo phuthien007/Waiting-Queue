@@ -44,7 +44,7 @@ export class EventsController {
    * @returns Created event DTO object
    */
   @Post()
-  @HasRole('admin')
+  @HasRole(RoleEnum.ADMIN)
   @ApiCreatedResponse({ type: EventDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   createEvent(@Body() createEventDto: CreateEventDto) {
@@ -63,7 +63,7 @@ export class EventsController {
     type: FilterOperator,
     description: 'Search query',
   })
-  @HasRole('admin')
+  @HasRole(RoleEnum.ADMIN)
   @ApiOkResponse({ type: [EventDto] })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   findAllEvent(@Query() search: any): Promise<PaginateDto<EventDto>> {
@@ -96,6 +96,7 @@ export class EventsController {
   })
   @ApiOkResponse({ type: [EventDto] })
   @ApiBadRequestResponse({ description: 'Bad Request' })
+  @HasRole(RoleEnum.OPERATOR, RoleEnum.ADMIN)
   findAllEventUserCanSee(
     @Req() req: any,
     @Query('search') search?: string,
@@ -121,6 +122,7 @@ export class EventsController {
    */
   @Get(':id')
   @ApiOkResponse({ type: EventDto })
+  @HasRole(RoleEnum.ADMIN, RoleEnum.OPERATOR)
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
   findOneEvent(@Param('id', ParseIntPipe) id: number) {
@@ -136,6 +138,7 @@ export class EventsController {
    * @returns Not found message (event not found) with id
    */
   @Patch(':id')
+  @HasRole(RoleEnum.ADMIN)
   @ApiOkResponse({ type: EventDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
@@ -153,6 +156,7 @@ export class EventsController {
    * @returns Bad request message
    */
   @Delete(':id')
+  @HasRole(RoleEnum.ADMIN)
   @ApiOkResponse({ description: 'OK' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })

@@ -95,7 +95,7 @@ export class EnrollQueuesController {
     example: 10,
   })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  @HasRole('admin')
+  @HasRole('admin', 'operator')
   findAllEnrollQueue(
     @Query('page') page: number,
     @Query('size') size: number,
@@ -131,7 +131,7 @@ export class EnrollQueuesController {
    * @param id id of enroll queue
    * @returns
    */
-  @HasRole('admin')
+  @HasRole('admin', 'operator')
   @Delete(':id')
   @ApiOkResponse({ description: 'OK' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
