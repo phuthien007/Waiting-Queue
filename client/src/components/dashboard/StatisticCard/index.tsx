@@ -24,10 +24,10 @@ const StatisticCard: React.FC<IStatisticCardProps> = ({
       style={{ width: "100%" }}
       sm={24}
       xs={24}
-      xl={role === "admin" ? 12 : 24}
-      xxl={role === "admin" ? 12 : 24}
-      md={role === "admin" ? 12 : 24}
-      lg={role === "admin" ? 12 : 24}
+      xl={role === "ADMIN" ? 12 : 24}
+      xxl={role === "ADMIN" ? 12 : 24}
+      md={role === "ADMIN" ? 12 : 24}
+      lg={role === "ADMIN" ? 12 : 24}
       className="mt-2"
     >
       <Card style={{ height: "120px", overflow: "hidden" }} className="br-8">
@@ -40,7 +40,7 @@ const StatisticCard: React.FC<IStatisticCardProps> = ({
         />
       </Card>
     </Col>
-    {role === "admin" && (
+    {role === "ADMIN" && (
       <Col
         style={{ width: "100%" }}
         sm={24}
