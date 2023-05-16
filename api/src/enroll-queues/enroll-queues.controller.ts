@@ -11,6 +11,7 @@ import {
   UseGuards,
   ParseUUIDPipe,
   Put,
+  Req,
 } from '@nestjs/common';
 import { EnrollQueuesService } from './enroll-queues.service';
 import { CreateEnrollQueueDto } from './dto/create-enroll-queue.dto';
@@ -30,6 +31,7 @@ import { RoleGuard } from 'src/auth/role.guard';
 import { HasRole } from 'src/common/decorators';
 import { EnrollQueueEnum, RoleEnum } from 'src/common/enum';
 import { PaginateDto } from 'src/common/paginate.dto';
+import { Request } from 'express';
 
 // TODO: add number of people in queue
 
@@ -73,8 +75,8 @@ export class EnrollQueuesController {
   @HasRole()
   @ApiOkResponse({ type: [EnrollQueueDto] })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  findAllMyEnrollQueue() {
-    return this.enrollQueuesService.findMyAll();
+  findAllMyEnrollQueue(@Req() req: Request) {
+    return this.enrollQueuesService.findMyAll(req.cookies?.sessionId);
   }
 
   /**

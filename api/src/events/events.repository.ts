@@ -38,7 +38,7 @@ ON u.id = rqu.user_id
     const queryRunner = this.dataSource.createQueryRunner();
     const queryBuilder = queryRunner.manager
       .createQueryBuilder()
-      .distinct(true)
+      // .distinct(true)
       .select('q.event_id', 'eventId')
       .addSelect('e.*')
       .from(Queue, 'q')

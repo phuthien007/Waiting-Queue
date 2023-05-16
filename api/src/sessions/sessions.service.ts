@@ -22,40 +22,41 @@ export class SessionsService {
    */
   async createOrRetrieve() {
     // if not have session id in cookie then create new session
-    if ((await this.getCurrentSession()) === null) {
-      const headersReq = this.request.rawHeaders;
-      const newCreateSession = new Session();
-      const indexUserAgent = headersReq.findIndex(
-        (item) => item === 'User-Agent',
+
+    const headersReq = this.request.rawHeaders;
+    const newCreateSession = new Session();
+    const indexUserAgent = headersReq.findIndex(
+      (item) => item === 'User-Agent',
+    );
+    newCreateSession.browser = headersReq[indexUserAgent + 1];
+    newCreateSession.createdAt = new Date();
+    newCreateSession.updatedAt = new Date();
+    const newSession = await this.sessionRepository.save(newCreateSession);
+
+    // create a cookie http only and max age is left hour of that day with the session id and return it
+
+    const getSecondFromNowToMidnight = () => {
+      const now = new Date();
+      const midnight = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate() + 1,
+        0,
+        0,
+        0,
       );
-      newCreateSession.browser = headersReq[indexUserAgent + 1];
-      newCreateSession.createdAt = new Date();
-      newCreateSession.updatedAt = new Date();
-      const newSession = await this.sessionRepository.save(newCreateSession);
+      return Math.floor((midnight.getTime() - now.getTime()) / 1000);
+    };
 
-      // create a cookie http only and max age is left hour of that day with the session id and return it
+    const cookie = `sessionId=${
+      newSession.id
+    }; HttpOnly; Max-Age=${getSecondFromNowToMidnight()}; Secure SameSite=None; Path=/; Domain=${
+      process.env.DOMAIN
+    }`;
 
-      const getSecondFromNowToMidnight = () => {
-        const now = new Date();
-        const midnight = new Date(
-          now.getFullYear(),
-          now.getMonth(),
-          now.getDate() + 1,
-          0,
-          0,
-          0,
-        );
-        return Math.floor((midnight.getTime() - now.getTime()) / 1000);
-      };
-
-      const cookie = `sessionId=${newSession.id}; HttpOnly; Max-Age=${getSecondFromNowToMidnight}; Secure SameSite=None; Path=/; Domain=${process.env.DOMAIN}`;
-
-      // set cookie to response
-      this.request.res.setHeader('Set-Cookie', cookie);
-      return newSession.id;
-    } else {
-      return this.getCurrentSession();
-    }
+    // set cookie to response
+    this.request.res.setHeader('Set-Cookie', cookie);
+    return newSession.id;
   }
 
   // findAll() {

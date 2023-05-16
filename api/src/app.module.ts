@@ -1,7 +1,6 @@
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { AllExceptionsFilter } from './exception/exception.filter';
 import {
-  CacheInterceptor,
   ClassSerializerInterceptor,
   Module,
   ValidationPipe,
@@ -52,11 +51,24 @@ import { TaskSchedulesModule } from './task-schedules/task-schedules.module';
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
         synchronize: false,
-        logging: ['error', 'warn', 'migration', 'log'],
-        logger: 'file',
+        logging: 'all',
+        // ['error', 'warn', 'migration', 'log'],
+        logger: 'simple-console',
+        // 'file',
         cache: true,
         // entities
         entities: [User, Tenant, Queue, EnrollQueue, Event, Session],
+        toRetry: (error: any) => {
+          if (error instanceof Error) {
+            return true;
+          }
+          return false;
+        },
+        retryAttempts: 10,
+        retryDelay: 3000,
+        keepConnectionAlive: true,
+        // connectTimeout: 60000,
+        // maxQueryExecutionTime: 60000,
       }),
     }),
     MulterModule.registerAsync({
@@ -71,7 +83,7 @@ import { TaskSchedulesModule } from './task-schedules/task-schedules.module';
     }),
     CacheModule.register({
       isGlobal: true,
-      ttl: 5 * 1000,
+      ttl: 5,
       store: 'memory',
       max: 1000,
       isCacheableValue: () => true,
@@ -100,10 +112,6 @@ import { TaskSchedulesModule } from './task-schedules/task-schedules.module';
     {
       provide: APP_INTERCEPTOR,
       useClass: ClassSerializerInterceptor,
-    },
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: CacheInterceptor,
     },
     {
       provide: APP_GUARD,

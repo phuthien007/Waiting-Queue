@@ -1,8 +1,10 @@
 import {
   BadRequestException,
+  CacheInterceptor,
   Inject,
   Injectable,
   NotFoundException,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';

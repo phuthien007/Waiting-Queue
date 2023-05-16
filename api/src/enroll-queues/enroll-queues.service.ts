@@ -29,6 +29,7 @@ import * as moment from 'moment';
 import { QueuesService } from 'src/queues/queues.service';
 import { EnrollQueueEnum, QueueEnum } from 'src/common/enum';
 import _ from 'lodash';
+import { CacheKey } from '@nestjs/cache-manager';
 
 @Injectable()
 export class EnrollQueuesService {
@@ -141,8 +142,10 @@ export class EnrollQueuesService {
    * get all by sessionId
    * @returns list enroll queue of user
    */
-  async findMyAll() {
-    const sessionId = await this.sessionsService.createOrRetrieve();
+  async findMyAll(tmpSession: string | null | undefined) {
+    const sessionId = tmpSession
+      ? tmpSession
+      : await this.sessionsService.createOrRetrieve();
     // find enrollqueue by sessionId
     const result = await this.enrollQueueRepository.find({
       where: {
@@ -156,7 +159,6 @@ export class EnrollQueuesService {
       },
       relations: ['queue', 'queue.event'],
     });
-
     const enrollQueuesDTO = result.map((item) =>
       plainToInstance(EnrollQueueDto, item, { excludeExtraneousValues: true }),
     );
@@ -188,7 +190,6 @@ export class EnrollQueuesService {
         newArr.push(enrollQueuesDTO[i]);
       }
     }
-
     return newArr;
   }
 
