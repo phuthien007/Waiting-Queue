@@ -21,7 +21,7 @@ import {
   partialMapping,
 } from 'src/common/algorithm';
 import { EnrollQueueEnum, QueueEnum, commonEnum } from 'src/common/enum';
-import { Equal, Not } from 'typeorm';
+import { Equal, In, Not } from 'typeorm';
 import { UserDto } from 'src/users/dto/user.dto';
 import { User } from 'src/users/entities/user.entity';
 import { PaginateDto } from 'src/common/paginate.dto';
@@ -72,14 +72,10 @@ export class QueuesService {
         randomCode: randomCodeQueue,
       });
       // handle hash queue
-      console.log('cre', randomCodeQueue);
       hashQueue = handleHashQueue(randomCodeQueue, uxTime.toString());
     } else {
-      console.log('crea', queue.randomCode);
-
       hashQueue = handleHashQueue(queue.randomCode, uxTime.toString());
     }
-    console.log('cre', uxTime, hashQueue);
     const url = `${process.env.CLIENT_URL}/public/queues/enroll?q=${
       queue.code
     }&t=${uxTime.toString()}&h=${encodeURIComponent(
@@ -150,7 +146,25 @@ export class QueuesService {
     try {
       [queues, totalCount] = await this.queueRepository.findAndCount({
         relations: ['event'],
-        where: filterObj.transformToQuery(),
+        where: [
+          {
+            ...filterObj.transformToQuery(),
+            status: Not(Equal(QueueEnum.IS_CLOSED)),
+            event: {
+              status: true,
+              tenant: {
+                tenantCode: (this.request.user as any).tenantCode,
+              },
+            },
+          },
+          {
+            ...filterObj.transformToQuery(),
+            status: Not(Equal(QueueEnum.IS_CLOSED)),
+            users: {
+              id: In([(this.request.user as any).id]),
+            },
+          },
+        ],
         order: filterObj.parseSortToOrder(),
       });
     } catch (error) {
@@ -197,12 +211,20 @@ export class QueuesService {
     });
 
     let totalCount: number;
-
+    const userInReq = this.request.user as any;
     try {
       totalCount = await this.queueRepository.count({
         relations: ['event'],
-        where: filterObj.transformToQuery(),
-        order: filterObj.parseSortToOrder(),
+        where: {
+          ...filterObj.transformToQuery(),
+          event: {
+            user: {
+              tenant: {
+                tenantCode: userInReq.tenantCode,
+              },
+            },
+          },
+        },
       });
     } catch (error) {
       this.log.error(error);
@@ -220,18 +242,36 @@ export class QueuesService {
 
   /**
    * Find a queue by id
-   * @param id - id of queue
+   * @param queueCode - queueCode of queue
    * @returns QueueDto object with queue data
    * @throws NotFoundException if queue not found
    */
-  async findOne(id: number) {
+  async findOne(queueCode: string) {
     const queue = await this.queueRepository.findOne({
-      where: { id },
+      where: [
+        {
+          code: queueCode,
+          status: Not(Equal(QueueEnum.IS_CLOSED)),
+          event: {
+            status: true,
+            tenant: {
+              tenantCode: (this.request.user as any).tenantCode,
+            },
+          },
+        },
+        {
+          code: queueCode,
+          status: Not(Equal(QueueEnum.IS_CLOSED)),
+          users: {
+            id: In([(this.request.user as any).id]),
+          },
+        },
+      ],
       relations: ['event'],
     });
     if (!queue)
       throw new NotFoundException(
-        transformError(`Id: ${id}`, ERROR_TYPE.NOT_FOUND),
+        transformError(`Id: ${queueCode}`, ERROR_TYPE.NOT_FOUND),
       );
     return plainToInstance(QueueDto, queue, {
       excludeExtraneousValues: true,
@@ -284,7 +324,16 @@ export class QueuesService {
    * @returns  QueueDto object with removed queue data
    */
   remove(id: number) {
-    return this.queueRepository.delete(id);
+    return this.queueRepository.delete({
+      id,
+      status: Not(Equal(QueueEnum.IS_CLOSED)),
+      event: {
+        status: true,
+        tenant: {
+          tenantCode: (this.request.user as any).tenantCode,
+        },
+      },
+    });
   }
 
   /**

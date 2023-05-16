@@ -219,6 +219,7 @@ export class EnrollQueuesService {
               {
                 id: Equal(queueId),
                 event: {
+                  status: true,
                   user: {
                     tenant: {
                       tenantCode: userInRequest.tenantCode,
@@ -276,6 +277,7 @@ export class EnrollQueuesService {
             id: id,
             queue: {
               event: {
+                status: true,
                 user: {
                   tenant: {
                     tenantCode: userInRequest.tenantCode,

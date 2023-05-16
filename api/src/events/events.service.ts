@@ -175,8 +175,10 @@ export class EventsService {
    * @returns event DTO object with id
    */
   async findOne(id: number) {
+    const userInReq = this.request?.user as any;
+
     const event = await this.eventRepository.findOne({
-      where: { id },
+      where: { id, status: true, tenant: { tenantCode: userInReq.tenantCode } },
       relations: ['tenant'],
     });
     if (!event)
@@ -196,7 +198,10 @@ export class EventsService {
    */
   async update(id: number, updateEventDto: UpdateEventDto) {
     let data = await this.eventRepository.findOne({
-      where: { id },
+      where: {
+        id,
+        tenant: { tenantCode: (this.request?.user as any)?.tenantCode },
+      },
     });
     if (!data) {
       throw new NotFoundException(
@@ -220,6 +225,9 @@ export class EventsService {
    * @returns deleted event DTO object with id
    */
   remove(id: number) {
-    return this.eventRepository.delete(id);
+    return this.eventRepository.delete({
+      id,
+      tenant: { tenantCode: (this.request?.user as any)?.tenantCode },
+    });
   }
 }

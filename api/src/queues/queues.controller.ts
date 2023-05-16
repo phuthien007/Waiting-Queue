@@ -223,8 +223,8 @@ export class QueuesController {
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
   @HasRole(RoleEnum.ADMIN, RoleEnum.OPERATOR)
-  findOneQueue(@Param('id', ParseIntPipe) id: number) {
-    return this.queuesService.findOne(+id);
+  findOneQueue(@Param('queueCode') queueCode: string) {
+    return this.queuesService.findOne(queueCode);
   }
 
   /**

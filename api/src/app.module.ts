@@ -71,7 +71,7 @@ import { TaskSchedulesModule } from './task-schedules/task-schedules.module';
     }),
     CacheModule.register({
       isGlobal: true,
-      ttl: 15 * 1000,
+      ttl: 5 * 1000,
       store: 'memory',
       max: 1000,
       isCacheableValue: () => true,
