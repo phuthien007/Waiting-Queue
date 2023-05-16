@@ -134,7 +134,6 @@ export const getRandomQueueCode = () => {
 };
 
 export const getHashSHARandomQueue = (plainText: string[]) => {
-  console.log('plainText', plainText);
   const encryptText = CryptoJS.HmacSHA512(
     plainText.join('|'),
     process.env.JWT_SECRET,

@@ -69,7 +69,6 @@ export class EnrollQueuesService {
       uxTime,
       h,
     );
-    console.log(encryptText, hashQueue, uxTime, q, h);
     // check have hash queue and time valid
     if (!encryptText || !hashQueue || !uxTime || encryptText !== hashQueue) {
       throw new BadRequestException('Hash queue không hợp lệ');
@@ -146,7 +145,7 @@ export class EnrollQueuesService {
     for (let i = 0; i < enrollQueuesDTO.length; i++) {
       if (enrollQueuesDTO[i].status === EnrollQueueEnum.PENDING) {
         const statisticQueueDto = await this.queuesService.getStatisticQueue(
-          enrollQueuesDTO[i].queue.id,
+          enrollQueuesDTO[i].queue.code,
         );
 
         // count number sequence from current serving to this enroll queue
@@ -184,7 +183,7 @@ export class EnrollQueuesService {
   async findAll(
     page: number,
     size: number,
-    queueId: number,
+    queueCode: string,
     status?: string,
     sort?: string,
   ): Promise<PaginateDto<EnrollQueueDto>> {
@@ -217,7 +216,7 @@ export class EnrollQueuesService {
             ...payload,
             queue: [
               {
-                id: Equal(queueId),
+                code: Equal(queueCode),
                 event: {
                   status: true,
                   user: {
@@ -230,7 +229,7 @@ export class EnrollQueuesService {
                 },
               },
               {
-                id: Equal(queueId),
+                code: Equal(queueCode),
                 users: {
                   id: In([userInRequest.id]),
                 },
@@ -240,6 +239,8 @@ export class EnrollQueuesService {
         ],
         relations: ['queue'],
         order: sortObj,
+        take: size,
+        skip: (page - 1) * size,
       });
     const result = enrollQueues.map((item) =>
       plainToInstance(EnrollQueueDto, item, { excludeExtraneousValues: true }),

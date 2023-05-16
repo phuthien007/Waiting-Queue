@@ -28,7 +28,7 @@ import { EnrollQueueDto } from './dto/enroll-queue.dto';
 import { FilterOperator } from 'src/common/filters.vm';
 import { RoleGuard } from 'src/auth/role.guard';
 import { HasRole } from 'src/common/decorators';
-import { EnrollQueueEnum } from 'src/common/enum';
+import { EnrollQueueEnum, RoleEnum } from 'src/common/enum';
 import { PaginateDto } from 'src/common/paginate.dto';
 
 // TODO: add number of people in queue
@@ -79,14 +79,14 @@ export class EnrollQueuesController {
 
   /**
    * get All enroll queue for user public
-   * @param queueId id of queue want to view
+   * @param queueCode id of queue want to view
    * @param status status of enroll queue
    * @param sort sort of enroll queue
    * @returns list enroll queue of user
    */
   @Get()
   @ApiOkResponse({ type: [EnrollQueueDto] })
-  @ApiQuery({ name: 'queueId', required: true })
+  @ApiQuery({ name: 'queueCode', required: true })
   @ApiQuery({ name: 'status', required: false, enum: EnrollQueueEnum })
   @ApiQuery({ name: 'sort', required: false, example: 'id:ASC' })
   @ApiQuery({
@@ -102,15 +102,21 @@ export class EnrollQueuesController {
     example: 10,
   })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  @HasRole('admin', 'operator')
+  @HasRole(RoleEnum.ADMIN, RoleEnum.OPERATOR)
   findAllEnrollQueue(
     @Query('page') page: number,
     @Query('size') size: number,
-    @Query('queueId') queueId: number,
+    @Query('queueCode') queueCode: string,
     @Query('status') status?: string,
     @Query('sort') sort?: string,
   ): Promise<PaginateDto<EnrollQueueDto>> {
-    return this.enrollQueuesService.findAll(page, size, queueId, status, sort);
+    return this.enrollQueuesService.findAll(
+      page,
+      size,
+      queueCode,
+      status,
+      sort,
+    );
   }
 
   // @Get(':id')
@@ -138,7 +144,7 @@ export class EnrollQueuesController {
    * @param id id of enroll queue
    * @returns
    */
-  @HasRole('admin', 'operator')
+  @HasRole(RoleEnum.ADMIN, RoleEnum.OPERATOR)
   @Delete(':id')
   @ApiOkResponse({ description: 'OK' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
@@ -166,7 +172,7 @@ export class EnrollQueuesController {
    * @param updateEnrollQueueDto dto for update status
    * @returns
    * */
-  @HasRole('admin')
+  @HasRole(RoleEnum.ADMIN, RoleEnum.OPERATOR)
   @Put('/status/:id/finish')
   @ApiOkResponse({ type: EnrollQueueDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })

@@ -6,7 +6,22 @@ import { EventDto } from 'src/events/dto/event.dto';
 /**
  * QueueDto class for queue DTO object from request body and response body
  */
-export class QueueDto extends BaseDto {
+export class QueueDto {
+  @ApiPropertyOptional()
+  id: number;
+
+  // @ApiProperty()
+  @Expose()
+  @ApiPropertyOptional({
+    default: new Date(),
+  })
+  createdAt: Date;
+  // @ApiProperty()
+  @Expose()
+  @ApiPropertyOptional({
+    default: new Date(),
+  })
+  updatedAt: Date;
   @ApiPropertyOptional()
   @Expose()
   name: string;

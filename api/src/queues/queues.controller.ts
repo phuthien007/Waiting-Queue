@@ -62,7 +62,7 @@ export class QueuesController {
    * @param memberIds - array of member id to assign into queue
    * @returns QueueDto object with queue data after assign member
    */
-  @Post('/:id/assign-member')
+  @Post('/:queueCode/assign-member')
   @HasRole(RoleEnum.ADMIN)
   @ApiBody({ type: [Number] })
   @ApiCreatedResponse({
@@ -70,10 +70,10 @@ export class QueuesController {
   })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   assignMember(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('queueCode') queueCode: string,
     @Body() memberIds: number[],
   ) {
-    return this.queuesService.assignMemberIntoQueue(id, memberIds);
+    return this.queuesService.assignMemberIntoQueue(queueCode, memberIds);
   }
 
   /**
@@ -218,7 +218,7 @@ export class QueuesController {
    * @throws {InternalServerErrorException} - if error occurs during finding queue
    * @throws {NotFoundException} - if queue with id not found
    */
-  @Get(':id')
+  @Get(':queueCode')
   @ApiOkResponse({ type: QueueDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
@@ -236,16 +236,16 @@ export class QueuesController {
    * @throws {InternalServerErrorException} - if error occurs during updating queue
    * @throws {NotFoundException} - if queue with id not found
    */
-  @Patch(':id')
+  @Patch(':queueCode')
   @ApiOkResponse({ type: QueueDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
   @HasRole(RoleEnum.ADMIN)
   updateQueue(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('queueCode') queueCode: string,
     @Body() updateQueueDto: UpdateQueueDto,
   ) {
-    return this.queuesService.update(+id, updateQueueDto);
+    return this.queuesService.update(queueCode, updateQueueDto);
   }
 
   /**
@@ -256,13 +256,13 @@ export class QueuesController {
    * @throws {InternalServerErrorException} - if error occurs during deleting queue
    * @throws {NotFoundException} - if queue with id not found
    */
-  @Delete(':id')
+  @Delete(':queueCode')
   @ApiOkResponse({ description: 'OK' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
   @HasRole(RoleEnum.ADMIN)
-  removeQueue(@Param('id', ParseIntPipe) id: number) {
-    return this.queuesService.remove(+id);
+  removeQueue(@Param('queueCode') queueCode: string) {
+    return this.queuesService.remove(queueCode);
   }
 
   // api get all user operate queue
@@ -273,14 +273,14 @@ export class QueuesController {
    * @throws {BadRequestException} - if id is invalid
    * @throws {InternalServerErrorException} - if error occurs during getting all user operate queue
    */
-  @Get('/:id/user-operate-queue')
+  @Get('/:queueCode/user-operate-queue')
   @ApiOkResponse({ type: [UserDto] })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @HasRole(RoleEnum.OPERATOR, RoleEnum.ADMIN)
   getAllUserOperateQueue(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('queueCode') queueCode: string,
   ): Promise<UserDto[]> {
-    return this.queuesService.getAllUserOperateQueue(id);
+    return this.queuesService.getAllUserOperateQueue(queueCode);
   }
 
   /**
@@ -289,12 +289,12 @@ export class QueuesController {
    * @returns  url qrcode
    * @throws {BadRequestException} - if id is invalid
    */
-  @Get('/:id/qrcode')
+  @Get('/:queueCode/qrcode')
   @ApiOkResponse({ type: String })
   @HasRole(RoleEnum.ADMIN, RoleEnum.OPERATOR)
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  getQrCode(@Param('id', ParseIntPipe) id: number): Promise<string> {
-    return this.queuesService.getQrCode(id);
+  getQrCode(@Param('queueCode') queueCode: string): Promise<string> {
+    return this.queuesService.getQrCode(queueCode);
   }
 
   /**
@@ -305,15 +305,15 @@ export class QueuesController {
    * @throws {InternalServerErrorException} - if error occurs during getting next enroll queue
    * @throws {NotFoundException} - if queue with id not found
    */
-  @Get('/:id/next-enroll-queue')
-  @HasRole('admin')
+  @Get('/:queueCode/next-enroll-queue')
+  @HasRole(RoleEnum.OPERATOR, RoleEnum.ADMIN)
   @ApiOkResponse({ type: EnrollQueueDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
   getNextEnrollQueue(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('queueCode') queueCode: string,
   ): Promise<EnrollQueueDto> {
-    return this.queuesService.getNextEnrollQueue(id);
+    return this.queuesService.getNextEnrollQueue(queueCode);
   }
 
   /**
@@ -321,13 +321,13 @@ export class QueuesController {
    * @param id  - id of queue to get statistic queue
    * @returns  StatisticQueueDto object with statistic queue data
    */
-  @Get('/:id/statistic')
+  @Get('/:queueCode/statistic')
   @HasRole()
   @ApiOkResponse({ type: StatisticQueueDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   getStatisticQueue(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('queueCode') queueCode: string,
   ): Promise<StatisticQueueDto> {
-    return this.queuesService.getStatisticQueue(id);
+    return this.queuesService.getStatisticQueue(queueCode);
   }
 }

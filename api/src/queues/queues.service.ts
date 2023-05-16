@@ -49,9 +49,27 @@ export class QueuesService {
    * Find queue by id with queue data
    * @param id - id of queue to find
    */
-  async getQrCode(id: number) {
+  async getQrCode(queueCode: string) {
     const queue = await this.queueRepository.findOne({
-      where: { id },
+      where: [
+        {
+          code: queueCode,
+          status: Not(Equal(QueueEnum.IS_CLOSED)),
+          event: {
+            status: true,
+            tenant: {
+              tenantCode: (this.request.user as any).tenantCode,
+            },
+          },
+        },
+        {
+          code: queueCode,
+          status: Not(Equal(QueueEnum.IS_CLOSED)),
+          users: {
+            id: In([(this.request.user as any).id]),
+          },
+        },
+      ],
     });
     if (!queue) {
       throw new NotFoundException('Không tìm thấy queue');
@@ -61,7 +79,6 @@ export class QueuesService {
     const uxTime = moment().add(process.env.TIMEOUT_VERIFY, 'seconds').unix();
 
     // if queue not have randomCode
-    console.log('queue', queue);
 
     if (!queue.randomCode) {
       const randomCodeQueue = getRandomQueueCode();
@@ -166,6 +183,8 @@ export class QueuesService {
           },
         ],
         order: filterObj.parseSortToOrder(),
+        take: search.size,
+        skip: (search.page - 1) * search.size,
       });
     } catch (error) {
       this.log.error(error);
@@ -285,19 +304,41 @@ export class QueuesService {
    * @returns   QueueDto object with updated queue data
    * @throws NotFoundException if queue not found
    */
-  async update(id: number, updateQueueDto: UpdateQueueDto) {
+  async update(queueCode: string, updateQueueDto: UpdateQueueDto) {
     let data = await this.queueRepository.findOne({
-      where: { id },
+      where: [
+        {
+          code: queueCode,
+          status: Not(Equal(QueueEnum.IS_CLOSED)),
+          event: {
+            status: true,
+            tenant: {
+              tenantCode: (this.request.user as any).tenantCode,
+            },
+          },
+        },
+        {
+          code: queueCode,
+          status: Not(Equal(QueueEnum.IS_CLOSED)),
+          users: {
+            id: In([(this.request.user as any).id]),
+          },
+        },
+      ],
     });
     if (!data) {
       throw new NotFoundException(
-        transformError(`Id: ${id}`, ERROR_TYPE.NOT_FOUND),
+        transformError(`QueueCode: ${queueCode}`, ERROR_TYPE.NOT_FOUND),
       );
     }
 
     if (updateQueueDto.eventId) {
       const eventExist = await this.eventRepository.findOne({
-        where: { id: updateQueueDto.eventId },
+        where: {
+          id: updateQueueDto.eventId,
+          status: true,
+          tenant: { tenantCode: (this.request.user as any).tenantCode },
+        },
       });
 
       if (!eventExist) {
@@ -323,9 +364,9 @@ export class QueuesService {
    * @param id  - id of queue
    * @returns  QueueDto object with removed queue data
    */
-  remove(id: number) {
+  remove(queueCode: string) {
     return this.queueRepository.delete({
-      id,
+      code: queueCode,
       status: Not(Equal(QueueEnum.IS_CLOSED)),
       event: {
         status: true,
@@ -342,10 +383,21 @@ export class QueuesService {
    * @param memberIds - array of member id want to assign
    * @returns void
    */
-  async assignMemberIntoQueue(queueId: number, memberIds: number[]) {
+  async assignMemberIntoQueue(queueCode: string, memberIds: number[]) {
     // check exist queue isClose in database
     const queueExist = await this.queueRepository.findOne({
-      where: { id: queueId },
+      where: [
+        {
+          code: queueCode,
+          status: Not(Equal(QueueEnum.IS_CLOSED)),
+          event: {
+            status: true,
+            tenant: {
+              tenantCode: (this.request.user as any).tenantCode,
+            },
+          },
+        },
+      ],
     });
 
     if (!queueExist || queueExist.status === QueueEnum.IS_CLOSED) {
@@ -355,7 +407,7 @@ export class QueuesService {
       );
     }
 
-    return this.queueRepository.assignMemberIntoQueue(queueId, memberIds);
+    return this.queueRepository.assignMemberIntoQueue(queueExist.id, memberIds);
   }
 
   /**
@@ -365,15 +417,33 @@ export class QueuesService {
    * @throws NotFoundException if queue not found
    * @throws BadRequestException if queue is closed
    */
-  async getAllUserOperateQueue(queueId: number): Promise<UserDto[]> {
+  async getAllUserOperateQueue(queueCode: string): Promise<UserDto[]> {
     const queue = await this.queueRepository.findOne({
-      where: { id: queueId },
+      where: [
+        {
+          code: queueCode,
+          status: Not(Equal(QueueEnum.IS_CLOSED)),
+          event: {
+            status: true,
+            tenant: {
+              tenantCode: (this.request.user as any).tenantCode,
+            },
+          },
+        },
+        {
+          code: queueCode,
+          status: Not(Equal(QueueEnum.IS_CLOSED)),
+          users: {
+            id: In([(this.request.user as any).id]),
+          },
+        },
+      ],
       relations: ['users'],
     });
 
     if (!queue) {
       throw new NotFoundException(
-        transformError(`Id: ${queueId}`, ERROR_TYPE.NOT_FOUND),
+        transformError(`QueueCode: ${queueCode}`, ERROR_TYPE.NOT_FOUND),
       );
     }
     const listUser: UserDto[] = queue.users.map((user: User) =>
@@ -483,32 +553,58 @@ export class QueuesService {
    * @throws BadRequestException if queue is not enroll
    * @throws BadRequestException if queue is not in event
    */
-  async getNextEnrollQueue(queueId: number): Promise<EnrollQueueDto> {
+  async getNextEnrollQueue(queueCode: string): Promise<EnrollQueueDto> {
     const userInReq = this.request.user as any;
     const queueExist = await this.queueRepository.findOne({
-      where: {
-        id: queueId,
-        status: Not(Equal(QueueEnum.IS_CLOSED)),
-        event: {
-          tenant: {
-            tenantCode: Equal(userInReq.tenantCode),
+      where: [
+        {
+          code: queueCode,
+          status: Not(Equal(QueueEnum.IS_CLOSED)),
+          event: {
+            status: true,
+            tenant: {
+              tenantCode: Equal(userInReq.tenantCode),
+            },
           },
         },
-      },
+        {
+          code: queueCode,
+          status: Not(Equal(QueueEnum.IS_CLOSED)),
+          users: {
+            id: In([userInReq.id]),
+          },
+        },
+      ],
     });
 
     if (!queueExist) {
       throw new NotFoundException(
-        transformError(`Id: ${queueId}`, ERROR_TYPE.NOT_FOUND),
+        transformError(`QueueCode: ${queueCode}`, ERROR_TYPE.NOT_FOUND),
       );
     }
 
     // check have user waiting in queue
     const enrollQueueExist = await this.enrollQueueRepository.find({
       where: {
-        queue: {
-          id: queueId,
-        },
+        queue: [
+          {
+            id: queueExist.id,
+            status: Not(Equal(QueueEnum.IS_CLOSED)),
+            event: {
+              status: true,
+              tenant: {
+                tenantCode: Equal(userInReq.tenantCode),
+              },
+            },
+          },
+          {
+            id: queueExist.id,
+            status: Not(Equal(QueueEnum.IS_CLOSED)),
+            users: {
+              id: In([userInReq.id]),
+            },
+          },
+        ],
         status: EnrollQueueEnum.PENDING,
       },
       order: {
@@ -519,7 +615,7 @@ export class QueuesService {
     if (!enrollQueueExist || enrollQueueExist.length === 0) {
       // no have user in queue, change queue status to waiting
       await this.queueRepository.update(
-        { id: queueId },
+        { id: queueExist.id },
         { status: QueueEnum.WAITING },
       );
       return new EnrollQueueDto();
@@ -538,7 +634,7 @@ export class QueuesService {
     // update status of queue to serving if not yet
     if (queueExist.status !== QueueEnum.SERVING) {
       await this.queueRepository.update(
-        { id: queueId },
+        { id: queueExist.id },
         { status: QueueEnum.SERVING },
       );
     }
@@ -553,20 +649,26 @@ export class QueuesService {
    * @returns StatisticQueueDto object with statistic data
    * @throws NotFoundException if queue not found
    */
-  async getStatisticQueue(queueId: number): Promise<StatisticQueueDto> {
+  async getStatisticQueue(queueCode: string): Promise<StatisticQueueDto> {
     const existQueue = this.queueRepository.findOne({
-      where: { id: queueId, status: Not(Equal(QueueEnum.IS_CLOSED)) },
+      where: [
+        {
+          code: queueCode,
+          status: Not(Equal(QueueEnum.IS_CLOSED)),
+          event: { status: true },
+        },
+      ],
     });
 
     if (!existQueue) {
       throw new NotFoundException(
-        transformError(`Id: ${queueId}`, ERROR_TYPE.NOT_FOUND),
+        transformError(`QueueCode: ${queueCode}`, ERROR_TYPE.NOT_FOUND),
       );
     }
 
     const enrollQueues = await this.enrollQueueRepository.find({
       where: {
-        queue: { id: queueId },
+        queue: { code: queueCode },
         status: Equal(EnrollQueueEnum.DONE),
       },
     });
