@@ -138,7 +138,7 @@ const QrCodeRender: React.FC = () => {
                   id="qr-gen"
                   value={valueUrl}
                   style={{ width: "100%", height: "100%" }}
-                  size={420}
+                  size={512}
                   bgColor={"#ffffff"}
                   fgColor={"#000000"}
                   level={"H"}

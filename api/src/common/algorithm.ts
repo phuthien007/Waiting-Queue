@@ -87,20 +87,20 @@ export const createCodeQueue = (...parmas) => {
   return result;
 };
 
-export const handleHashQueue = (randomQueueCode: string) => {
-  const date = moment()
-    .add(process.env.TIMEOUT_VERIFY, 'seconds')
-    .toISOString();
-  const plainText = `${randomQueueCode}, time=${date}`;
-  return encryptAES(plainText);
+export const handleHashQueue = (randomQueueCode: string, uxTime: string) => {
+  return getHashSHARandomQueue([randomQueueCode, uxTime]);
 };
-export const handleValidateHashQueue = (hashQueue: string) => {
-  const plainText = decryptAES(hashQueue);
-  const parts = plainText.split(', time=');
-  return [parts[0], parts[1]];
+export const handleValidateHashQueue = (
+  randomQueueCode: string,
+  uxTime: string,
+  h: string,
+) => {
+  const encryptText = getHashSHARandomQueue([randomQueueCode, uxTime]);
+
+  return [encryptText.substring(0, 20), h];
 };
 
-export function encryptAES(text) {
+export function encryptAES(text: string) {
   const iv = CryptoJS.lib.WordArray.random(16); // tạo vector khởi tạo ngẫu nhiên 16 byte
 
   // Mã hóa thông điệp
@@ -112,7 +112,7 @@ export function encryptAES(text) {
 }
 
 // Giải mã văn bản
-export function decryptAES(text) {
+export function decryptAES(text: string) {
   const parts = text.split(':');
   const decipher = CryptoJS.AES.decrypt(parts[1], process.env.JWT_SECRET, {
     iv: CryptoJS.enc.Hex.parse(parts[0]),
@@ -131,4 +131,13 @@ export const getRandomQueueCode = () => {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
+};
+
+export const getHashSHARandomQueue = (plainText: string[]) => {
+  console.log('plainText', plainText);
+  const encryptText = CryptoJS.HmacSHA512(
+    plainText.join('|'),
+    process.env.JWT_SECRET,
+  );
+  return encryptText.toString(CryptoJS.enc.Hex);
 };

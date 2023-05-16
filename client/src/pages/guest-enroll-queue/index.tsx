@@ -7,6 +7,7 @@ const GuestEnrollQueue = () => {
   // get query search from url
   const { search } = useLocation();
   const q = new URLSearchParams(search).get("q");
+  const t = new URLSearchParams(search).get("t");
   const h = new URLSearchParams(search).get("h");
 
   const navigate = useNavigate();
@@ -17,7 +18,17 @@ const GuestEnrollQueue = () => {
   useEffect(() => {
     // console.log("q", q);
 
-    if (!q || q === "" || q.length === 0 || !h || h === "" || h.length === 0) {
+    if (
+      !q ||
+      q === "" ||
+      q.length === 0 ||
+      !h ||
+      h === "" ||
+      h.length === 0 ||
+      !t ||
+      t === "" ||
+      t.length === 0
+    ) {
       navigate("/");
     } else {
       mutateAsync({
@@ -27,6 +38,8 @@ const GuestEnrollQueue = () => {
         },
         params: {
           h: h,
+          uxTime: t,
+          q: q,
         },
       });
     }

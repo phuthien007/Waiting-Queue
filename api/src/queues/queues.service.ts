@@ -58,7 +58,11 @@ export class QueuesService {
     }
 
     let hashQueue = '';
+    const uxTime = moment().add(process.env.TIMEOUT_VERIFY, 'seconds').unix();
+
     // if queue not have randomCode
+    console.log('queue', queue);
+
     if (!queue.randomCode) {
       const randomCodeQueue = getRandomQueueCode();
       // update randomCode for queue
@@ -68,14 +72,19 @@ export class QueuesService {
         randomCode: randomCodeQueue,
       });
       // handle hash queue
-      hashQueue = handleHashQueue(randomCodeQueue);
+      console.log('cre', randomCodeQueue);
+      hashQueue = handleHashQueue(randomCodeQueue, uxTime.toString());
     } else {
-      hashQueue = handleHashQueue(queue.randomCode);
-    }
+      console.log('crea', queue.randomCode);
 
+      hashQueue = handleHashQueue(queue.randomCode, uxTime.toString());
+    }
+    console.log('cre', uxTime, hashQueue);
     const url = `${process.env.CLIENT_URL}/public/queues/enroll?q=${
       queue.code
-    }&h=${encodeURIComponent(hashQueue)}`;
+    }&t=${uxTime.toString()}&h=${encodeURIComponent(
+      hashQueue.substring(0, 20),
+    )}`;
     return url;
   }
 

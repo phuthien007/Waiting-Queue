@@ -50,10 +50,17 @@ export class EnrollQueuesController {
   @ApiBadRequestResponse({ description: 'Bad Request' })
   createEnrollQueue(
     @Body() createEnrollQueueDto: CreateEnrollQueueDto,
+    // random queue code
+    @Query('q') q: string,
+    // uxTime
+    @Query('uxTime') uxTime: string,
+    // hash
     @Query('h') h: string,
   ) {
     return this.enrollQueuesService.create(
       createEnrollQueueDto,
+      q,
+      uxTime,
       decodeURIComponent(h),
     );
   }

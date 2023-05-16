@@ -49,6 +49,8 @@ sort?: string;
 };
 
 export type EnrollQueuesControllerCreateEnrollQueueParams = {
+q: string;
+uxTime: string;
 h: string;
 };
 

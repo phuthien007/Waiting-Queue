@@ -27,6 +27,7 @@ import {
 import * as moment from 'moment';
 import { QueuesService } from 'src/queues/queues.service';
 import { EnrollQueueEnum } from 'src/common/enum';
+import _ from 'lodash';
 
 @Injectable()
 export class EnrollQueuesService {
@@ -45,7 +46,12 @@ export class EnrollQueuesService {
    * @param createEnrollQueueDto  dto for create enroll queue
    * @returns
    */
-  async create(createEnrollQueueDto: CreateEnrollQueueDto, h: string) {
+  async create(
+    createEnrollQueueDto: CreateEnrollQueueDto,
+    q: string,
+    uxTime: string,
+    h: string,
+  ) {
     // check exist queueCode
     const existQueue = await this.queuesRepository.findOne({
       where: { code: createEnrollQueueDto.queueCode },
@@ -58,25 +64,25 @@ export class EnrollQueuesService {
       );
     }
     // check hash queue random
-    const [randomCodeQueue, timeValid] = handleValidateHashQueue(h);
+    const [encryptText, hashQueue] = handleValidateHashQueue(
+      existQueue.randomCode,
+      uxTime,
+      h,
+    );
+    console.log(encryptText, hashQueue, uxTime, q, h);
     // check have hash queue and time valid
-    if (!randomCodeQueue || !timeValid) {
+    if (!encryptText || !hashQueue || !uxTime || encryptText !== hashQueue) {
       throw new BadRequestException('Hash queue không hợp lệ');
     }
 
     // check time valid
-    if (moment(timeValid).isBefore(moment())) {
+    if (moment().isBefore(moment().from(uxTime))) {
       const randomCodeQueue = getRandomQueueCode();
       await this.queuesRepository.update(existQueue.id, {
         ...existQueue,
         randomCode: randomCodeQueue,
       });
       throw new BadRequestException('Hash queue đã hết hạn');
-    }
-
-    // check random queue
-    if (existQueue.randomCode !== randomCodeQueue) {
-      throw new BadRequestException('Hash queue không hợp lệ');
     }
 
     // check and get sessionId from sesionsService
