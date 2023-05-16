@@ -34,13 +34,21 @@ export class SessionsService {
       const newSession = await this.sessionRepository.save(newCreateSession);
 
       // create a cookie http only and max age is left hour of that day with the session id and return it
-      const date = new Date();
-      const maxAge =
-        24 * 60 * 60 * 1000 -
-        (date.getHours() * 60 * 60 * 1000 +
-          date.getMinutes() * 60 * 1000 +
-          date.getSeconds() * 1000);
-      const cookie = `sessionId=${newSession.id}; HttpOnly; Max-Age=${maxAge}; Securel SameSite=None; Path=/; Domain=${process.env.DOMAIN}`;
+
+      const getSecondFromNowToMidnight = () => {
+        const now = new Date();
+        const midnight = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate() + 1,
+          0,
+          0,
+          0,
+        );
+        return Math.floor((midnight.getTime() - now.getTime()) / 1000);
+      };
+
+      const cookie = `sessionId=${newSession.id}; HttpOnly; Max-Age=${getSecondFromNowToMidnight}; Secure SameSite=None; Path=/; Domain=${process.env.DOMAIN}`;
 
       // set cookie to response
       this.request.res.setHeader('Set-Cookie', cookie);
