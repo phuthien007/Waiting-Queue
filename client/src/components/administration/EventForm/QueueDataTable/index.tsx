@@ -52,6 +52,8 @@ const ManagementQueues: React.FC = () => {
   } = useQueuesControllerFindAllQueue({
     eq: [`event.id:${id}`],
     like: [`name:${searchText}`],
+    page: page,
+    size: DEFAULT_PAGE_SIZE,
   });
 
   const {
@@ -80,7 +82,7 @@ const ManagementQueues: React.FC = () => {
       dataIndex: "name",
       key: "name",
       render: (text, record) => (
-        <Link to={`/event/${id}/queue/${record.id}`}>{text}</Link>
+        <Link to={`/event/${id}/queue/${record.code}`}>{text}</Link>
       ),
     },
     {
@@ -107,7 +109,7 @@ const ManagementQueues: React.FC = () => {
         <>
           <UserOperateQueue
             setDataUserInQueue={setDataUserInQueue}
-            id={record.id}
+            queueCode={record.code}
           />
         </>
       ),
@@ -118,7 +120,7 @@ const ManagementQueues: React.FC = () => {
       fixed: "right",
       width: 100,
       key: "key",
-      render: (record) => {
+      render: (record: QueueDto) => {
         return (
           <>
             {role === "ADMIN" && (
@@ -134,7 +136,7 @@ const ManagementQueues: React.FC = () => {
                 <Tooltip title="Xóa">
                   <Popconfirm
                     title="XÁC NHẬN XÓA"
-                    onConfirm={() => handleDelete(record.id)}
+                    onConfirm={() => handleDelete(record.code)}
                     okText="Xóa"
                     okButtonProps={{
                       loading: loadingDelete,
@@ -171,9 +173,6 @@ const ManagementQueues: React.FC = () => {
       },
     },
   ];
-  {
-    console.log("data", dataUserInQueue);
-  }
   const handleReloadData = () => {
     setPage(1);
     setSearchText("");
@@ -183,9 +182,9 @@ const ManagementQueues: React.FC = () => {
       getAllMyQueueByEventId();
     }
   };
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (queueCode: string) => {
     await deleteQueue({
-      id: _.parseInt(id),
+      queueCode: queueCode,
     }).then(() => {
       if (!loadingDelete) {
         notification.success({

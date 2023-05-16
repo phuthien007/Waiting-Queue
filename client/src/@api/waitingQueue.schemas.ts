@@ -43,7 +43,7 @@ export const EnrollQueuesControllerFindAllEnrollQueueStatus = {
 export type EnrollQueuesControllerFindAllEnrollQueueParams = {
 page: number;
 size: number;
-queueId: number;
+queueCode: string;
 status?: EnrollQueuesControllerFindAllEnrollQueueStatus;
 sort?: string;
 };

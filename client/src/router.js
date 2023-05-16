@@ -98,7 +98,7 @@ const routes = [
   },
   // detail event
   {
-    path: "event/:eventId/queue/:queueId",
+    path: "event/:eventId/queue/:queueCode",
     Component: lazy(() =>
       import("pages/administration/management-events/detail-event/detail-queue")
     ),

@@ -10,14 +10,14 @@ import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 const QrCodeRender: React.FC = () => {
-  const { queueId } = useParams();
+  const { queueCode } = useParams();
 
   const [isQrCodeOpen, setIsQrCodeOpen] = React.useState<boolean>(false);
   const [valueUrl, setValueUrl] = React.useState<string>(
     "https://picturesofpeoplescanningqrcodes.tumblr.com/"
   ); // [1
 
-  const { refetch } = useQueuesControllerGetQrCode(_.toSafeInteger(queueId), {
+  const { refetch } = useQueuesControllerGetQrCode(queueCode, {
     query: {
       enabled: false,
     },

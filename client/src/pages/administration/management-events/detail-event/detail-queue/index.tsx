@@ -51,7 +51,6 @@ const DetailEvent = () => {
   const params = useParams();
   const user = useSelector(selectUser);
   const [time, setTime] = useState(0);
-
   const [currentSerial, setCurrentSerial] = React.useState<EnrollQueueDto>();
   const dispatch = useDispatch();
   const { isLoading: loadingHandleWorking, mutateAsync: updateWorking } =
@@ -60,12 +59,12 @@ const DetailEvent = () => {
     isLoading: loadingUpdateStatusEnrollQueue,
     mutateAsync: updateStatusEnrollQueue,
   } = useEnrollQueuesControllerUpdateStatusEnrollQueue();
-  const { eventId, queueId } = params;
+  const { eventId, queueCode } = params;
 
   const { mutateAsync: updateStatusQueue } = useQueuesControllerUpdateQueue();
 
   const { refetch: getStatisticQueue, data: dataStatistic } =
-    useQueuesControllerGetStatisticQueue(_.parseInt(queueId) || 0, {
+    useQueuesControllerGetStatisticQueue(queueCode, {
       query: {
         enabled: false,
       },
@@ -84,14 +83,14 @@ const DetailEvent = () => {
     refetch: getDataQueue,
     isFetching: loadingDataQueue,
     data: dataQueue,
-  } = useQueuesControllerFindOneQueue(_.parseInt(queueId) || 0, {
+  } = useQueuesControllerFindOneQueue(queueCode, {
     query: {
       enabled: false,
     },
   });
 
   const { isFetching: loadingGetNextUser, refetch: getNextUser } =
-    useQueuesControllerGetNextEnrollQueue(_.parseInt(queueId) || 0, {
+    useQueuesControllerGetNextEnrollQueue(queueCode, {
       query: {
         enabled: false,
       },
@@ -139,7 +138,7 @@ const DetailEvent = () => {
 
           // update queue to pending
           await updateStatusQueue({
-            id: _.parseInt(queueId) || 0,
+            queueCode: queueCode,
             data: {
               ...dataQueue,
               status: UpdateQueueDtoStatus.pending,
@@ -191,7 +190,7 @@ const DetailEvent = () => {
     useEnrollQueuesControllerFindAllEnrollQueue({
       page: 1,
       size: 1,
-      queueId: _.parseInt(queueId) || 0,
+      queueCode: queueCode,
       status: EnrollQueuesControllerFindAllEnrollQueueStatus.serving,
     });
 
@@ -227,7 +226,7 @@ const DetailEvent = () => {
   React.useEffect(() => {
     getDataEvent();
     getDataQueue();
-  }, [eventId, queueId]);
+  }, [eventId, queueCode]);
   return (
     <>
       <Helmet title="Chi tiết sự kiện" />

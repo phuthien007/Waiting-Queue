@@ -40,7 +40,7 @@ type Props = {
 };
 
 const ManagementEnrollQueues: React.FC<Props> = ({ status }) => {
-  const { eventId, queueId } = useParams();
+  const { eventId, queueCode } = useParams();
   const [dataSource, setDataSource] = React.useState<{
     data: EnrollQueueDto[];
     pagination: {
@@ -62,7 +62,7 @@ const ManagementEnrollQueues: React.FC<Props> = ({ status }) => {
     useEnrollQueuesControllerFindAllEnrollQueue({
       page: 1,
       size: DEFAULT_PAGE_SIZE,
-      queueId: _.parseInt(queueId) || 0,
+      queueCode: queueCode,
       status: status
         ? (status as EnrollQueuesControllerFindAllEnrollQueueStatus)
         : undefined,
