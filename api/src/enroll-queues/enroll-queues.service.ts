@@ -19,6 +19,7 @@ import {
   In,
   LessThan,
   LessThanOrEqual,
+  Not,
 } from 'typeorm';
 import {
   getRandomQueueCode,
@@ -26,7 +27,7 @@ import {
 } from 'src/common/algorithm';
 import * as moment from 'moment';
 import { QueuesService } from 'src/queues/queues.service';
-import { EnrollQueueEnum } from 'src/common/enum';
+import { EnrollQueueEnum, QueueEnum } from 'src/common/enum';
 import _ from 'lodash';
 
 @Injectable()
@@ -91,7 +92,17 @@ export class EnrollQueuesService {
     }
     // check exist enrollInQueue
     const existEnrollQueue = await this.enrollQueueRepository.findOne({
-      where: { queue: { id: existQueue.id }, session: { id: sessionId } },
+      where: {
+        status: Not(Equal(EnrollQueueEnum.DONE)),
+        queue: {
+          id: existQueue.id,
+          status: Not(Equal(EnrollQueueEnum.BLOCKED)),
+          event: {
+            status: true,
+          },
+        },
+        session: { id: sessionId },
+      },
     });
     if (existEnrollQueue) {
       return plainToInstance(EnrollQueueDto, existEnrollQueue, {
@@ -134,7 +145,15 @@ export class EnrollQueuesService {
     const sessionId = await this.sessionsService.createOrRetrieve();
     // find enrollqueue by sessionId
     const result = await this.enrollQueueRepository.find({
-      where: { session: { id: sessionId } },
+      where: {
+        session: { id: sessionId },
+        queue: {
+          status: Not(Equal(QueueEnum.IS_CLOSED)),
+          event: {
+            status: true,
+          },
+        },
+      },
       relations: ['queue', 'queue.event'],
     });
 
