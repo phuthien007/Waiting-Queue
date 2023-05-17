@@ -100,7 +100,9 @@ const UserOperateQueue: React.FC<Props> = ({
       {data && data?.length > 0 && (
         <>{data.map((item) => item.fullName).join("; ")}</>
       )}
-      <Button onClick={showModal}>Xem danh sách</Button>
+      <Button type="link" onClick={showModal}>
+        Xem danh sách
+      </Button>
       <Modal
         open={isModalOpen}
         onCancel={handleCancel}
