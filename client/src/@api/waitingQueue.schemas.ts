@@ -56,14 +56,14 @@ h: string;
 
 export type QueuesControllerCountFindAllQueueUserCanSeeParams = {
 search?: string;
-eventId?: number;
+eventId?: string;
 page: number;
 size: number;
 };
 
 export type QueuesControllerFindAllQueueUserCanSeeParams = {
 search?: string;
-eventId?: number;
+eventId?: string;
 page: number;
 size: number;
 };
@@ -192,7 +192,7 @@ export interface UpdateQueueDto {
   code?: string;
   description?: string;
   status?: UpdateQueueDtoStatus;
-  eventId?: number;
+  eventId?: string;
 }
 
 export interface QueueDto {
@@ -243,11 +243,11 @@ export interface CreateQueueDto {
   code?: string;
   description?: string;
   status?: CreateQueueDtoStatus;
-  eventId?: number;
+  eventId?: string;
 }
 
 export interface UpdateEventDto {
-  id?: number;
+  id?: string;
   createdAt?: string;
   updatedAt?: string;
   name?: string;
@@ -264,7 +264,7 @@ export interface UpdateEventDto {
 }
 
 export interface EventDto {
-  id?: number;
+  id?: string;
   createdAt?: string;
   updatedAt?: string;
   name?: string;
@@ -281,7 +281,7 @@ export interface EventDto {
 }
 
 export interface CreateEventDto {
-  id?: number;
+  id?: string;
   createdAt?: string;
   updatedAt?: string;
   name?: string;

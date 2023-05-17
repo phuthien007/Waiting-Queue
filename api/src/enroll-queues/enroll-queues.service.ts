@@ -49,9 +49,10 @@ export class EnrollQueuesService {
    * @returns
    */
   async create(
+    tmpSession: string,
     createEnrollQueueDto: CreateEnrollQueueDto,
     q: string,
-    uxTime: string,
+    uxTime: number,
     h: string,
   ) {
     // check exist queueCode
@@ -68,16 +69,17 @@ export class EnrollQueuesService {
     // check hash queue random
     const [encryptText, hashQueue] = handleValidateHashQueue(
       existQueue.randomCode,
-      uxTime,
+      uxTime.toString(),
       h,
     );
+
     // check have hash queue and time valid
     if (!encryptText || !hashQueue || !uxTime || encryptText !== hashQueue) {
       throw new BadRequestException('Hash queue không hợp lệ');
     }
 
     // check time valid
-    if (moment().isBefore(moment().from(uxTime))) {
+    if (new Date().getTime() > new Date(uxTime).getTime()) {
       const randomCodeQueue = getRandomQueueCode();
       await this.queuesRepository.update(existQueue.id, {
         ...existQueue,
@@ -87,7 +89,10 @@ export class EnrollQueuesService {
     }
 
     // check and get sessionId from sesionsService
-    const sessionId = await this.sessionsService.createOrRetrieve();
+    let sessionId = tmpSession;
+    if (!sessionId) {
+      sessionId = await this.sessionsService.createOrRetrieve();
+    }
     if (!sessionId) {
       throw new BadRequestException('Không thể tạo hoặc lấy được session');
     }
@@ -111,8 +116,11 @@ export class EnrollQueuesService {
       });
     }
 
-    const sequenceNumberCurrent = await this.enrollQueueRepository.count({
+    const sequenceNumberCurrent = await this.enrollQueueRepository.findOne({
       where: { queue: { id: existQueue.id } },
+      order: {
+        sequenceNumber: 'DESC',
+      },
     });
 
     // not exist create enrollQueue
@@ -122,7 +130,8 @@ export class EnrollQueuesService {
     newEnrollQueue.queue = existQueue;
     newEnrollQueue.session = new Session();
     newEnrollQueue.session.id = sessionId;
-    newEnrollQueue.sequenceNumber = sequenceNumberCurrent + 1;
+    newEnrollQueue.sequenceNumber =
+      (sequenceNumberCurrent ? sequenceNumberCurrent.sequenceNumber : 0) + 1;
 
     // default is pending
     // newEnrollQueue.status = EnrollQueueEnum.PENDING;

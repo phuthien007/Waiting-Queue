@@ -61,7 +61,7 @@ const ManagementQueues: React.FC = () => {
     isFetching: loadingMyQueue,
     data: queueMyData,
   } = useQueuesControllerFindAllQueueUserCanSee({
-    eventId: _.toSafeInteger(id),
+    eventId: id,
     search: `${searchText}`,
     page: page,
     size: DEFAULT_PAGE_SIZE,
@@ -182,8 +182,8 @@ const ManagementQueues: React.FC = () => {
       getAllMyQueueByEventId();
     }
   };
-  const handleDelete = async (queueCode: string) => {
-    await deleteQueue({
+  const handleDelete = (queueCode: string) => {
+    deleteQueue({
       queueCode: queueCode,
     }).then(() => {
       if (!loadingDelete) {

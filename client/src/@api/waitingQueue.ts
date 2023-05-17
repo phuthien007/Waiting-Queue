@@ -1236,7 +1236,7 @@ export const useEventsControllerFindOneEventHook = () => {
         const eventsControllerFindOneEvent = useCustomInstance<EventDto>();
 
         return (
-    id: number,
+    id: string,
  signal?: AbortSignal
 ) => {
         return eventsControllerFindOneEvent(
@@ -1247,11 +1247,11 @@ export const useEventsControllerFindOneEventHook = () => {
       }
     
 
-export const getEventsControllerFindOneEventQueryKey = (id: number,) => [`/api/events/${id}`] as const;
+export const getEventsControllerFindOneEventQueryKey = (id: string,) => [`/api/events/${id}`] as const;
   
 
     
-export const useEventsControllerFindOneEventQueryOptions = <TData = Awaited<ReturnType<ReturnType<typeof useEventsControllerFindOneEventHook>>>, TError = void>(id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useEventsControllerFindOneEventHook>>>, TError, TData>, }
+export const useEventsControllerFindOneEventQueryOptions = <TData = Awaited<ReturnType<ReturnType<typeof useEventsControllerFindOneEventHook>>>, TError = void>(id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useEventsControllerFindOneEventHook>>>, TError, TData>, }
 ): UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useEventsControllerFindOneEventHook>>>, TError, TData> & { queryKey: QueryKey } => {
 const {query: queryOptions} = options ?? {};
 
@@ -1269,7 +1269,7 @@ export type EventsControllerFindOneEventQueryResult = NonNullable<Awaited<Return
 export type EventsControllerFindOneEventQueryError = void
 
 export const useEventsControllerFindOneEvent = <TData = Awaited<ReturnType<ReturnType<typeof useEventsControllerFindOneEventHook>>>, TError = void>(
- id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useEventsControllerFindOneEventHook>>>, TError, TData>, }
+ id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<ReturnType<typeof useEventsControllerFindOneEventHook>>>, TError, TData>, }
 
   ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
 
@@ -1287,7 +1287,7 @@ export const useEventsControllerUpdateEventHook = () => {
         const eventsControllerUpdateEvent = useCustomInstance<EventDto>();
 
         return (
-    id: number,
+    id: string,
     updateEventDto: UpdateEventDto,
  ) => {
         return eventsControllerUpdateEvent(
@@ -1303,14 +1303,14 @@ export const useEventsControllerUpdateEventHook = () => {
 
 export const useEventsControllerUpdateEventMutationOptions = <TError = void,
     
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useEventsControllerUpdateEventHook>>>, TError,{id: number;data: UpdateEventDto}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useEventsControllerUpdateEventHook>>>, TError,{id: number;data: UpdateEventDto}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useEventsControllerUpdateEventHook>>>, TError,{id: string;data: UpdateEventDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useEventsControllerUpdateEventHook>>>, TError,{id: string;data: UpdateEventDto}, TContext> => {
  const {mutation: mutationOptions} = options ?? {};
 
       const eventsControllerUpdateEvent =  useEventsControllerUpdateEventHook()
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<ReturnType<typeof useEventsControllerUpdateEventHook>>>, {id: number;data: UpdateEventDto}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<ReturnType<typeof useEventsControllerUpdateEventHook>>>, {id: string;data: UpdateEventDto}> = (props) => {
           const {id,data} = props ?? {};
 
           return  eventsControllerUpdateEvent(id,data,)
@@ -1327,7 +1327,7 @@ export const useEventsControllerUpdateEventMutationOptions = <TError = void,
 
     export const useEventsControllerUpdateEvent = <TError = void,
     
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useEventsControllerUpdateEventHook>>>, TError,{id: number;data: UpdateEventDto}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useEventsControllerUpdateEventHook>>>, TError,{id: string;data: UpdateEventDto}, TContext>, }
 ) => {
     
       const mutationOptions = useEventsControllerUpdateEventMutationOptions(options);
@@ -1339,7 +1339,7 @@ export const useEventsControllerRemoveEventHook = () => {
         const eventsControllerRemoveEvent = useCustomInstance<void>();
 
         return (
-    id: number,
+    id: string,
  ) => {
         return eventsControllerRemoveEvent(
           {url: `/api/events/${id}`, method: 'delete'
@@ -1352,14 +1352,14 @@ export const useEventsControllerRemoveEventHook = () => {
 
 export const useEventsControllerRemoveEventMutationOptions = <TError = unknown,
     
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useEventsControllerRemoveEventHook>>>, TError,{id: number}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useEventsControllerRemoveEventHook>>>, TError,{id: number}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useEventsControllerRemoveEventHook>>>, TError,{id: string}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useEventsControllerRemoveEventHook>>>, TError,{id: string}, TContext> => {
  const {mutation: mutationOptions} = options ?? {};
 
       const eventsControllerRemoveEvent =  useEventsControllerRemoveEventHook()
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<ReturnType<typeof useEventsControllerRemoveEventHook>>>, {id: number}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<ReturnType<typeof useEventsControllerRemoveEventHook>>>, {id: string}> = (props) => {
           const {id} = props ?? {};
 
           return  eventsControllerRemoveEvent(id,)
@@ -1376,7 +1376,7 @@ export const useEventsControllerRemoveEventMutationOptions = <TError = unknown,
 
     export const useEventsControllerRemoveEvent = <TError = unknown,
     
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useEventsControllerRemoveEventHook>>>, TError,{id: number}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<ReturnType<typeof useEventsControllerRemoveEventHook>>>, TError,{id: string}, TContext>, }
 ) => {
     
       const mutationOptions = useEventsControllerRemoveEventMutationOptions(options);

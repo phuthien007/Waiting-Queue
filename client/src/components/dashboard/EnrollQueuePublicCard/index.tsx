@@ -46,47 +46,51 @@ const EnrollQueuePublicCard: React.FC<IEnrollQueuePublicCardProps> = ({
             </Row>
             <Divider />
             <Row justify="center">
-              <Descriptions
-                title={
-                  // <Typography.Title level={5} ellipsis>
-                  `Tên hàng đợi: ${item?.queue?.name}`
-                  // </Typography.Title>
-                }
-                column={1}
-              >
-                {item?.status ===
-                  EnrollQueuesControllerUpdateStatusEnrollQueueStatus.pending && (
-                  <>
-                    <Descriptions.Item label="Phục vụ trung bình">
-                      <b>
-                        {(item?.serveTimeAvg && item?.serveTimeAvg) + " s" ??
-                          "Chưa có dữ liệu"}
-                      </b>
-                    </Descriptions.Item>
-                    <Descriptions.Item
-                      label={
-                        <span>
-                          Dự tính được <br /> phục vụ lúc
-                        </span>
-                      }
-                    >
-                      <b>
-                        {(item?.willEnrollWhen &&
-                          moment(item?.willEnrollWhen).format(
-                            FORMAT_DATE_MINUTE
-                          )) ??
-                          "Chưa có dữ liệu"}
-                      </b>
-                    </Descriptions.Item>
-                  </>
-                )}
-                <Descriptions.Item label="Mô tả">
-                  {item?.queue?.description}
-                </Descriptions.Item>
-                <Descriptions.Item label="Trạng thái hàng đợi">
-                  {StatusQueueRender(item?.queue?.status)}
-                </Descriptions.Item>
-              </Descriptions>
+              <Col>
+                <Descriptions
+                  title={
+                    // <Typography.Text ellipsis>
+                    `Tên hàng đợi: ${item?.queue?.name}`
+                    // </Typography.Text>
+                  }
+                  column={1}
+                >
+                  {item?.status ===
+                    EnrollQueuesControllerUpdateStatusEnrollQueueStatus.pending && (
+                    <>
+                      <Descriptions.Item label="Phục vụ trung bình">
+                        <b>
+                          {(item?.serveTimeAvg &&
+                            item?.serveTimeAvg &&
+                            item?.serveTimeAvg !== 0 &&
+                            item?.serveTimeAvg) + " s" ?? "Chưa có dữ liệu"}
+                        </b>
+                      </Descriptions.Item>
+                      <Descriptions.Item
+                        label={
+                          <span>
+                            Dự tính được <br /> phục vụ lúc
+                          </span>
+                        }
+                      >
+                        <b>
+                          {(item?.willEnrollWhen &&
+                            moment(item?.willEnrollWhen).format(
+                              FORMAT_DATE_MINUTE
+                            )) ??
+                            "Chưa có dữ liệu"}
+                        </b>
+                      </Descriptions.Item>
+                    </>
+                  )}
+                  <Descriptions.Item label="Mô tả">
+                    {item?.queue?.description}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Trạng thái hàng đợi">
+                    {StatusQueueRender(item?.queue?.status)}
+                  </Descriptions.Item>
+                </Descriptions>
+              </Col>
             </Row>
           </Card>
         </Badge.Ribbon>

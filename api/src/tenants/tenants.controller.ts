@@ -155,7 +155,14 @@ export class TenantsController {
   @ApiNotFoundResponse({ description: 'Not Found' })
   @ApiOkResponse({ description: 'OK' })
   removeTenant(@Param('id', ParseIntPipe) id: number) {
-    return this.tenantsService.remove(+id);
+    return this.tenantsService
+      .remove(+id)
+      .then((res) => {
+        return true;
+      })
+      .catch((err) => {
+        throw new BadRequestException('Không thể xóa');
+      });
   }
 
   /**

@@ -4,6 +4,7 @@ import {
   useEventsControllerFindAllEventUserCanSee,
   useEventsControllerUpdateEvent,
   useEventsControllerFindAllEvent,
+  useEventsControllerRemoveEvent,
 } from "@api/waitingQueue";
 import { EventDto } from "@api/waitingQueue.schemas";
 import {
@@ -17,6 +18,7 @@ import {
   Table,
   Tag,
   Tooltip,
+  notification,
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import Search from "antd/lib/input/Search";
@@ -61,6 +63,8 @@ const ManagementEvents: React.FC = () => {
     useEventsControllerUpdateEvent();
   const { isLoading: loadingCreate, mutateAsync: createEvent } =
     useEventsControllerCreateEvent();
+
+  const { mutateAsync: deleteEvent } = useEventsControllerRemoveEvent();
 
   const columns: ColumnsType<EventDto> = [
     {
@@ -125,7 +129,16 @@ const ManagementEvents: React.FC = () => {
                 <Tooltip title="Xóa">
                   <Popconfirm
                     title="XÁC NHẬN XÓA"
-                    // onConfirm={() => handleDelete(record.id)}
+                    onConfirm={() =>
+                      deleteEvent({
+                        id: record.id,
+                      }).then(() => {
+                        handleReloadData();
+                        notification.success({
+                          message: "Xóa thành công",
+                        });
+                      })
+                    }
                     okText="Xóa"
                     okButtonProps={
                       {

@@ -32,6 +32,28 @@ const vibrateMobile = () => {
   // }
 };
 
+function compareByStatus(a, b) {
+  const statusOrder = {
+    serving: 0,
+    pending: 1,
+    done: 2,
+  };
+
+  const statusA = a.status.toLowerCase();
+  const statusB = b.status.toLowerCase();
+
+  const orderA = statusOrder[statusA];
+  const orderB = statusOrder[statusB];
+
+  if (orderA < orderB) {
+    return -1;
+  }
+  if (orderA > orderB) {
+    return 1;
+  }
+  return 0;
+}
+
 const PublicDashboard = () => {
   const [data, setData] = React.useState<EnrollQueueDto[]>([]);
   const { isFetching, refetch } =
@@ -160,38 +182,13 @@ const PublicDashboard = () => {
         </Row>
         <Row justify="center" gutter={[20, 20]}>
           {/* sort data follow status serving is top  */}
-          {data
-            ?.sort((a, b) => {
-              if (
-                a.status ===
-                  EnrollQueuesControllerUpdateStatusEnrollQueueStatus.serving &&
-                b.status !==
-                  EnrollQueuesControllerUpdateStatusEnrollQueueStatus.serving
-              ) {
-                return -1;
-              } else if (
-                a.status !==
-                  EnrollQueuesControllerUpdateStatusEnrollQueueStatus.serving &&
-                b.status ===
-                  EnrollQueuesControllerUpdateStatusEnrollQueueStatus.serving
-              ) {
-                return 1;
-              } else if (a.status === b.status) {
-                if (a.enrollTime < b.enrollTime) {
-                  return -1;
-                } else if (a.enrollTime > b.enrollTime) {
-                  return 1;
-                }
-              }
-              return 0;
-            })
-            ?.map((item, index) => {
-              return (
-                // <div key={index}>
-                <EnrollQueuePublicCard item={item} />
-                // </div>
-              );
-            })}
+          {data?.sort(compareByStatus)?.map((item, index) => {
+            return (
+              // <div key={index}>
+              <EnrollQueuePublicCard key={index} item={item} />
+              // </div>
+            );
+          })}
         </Row>
       </Card>
     </>

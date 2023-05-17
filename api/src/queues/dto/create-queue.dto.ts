@@ -39,5 +39,5 @@ export class CreateQueueDto extends BaseDto {
 
   @ApiPropertyOptional()
   @IsNotEmpty({ message: 'Event ID không được để trống' })
-  eventId: number;
+  eventId: string;
 }

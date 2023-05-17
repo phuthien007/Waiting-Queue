@@ -12,6 +12,7 @@ import {
   ParseUUIDPipe,
   Put,
   Req,
+  BadRequestException,
 } from '@nestjs/common';
 import { EnrollQueuesService } from './enroll-queues.service';
 import { CreateEnrollQueueDto } from './dto/create-enroll-queue.dto';
@@ -51,15 +52,17 @@ export class EnrollQueuesController {
   @ApiCreatedResponse({ description: 'Created' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   createEnrollQueue(
+    @Req() req: Request,
     @Body() createEnrollQueueDto: CreateEnrollQueueDto,
     // random queue code
     @Query('q') q: string,
     // uxTime
-    @Query('uxTime') uxTime: string,
+    @Query('uxTime') uxTime: number,
     // hash
     @Query('h') h: string,
   ) {
     return this.enrollQueuesService.create(
+      req.cookies?.sessionId,
       createEnrollQueueDto,
       q,
       uxTime,
@@ -152,7 +155,14 @@ export class EnrollQueuesController {
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
   removeEnrollQueue(@Param('id', ParseUUIDPipe) id: string) {
-    return this.enrollQueuesService.remove(id);
+    return this.enrollQueuesService
+      .remove(id)
+      .then((res) => {
+        return true;
+      })
+      .catch((err) => {
+        throw new BadRequestException('Không thể xóa');
+      });
   }
   /**
    *  delete enroll queue for user public

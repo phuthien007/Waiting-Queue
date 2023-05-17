@@ -51,10 +51,10 @@ import { TaskSchedulesModule } from './task-schedules/task-schedules.module';
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
         synchronize: false,
-        logging: 'all',
-        // ['error', 'warn', 'migration', 'log'],
-        logger: 'simple-console',
-        // 'file',
+        logging: ['error', 'warn', 'migration', 'log'],
+        logger:
+          // 'advanced-console',
+          'file',
         cache: true,
         // entities
         entities: [User, Tenant, Queue, EnrollQueue, Event, Session],

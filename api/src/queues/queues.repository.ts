@@ -62,7 +62,7 @@ export class QueuesRepository extends Repository<Queue> {
   async queueUserCanSee(
     query: string,
     userId: number,
-    eventId: number,
+    eventId: string,
     page: number,
     size: number,
   ): Promise<[Queue[], number]> {

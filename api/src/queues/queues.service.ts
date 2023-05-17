@@ -31,6 +31,7 @@ import { Request } from 'express';
 import { EnrollQueuesRepository } from 'src/enroll-queues/enroll-queues.repository';
 import * as moment from 'moment';
 import { StatisticQueueDto } from './dto/statistic-queue.dto';
+import _ from 'lodash';
 
 /**
  * QueuesService class for queues service with CRUD operations for queues and other operations
@@ -76,7 +77,8 @@ export class QueuesService {
     }
 
     let hashQueue = '';
-    const uxTime = moment().add(process.env.TIMEOUT_VERIFY, 'seconds').unix();
+    const uxTime =
+      new Date().getTime() + parseInt(process.env.TIMEOUT_VERIFY) * 1000;
 
     // if queue not have randomCode
 
@@ -159,7 +161,10 @@ export class QueuesService {
 
     let queues: Queue[] = [];
     let totalCount: number;
-
+    // split event filter
+    const eventFilter = (filterObj.transformToQuery() as any)?.event;
+    // delete event filter
+    delete (filterObj.transformToQuery() as any)?.event;
     try {
       [queues, totalCount] = await this.queueRepository.findAndCount({
         relations: ['event'],
@@ -168,6 +173,7 @@ export class QueuesService {
             ...filterObj.transformToQuery(),
             status: Not(Equal(QueueEnum.IS_CLOSED)),
             event: {
+              ...eventFilter,
               status: true,
               tenant: {
                 tenantCode: (this.request.user as any).tenantCode,
@@ -235,12 +241,11 @@ export class QueuesService {
       totalCount = await this.queueRepository.count({
         relations: ['event'],
         where: {
-          ...filterObj.transformToQuery(),
           event: {
-            user: {
-              tenant: {
-                tenantCode: userInReq.tenantCode,
-              },
+            status: true,
+
+            tenant: {
+              tenantCode: userInReq.tenantCode,
             },
           },
         },
@@ -350,6 +355,7 @@ export class QueuesService {
 
       data.event = eventExist;
     }
+    updateQueueDto.id = data.id;
     updateQueueDto.createdAt = data.createdAt;
     updateQueueDto.updatedAt = new Date();
     data = partialMapping(data, updateQueueDto) as Queue;
@@ -364,17 +370,25 @@ export class QueuesService {
    * @param id  - id of queue
    * @returns  QueueDto object with removed queue data
    */
-  remove(queueCode: string) {
-    return this.queueRepository.delete({
-      code: queueCode,
-      status: Not(Equal(QueueEnum.IS_CLOSED)),
-      event: {
-        status: true,
-        tenant: {
-          tenantCode: (this.request.user as any).tenantCode,
+  async remove(queueCode: string) {
+    const existQueue = await this.queueRepository.findOne({
+      where: {
+        code: queueCode,
+        status: Not(Equal(QueueEnum.IS_CLOSED)),
+        event: {
+          status: true,
+          tenant: {
+            tenantCode: (this.request.user as any).tenantCode,
+          },
         },
       },
     });
+    if (!existQueue) {
+      throw new NotFoundException(
+        transformError(`QueueCode: ${queueCode}`, ERROR_TYPE.NOT_FOUND),
+      );
+    }
+    return this.queueRepository.delete(existQueue.id);
   }
 
   /**
@@ -466,7 +480,7 @@ export class QueuesService {
   async findAllQueueUserCanSee(
     search: string,
     userId: number,
-    eventId: number,
+    eventId: string,
     page: number,
     size: number,
   ): Promise<PaginateDto<QueueDto>> {
@@ -516,7 +530,7 @@ export class QueuesService {
   async countFindAllQueueUserCanSee(
     search: string,
     userId: number,
-    eventId: number,
+    eventId: string,
     page: number,
     size: number,
   ): Promise<number> {
@@ -687,7 +701,6 @@ export class QueuesService {
 
       const timeW =
         enrollQueue.endServe.getTime() - enrollQueue.startServe.getTime();
-
       return total + timeW;
     }, 0);
 

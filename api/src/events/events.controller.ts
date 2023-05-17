@@ -10,6 +10,7 @@ import {
   ParseIntPipe,
   Req,
   UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
@@ -125,8 +126,8 @@ export class EventsController {
   @HasRole(RoleEnum.ADMIN, RoleEnum.OPERATOR)
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
-  findOneEvent(@Param('id', ParseIntPipe) id: number) {
-    return this.eventsService.findOne(+id);
+  findOneEvent(@Param('id') id: string) {
+    return this.eventsService.findOne(id);
   }
 
   /**
@@ -142,11 +143,8 @@ export class EventsController {
   @ApiOkResponse({ type: EventDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
-  updateEvent(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateEventDto: UpdateEventDto,
-  ) {
-    return this.eventsService.update(+id, updateEventDto);
+  updateEvent(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
+    return this.eventsService.update(id, updateEventDto);
   }
 
   /**
@@ -160,7 +158,14 @@ export class EventsController {
   @ApiOkResponse({ description: 'OK' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
-  removeEvent(@Param('id', ParseIntPipe) id: number) {
-    return this.eventsService.remove(+id);
+  removeEvent(@Param('id') id: string) {
+    return this.eventsService
+      .remove(id)
+      .then((res) => {
+        return true;
+      })
+      .catch((err) => {
+        throw new BadRequestException('Không thể xóa');
+      });
   }
 }

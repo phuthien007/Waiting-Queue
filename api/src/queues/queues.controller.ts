@@ -10,6 +10,7 @@ import {
   ParseIntPipe,
   UseGuards,
   Req,
+  BadRequestException,
 } from '@nestjs/common';
 import { QueuesService } from './queues.service';
 import { CreateQueueDto } from './dto/create-queue.dto';
@@ -132,7 +133,7 @@ export class QueuesController {
   @ApiQuery({
     name: 'eventId',
     required: false,
-    type: Number,
+    type: String,
   })
   @ApiQuery({
     name: 'page',
@@ -151,7 +152,7 @@ export class QueuesController {
   findAllQueueUserCanSee(
     @Req() req: any,
     @Query('search') search?: string,
-    @Query('eventId', ParseIntPipe) eventId?: number,
+    @Query('eventId') eventId?: string,
     @Query('page') page?: number,
     @Query('size') size?: number,
   ) {
@@ -177,7 +178,7 @@ export class QueuesController {
   @ApiQuery({
     name: 'eventId',
     required: false,
-    type: Number,
+    type: String,
   })
   @ApiQuery({
     name: 'page',
@@ -197,7 +198,7 @@ export class QueuesController {
   countFindAllQueueUserCanSee(
     @Req() req: any,
     @Query('search') search?: string,
-    @Query('eventId', ParseIntPipe) eventId?: number,
+    @Query('eventId') eventId?: string,
     @Query('page') page?: number,
     @Query('size') size?: number,
   ) {
@@ -262,7 +263,14 @@ export class QueuesController {
   @ApiNotFoundResponse({ description: 'Not Found' })
   @HasRole(RoleEnum.ADMIN)
   removeQueue(@Param('queueCode') queueCode: string) {
-    return this.queuesService.remove(queueCode);
+    return this.queuesService
+      .remove(queueCode)
+      .then((res) => {
+        return true;
+      })
+      .catch((err) => {
+        throw new BadRequestException('Không thể xóa');
+      });
   }
 
   // api get all user operate queue

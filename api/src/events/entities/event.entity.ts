@@ -17,8 +17,8 @@ import {
  */
 @Entity('Events')
 export class Event extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({})
   name: string;

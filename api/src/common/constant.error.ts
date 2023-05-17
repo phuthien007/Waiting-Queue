@@ -13,6 +13,7 @@ export const ERROR_TYPE = {
   EXIST: 'exist',
   NOT_FOUND: 'not_found',
   IN_VALID: 'in_valid',
+  CANNOT_DELETE: 'cannot_delete',
 };
 
 /**
@@ -44,6 +45,8 @@ export const transformError = (field: string, type: string) => {
       return `${field} phải nhỏ hơn hoặc bằng 100`;
     case ERROR_TYPE.IN_VALID:
       return `${field} không chính xác`;
+    case ERROR_TYPE.CANNOT_DELETE:
+      return ` ${field} không thể xóa `;
     default:
       return `${field} không hợp lệ`;
   }
