@@ -26,17 +26,23 @@ export const randomPassword = () => {
 
   // create password (at least 8 characters, at least one uppercase letter, one lowercase letter, one number and one special character)
   // and match regex /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.])[A-Za-z\d@$!%*?&.]{8,30}$/
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  const charactersUpper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const charactersLower = 'abcdefghijklmnopqrstuvwxyz';
   const numbers = '0123456789';
   const specialCharacters = '@$!%*?&.';
-  const charactersLength = characters.length;
+  const charactersUpperLength = charactersUpper.length;
+  const charactersLowerLength = charactersLower.length;
   const numbersLength = numbers.length;
   const specialCharactersLength = specialCharacters.length;
   for (let i = 0; i < 8; i++) {
     if (i === 0) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      result += charactersUpper.charAt(
+        Math.floor(Math.random() * charactersUpperLength),
+      );
     } else if (i === 1) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      result += charactersLower.charAt(
+        Math.floor(Math.random() * charactersLowerLength),
+      );
     } else if (i === 2) {
       result += numbers.charAt(Math.floor(Math.random() * numbersLength));
     } else if (i === 3) {
@@ -44,14 +50,18 @@ export const randomPassword = () => {
         Math.floor(Math.random() * specialCharactersLength),
       );
     } else {
-      const random = Math.floor(Math.random() * 3);
+      const random = Math.floor(Math.random() * 4);
       if (random === 0) {
-        result += characters.charAt(
-          Math.floor(Math.random() * charactersLength),
+        result += charactersUpper.charAt(
+          Math.floor(Math.random() * charactersUpperLength),
         );
       } else if (random === 1) {
-        result += numbers.charAt(Math.floor(Math.random() * numbersLength));
+        result += charactersLower.charAt(
+          Math.floor(Math.random() * charactersLowerLength),
+        );
       } else if (random === 2) {
+        result += numbers.charAt(Math.floor(Math.random() * numbersLength));
+      } else if (random === 3) {
         result += specialCharacters.charAt(
           Math.floor(Math.random() * specialCharactersLength),
         );
