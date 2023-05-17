@@ -64,7 +64,6 @@ export class TenantsService {
     const savedTenant = this.tenantRepository.save(tenant);
 
     const resUser = await this.userService.createFromTenant(tenant);
-
     if (!resUser) {
       throw new BadRequestException(
         'Có lỗi xảy ra khi tạo tài khoản admin cho tenant',

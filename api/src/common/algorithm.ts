@@ -23,11 +23,40 @@ export const randomCodeTenant = (...params) => {
  */
 export const randomPassword = () => {
   let result = '';
-  const characters =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+';
+
+  // create password (at least 8 characters, at least one uppercase letter, one lowercase letter, one number and one special character)
+  // and match regex /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.])[A-Za-z\d@$!%*?&.]{8,30}$/
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  const numbers = '0123456789';
+  const specialCharacters = '@$!%*?&.';
   const charactersLength = characters.length;
+  const numbersLength = numbers.length;
+  const specialCharactersLength = specialCharacters.length;
   for (let i = 0; i < 8; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    if (i === 0) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    } else if (i === 1) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    } else if (i === 2) {
+      result += numbers.charAt(Math.floor(Math.random() * numbersLength));
+    } else if (i === 3) {
+      result += specialCharacters.charAt(
+        Math.floor(Math.random() * specialCharactersLength),
+      );
+    } else {
+      const random = Math.floor(Math.random() * 3);
+      if (random === 0) {
+        result += characters.charAt(
+          Math.floor(Math.random() * charactersLength),
+        );
+      } else if (random === 1) {
+        result += numbers.charAt(Math.floor(Math.random() * numbersLength));
+      } else if (random === 2) {
+        result += specialCharacters.charAt(
+          Math.floor(Math.random() * specialCharactersLength),
+        );
+      }
+    }
   }
   return result;
 };

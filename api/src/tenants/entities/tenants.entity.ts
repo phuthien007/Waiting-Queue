@@ -46,6 +46,7 @@ export class Tenant extends BaseEntity {
 
   @Column({
     name: 'contact_phone',
+    nullable: true,
   })
   contactPhone: string;
 

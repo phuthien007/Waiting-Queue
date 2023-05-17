@@ -70,7 +70,10 @@ const Register = () => {
           >
             <Input size="large" placeholder="Tên công ty" />
           </Form.Item>
-          <Form.Item name="address" rules={[]}>
+          <Form.Item
+            name="address"
+            rules={[{ required: true, message: "Địa chỉ không được bỏ trống" }]}
+          >
             <Input size="large" placeholder="Địa chỉ" />
           </Form.Item>
           <Form.Item
@@ -89,14 +92,25 @@ const Register = () => {
           >
             <Input size="large" placeholder="Email" />
           </Form.Item>
-          <Form.Item name="contactPhone" rules={[]}>
+          <Form.Item
+            name="contactPhone"
+            rules={[
+              { required: true, message: "Số điện thoại không được bỏ trống" },
+            ]}
+          >
             <Input size="large" placeholder="Số điện thoại" />
           </Form.Item>
-          <Form.Item name="description" rules={[]}>
+          <Form.Item
+            name="description"
+            rules={[{ required: true, message: "Mô tả không được bỏ trống" }]}
+          >
             <Input placeholder="Mô tả" />
           </Form.Item>
 
-          <Form.Item name="website" rules={[]}>
+          <Form.Item
+            name="website"
+            rules={[{ required: true, message: "Website không được bỏ trống" }]}
+          >
             <Input size="large" placeholder="Website" />
           </Form.Item>
           <Form.Item name="note" rules={[]}>
@@ -108,7 +122,7 @@ const Register = () => {
             htmlType="submit"
             size="large"
             className="text-center w-100"
-            loading={user.loading}
+            loading={isLoading}
           >
             <strong>Đăng ký</strong>
           </Button>
