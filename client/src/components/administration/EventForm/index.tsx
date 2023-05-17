@@ -299,6 +299,17 @@ const EventForm: React.FC<Props> = ({
               // validate time start must be greater than time now
               ({ getFieldValue }) => ({
                 validator(_, value) {
+                  if (
+                    getFieldValue("daily") === true &&
+                    getFieldValue("from") &&
+                    getFieldValue("to")
+                  ) {
+                    return Promise.reject(
+                      new Error(
+                        "Không thể cùng chọn hàng ngày và ngày bắt đầu, ngày kết thúc"
+                      )
+                    );
+                  }
                   if (!value || moment().isBefore(value)) {
                     return Promise.resolve();
                   }
@@ -334,9 +345,21 @@ const EventForm: React.FC<Props> = ({
               // validate time start must be greater than time now
               ({ getFieldValue }) => ({
                 validator(_, value) {
+                  if (
+                    getFieldValue("daily") === true &&
+                    getFieldValue("from") &&
+                    getFieldValue("to")
+                  ) {
+                    return Promise.reject(
+                      new Error(
+                        "Không thể cùng chọn hàng ngày và ngày bắt đầu, ngày kết thúc"
+                      )
+                    );
+                  }
                   if (!value || moment().isBefore(value)) {
                     return Promise.resolve();
                   }
+
                   if (!moment().isBefore(value)) {
                     return Promise.reject(
                       new Error("Ngày kết thúc phải lớn hơn ngày hiện tại")
@@ -364,9 +387,28 @@ const EventForm: React.FC<Props> = ({
           </Form.Item>
           <Form.Item
             style={{ marginBottom: 0 }}
-            label="Hằng ngày:"
+            label="Hàng ngày:"
             name="daily"
             valuePropName="checked"
+            rules={[
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (
+                    getFieldValue("daily") === true &&
+                    getFieldValue("from") &&
+                    getFieldValue("to")
+                  ) {
+                    return Promise.reject(
+                      new Error(
+                        "Không thể cùng chọn hàng ngày và ngày bắt đầu, ngày kết thúc"
+                      )
+                    );
+                  }
+
+                  return Promise.resolve();
+                },
+              }),
+            ]}
           >
             <Checkbox disabled={type === "view"} />
           </Form.Item>
