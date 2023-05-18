@@ -15,7 +15,7 @@ import { OperatorQueryEnum } from './enum';
 import { IsNotEmpty, IsNotIn, NotEquals } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Optional } from '@nestjs/common';
-import { deepStringToObject } from './common';
+import { deepNotEqualStringToObject, deepStringToObject } from './common';
 import { BaseEntity } from './base.entity';
 
 /**
@@ -153,7 +153,7 @@ export class FilterOperator {
     // check if ne operator has value then transform to query object
     if (this.ne.length > 0) {
       this.ne.forEach((item) => {
-        const valuesTransform = deepStringToObject(item, NotEquals);
+        const valuesTransform = deepNotEqualStringToObject(item);
         query[Object.keys(valuesTransform)[0]] =
           Object.values(valuesTransform)[0];
       });

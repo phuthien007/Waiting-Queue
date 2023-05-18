@@ -1,8 +1,10 @@
 import {
   BadRequestException,
+  CacheInterceptor,
   Inject,
   Injectable,
   NotFoundException,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
@@ -22,6 +24,8 @@ import { UsersRepository } from 'src/users/users.repository';
 import { TenantsRepository } from 'src/tenants/tenants.repository';
 import { QueuesRepository } from 'src/queues/queues.repository';
 import { PaginateDto } from 'src/common/paginate.dto';
+import { Equal } from 'typeorm';
+import { User } from 'src/users/entities/user.entity';
 
 /**
  * Events service class for events endpoints (create, update, delete, etc.)
@@ -54,6 +58,9 @@ export class EventsService {
     });
 
     event.tenant = tenantInReq;
+    event.user = {
+      id: (this.request?.user as any)?.id,
+    } as User;
 
     const savedEvent = await this.eventRepository.save(event);
     return plainToInstance(EventDto, savedEvent, {
@@ -174,9 +181,11 @@ export class EventsService {
    * @param id event id from request param (id)
    * @returns event DTO object with id
    */
-  async findOne(id: number) {
+  async findOne(id: string) {
+    const userInReq = this.request?.user as any;
+
     const event = await this.eventRepository.findOne({
-      where: { id },
+      where: { id, status: true, tenant: { tenantCode: userInReq.tenantCode } },
       relations: ['tenant'],
     });
     if (!event)
@@ -194,15 +203,21 @@ export class EventsService {
    * @param updateEventDto update event DTO object from request body
    * @returns updated event DTO object with id
    */
-  async update(id: number, updateEventDto: UpdateEventDto) {
+  async update(id: string, updateEventDto: UpdateEventDto) {
     let data = await this.eventRepository.findOne({
-      where: { id },
+      where: {
+        id,
+        tenant: { tenantCode: (this.request?.user as any)?.tenantCode },
+      },
     });
     if (!data) {
       throw new NotFoundException(
         transformError(`Id: ${id}`, ERROR_TYPE.NOT_FOUND),
       );
     }
+
+    updateEventDto.createdAt = data.createdAt;
+    updateEventDto.updatedAt = new Date();
 
     data = partialMapping(data, updateEventDto) as Event;
 
@@ -216,7 +231,18 @@ export class EventsService {
    * @param id  event id from request param (id)
    * @returns deleted event DTO object with id
    */
-  remove(id: number) {
+  async remove(id: string) {
+    const existEvent = await this.eventRepository.findOne({
+      where: {
+        id,
+        tenant: { tenantCode: Equal((this.request?.user as any)?.tenantCode) },
+      },
+    });
+    if (!existEvent) {
+      throw new NotFoundException(
+        transformError(`Id: ${id}`, ERROR_TYPE.NOT_FOUND),
+      );
+    }
     return this.eventRepository.delete(id);
   }
 }

@@ -21,11 +21,7 @@ const EventCard: React.FC<Props> = ({ data }) => {
       <Card
         className="br-8"
         title={<Link to={`/event/${data?.id}`}>{data?.name}</Link>}
-        extra={
-          <Button className="br-8" type="link" href={`/event/${data?.id}`}>
-            Xem chi tiết
-          </Button>
-        }
+        extra={<Link to={`/event/${data?.id}`}>Xem chi tiết</Link>}
       >
         <Row justify="center">
           <Image
@@ -40,9 +36,14 @@ const EventCard: React.FC<Props> = ({ data }) => {
           <Descriptions.Item label="Thời gian">
             {data?.daily
               ? "Hàng ngày"
-              : `Từ ${moment(data?.from).format(
-                  FORMAT_DATE_MINUTE
-                )} đến ${moment(data?.to).format(FORMAT_DATE_MINUTE)}`}
+              : `Từ ${
+                  (data?.from &&
+                    moment(data?.from).format(FORMAT_DATE_MINUTE)) ??
+                  "..."
+                } đến ${
+                  (data?.to && moment(data?.to).format(FORMAT_DATE_MINUTE)) ??
+                  "..."
+                }`}
           </Descriptions.Item>
           <Descriptions.Item label="Địa điểm">{data?.place}</Descriptions.Item>
           <Descriptions.Item label="Mô tả">

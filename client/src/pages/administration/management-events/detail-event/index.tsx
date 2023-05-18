@@ -15,7 +15,7 @@ const DetailEvent = () => {
     refetch: getDataEvent,
     isFetching,
     data,
-  } = useEventsControllerFindOneEvent(_.parseInt(id) || 0, {
+  } = useEventsControllerFindOneEvent(id, {
     query: {
       enabled: false,
     },

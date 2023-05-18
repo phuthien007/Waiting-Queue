@@ -30,12 +30,6 @@ const AuthLayout = ({ children }) => {
             [style.white]: authPagesColor === "white",
             [style.gray]: authPagesColor === "gray",
           })}
-          style={{
-            backgroundImage:
-              authPagesColor === "image"
-                ? "url(/resources/images/auth/bg1.jpg)"
-                : "",
-          }}
         >
           <div className={style.containerInner}>{children}</div>
         </div>

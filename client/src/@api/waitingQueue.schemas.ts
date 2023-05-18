@@ -14,6 +14,21 @@ export type FilesControllerUploadFileBody = {
   file?: Blob;
 };
 
+export type EnrollQueuesControllerUpdateStatusEnrollQueueStatus = typeof EnrollQueuesControllerUpdateStatusEnrollQueueStatus[keyof typeof EnrollQueuesControllerUpdateStatusEnrollQueueStatus];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const EnrollQueuesControllerUpdateStatusEnrollQueueStatus = {
+  pending: 'pending',
+  serving: 'serving',
+  done: 'done',
+  is_blocked: 'is_blocked',
+} as const;
+
+export type EnrollQueuesControllerUpdateStatusEnrollQueueParams = {
+status: EnrollQueuesControllerUpdateStatusEnrollQueueStatus;
+};
+
 export type EnrollQueuesControllerFindAllEnrollQueueStatus = typeof EnrollQueuesControllerFindAllEnrollQueueStatus[keyof typeof EnrollQueuesControllerFindAllEnrollQueueStatus];
 
 
@@ -28,16 +43,45 @@ export const EnrollQueuesControllerFindAllEnrollQueueStatus = {
 export type EnrollQueuesControllerFindAllEnrollQueueParams = {
 page: number;
 size: number;
-queueId: number;
+queueCode: string;
 status?: EnrollQueuesControllerFindAllEnrollQueueStatus;
 sort?: string;
 };
 
-export type QueuesControllerFindAllQueueUserCanSeeParams = {
+export type EnrollQueuesControllerCreateEnrollQueueParams = {
+q: string;
+uxTime: string;
+h: string;
+};
+
+export type QueuesControllerCountFindAllQueueUserCanSeeParams = {
 search?: string;
-eventId?: number;
+eventId?: string;
 page: number;
 size: number;
+};
+
+export type QueuesControllerFindAllQueueUserCanSeeParams = {
+search?: string;
+eventId?: string;
+page: number;
+size: number;
+};
+
+export type QueuesControllerCountFindAllQueueParams = {
+eq?: string[];
+ne?: string[];
+gt?: string[];
+gte?: string[];
+lt?: string[];
+lte?: string[];
+in?: string[];
+notIn?: string[];
+like?: string[];
+notLike?: string[];
+page?: number;
+size?: number;
+sort?: string;
 };
 
 export type QueuesControllerFindAllQueueParams = {
@@ -118,24 +162,14 @@ size?: number;
 sort?: string;
 };
 
-export interface Session { [key: string]: any }
-
-export interface EnrollQueueDto {
-  id?: string;
-  sequenceNumber?: number;
-  startServe?: string;
-  endServe?: string;
-  enrollTime?: string;
-  status?: string;
-  note?: string;
-  queue?: QueueDto;
-  session?: Session;
-}
-
 export interface CreateEnrollQueueDto {
   note?: string;
   queueCode: string;
 }
+
+export interface StatisticQueueDto { [key: string]: any }
+
+export interface Session { [key: string]: any }
 
 export type UpdateQueueDtoStatus = typeof UpdateQueueDtoStatus[keyof typeof UpdateQueueDtoStatus];
 
@@ -158,7 +192,7 @@ export interface UpdateQueueDto {
   code?: string;
   description?: string;
   status?: UpdateQueueDtoStatus;
-  eventId?: number;
+  eventId?: string;
 }
 
 export interface QueueDto {
@@ -172,6 +206,20 @@ export interface QueueDto {
   description?: string;
   status?: string;
   event?: EventDto;
+}
+
+export interface EnrollQueueDto {
+  id?: string;
+  willEnrollWhen?: string;
+  serveTimeAvg?: number;
+  sequenceNumber?: number;
+  startServe?: string;
+  endServe?: string;
+  enrollTime?: string;
+  status?: string;
+  note?: string;
+  queue?: QueueDto;
+  session?: Session;
 }
 
 export type CreateQueueDtoStatus = typeof CreateQueueDtoStatus[keyof typeof CreateQueueDtoStatus];
@@ -195,11 +243,11 @@ export interface CreateQueueDto {
   code?: string;
   description?: string;
   status?: CreateQueueDtoStatus;
-  eventId?: number;
+  eventId?: string;
 }
 
 export interface UpdateEventDto {
-  id?: number;
+  id?: string;
   createdAt?: string;
   updatedAt?: string;
   name?: string;
@@ -216,7 +264,7 @@ export interface UpdateEventDto {
 }
 
 export interface EventDto {
-  id?: number;
+  id?: string;
   createdAt?: string;
   updatedAt?: string;
   name?: string;
@@ -233,7 +281,7 @@ export interface EventDto {
 }
 
 export interface CreateEventDto {
-  id?: number;
+  id?: string;
   createdAt?: string;
   updatedAt?: string;
   name?: string;

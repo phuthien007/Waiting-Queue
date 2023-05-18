@@ -1,8 +1,9 @@
+import { Equal, FilterQuery, Not } from 'typeorm';
 import { ALLOW_UPLOAD_FILE } from './constants';
 
 type Operator = (value: string) => any;
 interface Obj {
-  [key: string]: Obj | Operator;
+  [key: string]: Obj | FilterQuery<any> | any;
 }
 
 // export deepstring to object like: 'a.b.c:d' => {a: {b: {c: operator('d')}}}
@@ -33,6 +34,22 @@ export function deepStringToObject(
   }
 
   currentObj[lastKey!] = operator(value);
+
+  return obj;
+}
+export function deepNotEqualStringToObject(str: string) {
+  const [arrKey, value] = str.split(':');
+  const obj: Obj = {};
+  let currentObj = obj;
+  const keys = arrKey.split('.');
+  const lastKey = keys.pop();
+
+  for (const key of keys) {
+    currentObj[key] = {};
+    currentObj = currentObj[key] as Obj;
+  }
+
+  currentObj[lastKey!] = Not(Equal(value));
 
   return obj;
 }

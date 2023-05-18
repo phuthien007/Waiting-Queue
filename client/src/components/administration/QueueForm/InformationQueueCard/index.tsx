@@ -1,8 +1,10 @@
 import { QrcodeOutlined } from "@ant-design/icons";
 import { QueueDto } from "@api/waitingQueue.schemas";
-import { Button, Col, Descriptions, Row } from "antd";
+import { Button, Card, Col, Descriptions, Drawer, Row } from "antd";
+import { QRCodeSVG, QRCodeCanvas } from "qrcode.react";
 import React from "react";
 import { StatusQueueRender } from "services/utils/format";
+import QrCodeRender from "../QrCodeRender";
 
 type Props = {
   data: QueueDto;
@@ -15,9 +17,7 @@ const InformationQueueCard: React.FC<Props> = ({ data }) => {
         <Row justify="space-between">
           <Col span={10}>Chi tiết hàng đợi</Col>
           <Col span={10}>
-            <Button type="primary" icon={<QrcodeOutlined />}>
-              Hiện mã QRCode
-            </Button>
+            <QrCodeRender />
           </Col>
         </Row>
       }

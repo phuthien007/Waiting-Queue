@@ -259,6 +259,9 @@ export class UsersService {
       );
     }
 
+    updateUserDto.createdAt = data.createdAt;
+    updateUserDto.updatedAt = new Date();
+
     data = partialMapping(data, updateUserDto) as User;
 
     if (updateUserDto.password && updateUserDto.password.length > 0) {

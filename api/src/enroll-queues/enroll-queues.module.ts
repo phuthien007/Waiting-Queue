@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { EnrollQueuesService } from './enroll-queues.service';
 import { EnrollQueuesController } from './enroll-queues.controller';
 import { EnrollQueue } from './entities/enroll-queue.entity';
@@ -13,9 +13,10 @@ import { QueuesModule } from 'src/queues/queues.module';
     TypeOrmModule.forFeature([EnrollQueue]),
     LoggerModule,
     SessionsModule,
-    QueuesModule,
+    forwardRef(() => QueuesModule),
   ],
   controllers: [EnrollQueuesController],
   providers: [EnrollQueuesService, EnrollQueuesRepository],
+  exports: [EnrollQueuesRepository],
 })
 export class EnrollQueuesModule {}

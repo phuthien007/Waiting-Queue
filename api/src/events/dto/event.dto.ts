@@ -7,7 +7,24 @@ import { UserDto } from 'src/users/dto/user.dto';
 /**
  * Event DTO class for event response body and request body (create, update)
  */
-export class EventDto extends BaseDto {
+export class EventDto {
+  @ApiPropertyOptional()
+  @Expose()
+  id: string;
+
+  // @ApiProperty()
+  @Expose()
+  @ApiPropertyOptional({
+    default: new Date(),
+  })
+  createdAt: Date;
+  // @ApiProperty()
+  @Expose()
+  @ApiPropertyOptional({
+    default: new Date(),
+  })
+  updatedAt: Date;
+
   @ApiPropertyOptional()
   @Expose()
   name: string;

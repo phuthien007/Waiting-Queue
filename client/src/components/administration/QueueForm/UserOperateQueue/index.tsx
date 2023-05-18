@@ -24,10 +24,14 @@ import { useSelector } from "react-redux";
 import { selectUser } from "store/userSlice";
 
 type Props = {
-  id: number;
+  queueCode: string;
+  setDataUserInQueue: React.Dispatch<React.SetStateAction<UserDto[]>>;
 };
 
-const UserOperateQueue: React.FC<Props> = ({ id }) => {
+const UserOperateQueue: React.FC<Props> = ({
+  queueCode,
+  setDataUserInQueue,
+}) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const { role } = useSelector(selectUser);
   const [data, setData] = React.useState<UserDto[]>([]);
@@ -36,7 +40,7 @@ const UserOperateQueue: React.FC<Props> = ({ id }) => {
     isLoading: loadingUserInQueue,
     data: dataUserInQueue,
     refetch: getAllUserInQueue,
-  } = useQueuesControllerGetAllUserOperateQueue(id, {
+  } = useQueuesControllerGetAllUserOperateQueue(queueCode, {
     query: {
       enabled: false,
     },
@@ -57,12 +61,11 @@ const UserOperateQueue: React.FC<Props> = ({ id }) => {
       getAllUser();
     }
     setIsModalOpen(true);
-    getAllUserInQueue();
   };
 
   const handleOk = () => {
     assignMember({
-      id: id,
+      queueCode: queueCode,
       data: data?.map((user: UserDto) => user.id),
     }).then(() => {
       setIsModalOpen(false);
@@ -79,11 +82,27 @@ const UserOperateQueue: React.FC<Props> = ({ id }) => {
 
   React.useEffect(() => {
     setData(dataUserInQueue);
+    setDataUserInQueue(dataUserInQueue);
   }, [dataUserInQueue?.length]);
+
+  React.useEffect(() => {
+    getAllUserInQueue();
+  }, [queueCode]);
 
   return (
     <>
-      <Button onClick={showModal}>Xem danh sách</Button>
+      {!data ||
+        (data?.length === 0 && (
+          <Col span={24}>
+            <p>Chưa có người điều hành</p>
+          </Col>
+        ))}
+      {data && data?.length > 0 && (
+        <>{data.map((item) => item.fullName).join("; ")}</>
+      )}
+      <Button type="link" onClick={showModal}>
+        Xem danh sách
+      </Button>
       <Modal
         open={isModalOpen}
         onCancel={handleCancel}

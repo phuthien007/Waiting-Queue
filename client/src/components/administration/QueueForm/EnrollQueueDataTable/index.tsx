@@ -1,6 +1,7 @@
 import { DeleteOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import {
   useEnrollQueuesControllerFindAllEnrollQueue,
+  useEnrollQueuesControllerRemoveEnrollQueue,
   useEventsControllerFindAllEvent,
 } from "@api/waitingQueue";
 import {
@@ -39,7 +40,7 @@ type Props = {
 };
 
 const ManagementEnrollQueues: React.FC<Props> = ({ status }) => {
-  const { eventId, queueId } = useParams();
+  const { eventId, queueCode } = useParams();
   const [dataSource, setDataSource] = React.useState<{
     data: EnrollQueueDto[];
     pagination: {
@@ -61,11 +62,15 @@ const ManagementEnrollQueues: React.FC<Props> = ({ status }) => {
     useEnrollQueuesControllerFindAllEnrollQueue({
       page: 1,
       size: DEFAULT_PAGE_SIZE,
-      queueId: _.parseInt(queueId) || 0,
+      queueCode: queueCode,
       status: status
         ? (status as EnrollQueuesControllerFindAllEnrollQueueStatus)
         : undefined,
     });
+
+  const { isLoading: loadingRemove, mutateAsync: deleteEnrollQueue } =
+    useEnrollQueuesControllerRemoveEnrollQueue();
+
   const columns: ColumnsType<EnrollQueueDto> = [
     {
       title: "STT",
@@ -104,16 +109,61 @@ const ManagementEnrollQueues: React.FC<Props> = ({ status }) => {
       fixed: "right",
       width: 100,
       key: "key",
+      render: (record) => {
+        return (
+          <>
+            <Popconfirm
+              title="Bạn có chắc muốn xóa?"
+              okText="Có"
+              cancelText="Không"
+              onConfirm={() => {
+                deleteEnrollQueue({
+                  id: record.id,
+                });
+              }}
+              onCancel={() => {}}
+            >
+              <Button type="link" danger icon={<DeleteOutlined />} />
+            </Popconfirm>
+          </>
+        );
+      },
     },
   ];
 
   useEffect(() => {
+    // refetch().then((res) => {
+    //   setDataSource((prev) => {
+    //     if (prev) {
+    //       if (res.data.data.length > prev.data.length) {
+    //         const newItemData = res.data.data.filter(
+    //           (item) => !prev.data.find((prevItem) => prevItem.id === item.id)
+    //         );
+    //         if (
+    //           newItemData[0].status ===
+    //           EnrollQueuesControllerFindAllEnrollQueueStatus.pending
+    //         ) {
+    //           message.success("Có người đăng ký mới tham gia hàng đợi");
+    //         }
+    //       }
+    //     }
+    //     return res.data;
+    //   });
+    // });
     const enrollQueueInterval = setInterval(() => {
       refetch().then((res) => {
         setDataSource((prev) => {
           if (prev) {
             if (res.data.data.length > prev.data.length) {
-              message.success("Có người đăng ký mới tham gia hàng đợi");
+              const newItemData = res.data.data.filter(
+                (item) => !prev.data.find((prevItem) => prevItem.id === item.id)
+              );
+              if (
+                newItemData[0].status ===
+                EnrollQueuesControllerFindAllEnrollQueueStatus.pending
+              ) {
+                message.success("Có người đăng ký mới tham gia hàng đợi");
+              }
             }
           }
           return res.data;
@@ -136,6 +186,7 @@ const ManagementEnrollQueues: React.FC<Props> = ({ status }) => {
       <Row>
         <Card style={{ width: "100%" }} className="br-8">
           <Table
+            scroll={{ x: 800 }}
             // loading={isFetching}
             columns={columns}
             dataSource={dataSource?.data}

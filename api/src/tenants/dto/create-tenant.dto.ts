@@ -30,6 +30,7 @@ export class CreateTenantDto extends BaseDto {
   website: string;
 
   @IsString()
+  @IsNotEmpty()
   @ApiPropertyOptional()
   contactPhone: string;
 

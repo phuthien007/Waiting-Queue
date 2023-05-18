@@ -38,7 +38,7 @@ ON u.id = rqu.user_id
     const queryRunner = this.dataSource.createQueryRunner();
     const queryBuilder = queryRunner.manager
       .createQueryBuilder()
-      .distinct(true)
+      // .distinct(true)
       .select('q.event_id', 'eventId')
       .addSelect('e.*')
       .from(Queue, 'q')
@@ -46,7 +46,7 @@ ON u.id = rqu.user_id
       .leftJoin('RelQueuesUsers', 'rqu', 'rqu.queue_id = q.id')
       .leftJoin(User, 'u', 'u.id = rqu.user_id')
       .where('u.id = :userId', { userId })
-      .andWhere('e.status = :status', { status: 1 });
+      .andWhere('e.status = 1');
     if (query) {
       queryBuilder.andWhere('e.name LIKE :query', { query: `%${query}%` });
     }

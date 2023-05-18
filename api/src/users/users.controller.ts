@@ -11,6 +11,7 @@ import {
   UseGuards,
   Req,
   Res,
+  BadRequestException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -38,7 +39,6 @@ import { UserMeDto } from './dto/user-me.dto';
 
 @Controller('/api/users')
 @UseGuards(RoleGuard)
-@HasRole(RoleEnum.ADMIN, RoleEnum.SUPER_ADMIN)
 export class UsersController {
   constructor(
     private readonly usersService: UsersService,
@@ -55,6 +55,7 @@ export class UsersController {
    */
   @ApiTags('users')
   @Post()
+  @HasRole(RoleEnum.ADMIN)
   @ApiCreatedResponse({ type: UserDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   createUser(@Body() createUserDto: CreateUserDto): Promise<UserDto> {
@@ -77,6 +78,7 @@ export class UsersController {
     type: FilterOperator,
     description: 'Search query',
   })
+  @HasRole(RoleEnum.ADMIN)
   @ApiOkResponse({ type: [UserDto] })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   findAllUser(@Query() search: any, @Req() req) {
@@ -98,6 +100,7 @@ export class UsersController {
    */
   @ApiTags('users')
   @Get(':id')
+  @HasRole(RoleEnum.ADMIN)
   @ApiOkResponse({ type: UserDto })
   @ApiNotFoundResponse({ description: 'Not Found' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
@@ -117,6 +120,7 @@ export class UsersController {
   @ApiTags('users')
   @Patch(':id')
   @ApiOkResponse({ type: UserDto })
+  @HasRole(RoleEnum.ADMIN)
   @ApiNotFoundResponse({ description: 'Not Found' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   updateUser(
@@ -140,11 +144,19 @@ export class UsersController {
    */
   @ApiTags('users')
   @Delete(':id')
+  @HasRole(RoleEnum.ADMIN)
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
   @ApiOkResponse({ description: 'OK' })
   removeUser(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.remove(+id);
+    return this.usersService
+      .remove(+id)
+      .then((res) => {
+        return true;
+      })
+      .catch((err) => {
+        throw new BadRequestException('Không thể xóa');
+      });
   }
 
   // get me
@@ -169,6 +181,7 @@ export class UsersController {
    */
   @ApiTags('profile')
   @Patch('/profile/me')
+  @HasRole(RoleEnum.ADMIN, RoleEnum.OPERATOR)
   @ApiOkResponse({ type: UserMeDto })
   @ApiNotFoundResponse({ description: 'Not Found' })
   @ApiBadRequestResponse({ description: 'Bad Request' })

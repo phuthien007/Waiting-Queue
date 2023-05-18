@@ -14,7 +14,21 @@ import { commonEnum } from 'src/common/enum';
 /**
  * Create event DTO class for create event request body
  */
-export class CreateEventDto extends BaseDto {
+export class CreateEventDto {
+  @ApiPropertyOptional()
+  id: string;
+
+  // @ApiProperty()
+  @ApiPropertyOptional({
+    default: new Date(),
+  })
+  createdAt: Date;
+  // @ApiProperty()
+  @ApiPropertyOptional({
+    default: new Date(),
+  })
+  updatedAt: Date;
+
   @IsString({
     message: transformError('Tên sự kiện', ERROR_TYPE.REQUIRED),
   })

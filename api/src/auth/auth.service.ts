@@ -64,10 +64,27 @@ export class AuthService {
    * @returns Cookie string
    */
   async login(payload: { id: number; role: string; tenantCode: string }) {
-    const token = this.jwtService.sign({ ...payload });
+    const getSecondFromNowToMidnight = () => {
+      const now = new Date();
+      const midnight = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate() + 1,
+        0,
+        0,
+        0,
+      );
+      return Math.floor((midnight.getTime() - now.getTime()) / 1000);
+    };
+    const token = this.jwtService.sign(
+      { ...payload },
+      {
+        expiresIn: `${getSecondFromNowToMidnight() || 3600}s`,
+      },
+    );
     // httpOnly in cookie will prevent client from accessing cookie (prevent XSS)
     return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${
-      this.configService.get('JWT_EXPIRATION_TIME') || 3600
+      getSecondFromNowToMidnight() || 3600
     }`;
   }
 

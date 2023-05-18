@@ -25,6 +25,11 @@ const routes = [
     Component: lazy(() => import("pages/dashboard/public")),
     exact: true,
   },
+  // enroll queue
+  {
+    path: "public/queues/enroll",
+    Component: lazy(() => import("pages/guest-enroll-queue")),
+  },
 
   // personal user
   {
@@ -51,12 +56,12 @@ const routes = [
     exact: true,
   },
   {
-    path: "/personal-user/profile",
+    path: "personal-user/profile",
     Component: lazy(() => import("pages/personal-user/profile")),
     exact: true,
   },
   {
-    path: "/personal-user/profile-tenant",
+    path: "personal-user/profile-tenant",
     Component: lazy(() => import("pages/personal-user/profile-tenant")),
     exact: true,
   },
@@ -68,24 +73,24 @@ const routes = [
 
   // administration
   {
-    path: "/manage/account",
+    path: "manage/account",
     Component: lazy(() => import("pages/administration/management-accounts")),
     exact: true,
   },
   {
-    path: "/manage/tenant",
+    path: "manage/tenant",
     Component: lazy(() => import("pages/administration/management-tenants")),
     exact: true,
   },
   {
-    path: "/manage/event",
+    path: "manage/event",
     Component: lazy(() => import("pages/administration/management-events")),
     exact: true,
   },
 
   // detail event
   {
-    path: "/event/:id",
+    path: "event/:id",
     Component: lazy(() =>
       import("pages/administration/management-events/detail-event")
     ),
@@ -93,7 +98,7 @@ const routes = [
   },
   // detail event
   {
-    path: "/event/:eventId/queue/:queueId",
+    path: "event/:eventId/queue/:queueCode",
     Component: lazy(() =>
       import("pages/administration/management-events/detail-event/detail-queue")
     ),

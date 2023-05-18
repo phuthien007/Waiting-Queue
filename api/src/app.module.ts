@@ -30,11 +30,15 @@ import { FilesModule } from './files/files.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { CacheModule } from '@nestjs/cache-manager';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TaskSchedulesModule } from './task-schedules/task-schedules.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: '.local.env',
+      envFilePath: '.env',
+      cache: true,
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -46,11 +50,25 @@ import { join } from 'path';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        synchronize: configService.get<boolean>('DB_SYNC'),
-        logging: true,
-        logger: 'simple-console',
+        synchronize: false,
+        logging: ['error', 'warn', 'migration', 'log'],
+        logger:
+          // 'advanced-console',
+          'file',
+        cache: true,
         // entities
         entities: [User, Tenant, Queue, EnrollQueue, Event, Session],
+        toRetry: (error: any) => {
+          if (error instanceof Error) {
+            return true;
+          }
+          return false;
+        },
+        retryAttempts: 10,
+        retryDelay: 3000,
+        keepConnectionAlive: true,
+        // connectTimeout: 60000,
+        // maxQueryExecutionTime: 60000,
       }),
     }),
     MulterModule.registerAsync({
@@ -63,6 +81,14 @@ import { join } from 'path';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'uploads'),
     }),
+    CacheModule.register({
+      isGlobal: true,
+      ttl: 5,
+      store: 'memory',
+      max: 1000,
+      isCacheableValue: () => true,
+    }),
+    ScheduleModule.forRoot(),
     TenantsModule,
     SessionsModule,
     AuthModule,
@@ -74,6 +100,7 @@ import { join } from 'path';
     ExceptionModule,
     MailModule,
     FilesModule,
+    TaskSchedulesModule,
   ],
   controllers: [AppController],
   providers: [

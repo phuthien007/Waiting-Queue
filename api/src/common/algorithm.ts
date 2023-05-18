@@ -1,5 +1,6 @@
 import * as bcrypt from 'bcrypt';
-
+import * as CryptoJS from 'crypto-js';
+import * as moment from 'moment';
 // random code tenant
 /**
  * function random code tenant
@@ -22,11 +23,50 @@ export const randomCodeTenant = (...params) => {
  */
 export const randomPassword = () => {
   let result = '';
-  const characters =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+';
-  const charactersLength = characters.length;
+
+  // create password (at least 8 characters, at least one uppercase letter, one lowercase letter, one number and one special character)
+  // and match regex /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.])[A-Za-z\d@$!%*?&.]{8,30}$/
+  const charactersUpper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const charactersLower = 'abcdefghijklmnopqrstuvwxyz';
+  const numbers = '0123456789';
+  const specialCharacters = '@$!%*?&.';
+  const charactersUpperLength = charactersUpper.length;
+  const charactersLowerLength = charactersLower.length;
+  const numbersLength = numbers.length;
+  const specialCharactersLength = specialCharacters.length;
   for (let i = 0; i < 8; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    if (i === 0) {
+      result += charactersUpper.charAt(
+        Math.floor(Math.random() * charactersUpperLength),
+      );
+    } else if (i === 1) {
+      result += charactersLower.charAt(
+        Math.floor(Math.random() * charactersLowerLength),
+      );
+    } else if (i === 2) {
+      result += numbers.charAt(Math.floor(Math.random() * numbersLength));
+    } else if (i === 3) {
+      result += specialCharacters.charAt(
+        Math.floor(Math.random() * specialCharactersLength),
+      );
+    } else {
+      const random = Math.floor(Math.random() * 4);
+      if (random === 0) {
+        result += charactersUpper.charAt(
+          Math.floor(Math.random() * charactersUpperLength),
+        );
+      } else if (random === 1) {
+        result += charactersLower.charAt(
+          Math.floor(Math.random() * charactersLowerLength),
+        );
+      } else if (random === 2) {
+        result += numbers.charAt(Math.floor(Math.random() * numbersLength));
+      } else if (random === 3) {
+        result += specialCharacters.charAt(
+          Math.floor(Math.random() * specialCharactersLength),
+        );
+      }
+    }
   }
   return result;
 };
@@ -84,4 +124,58 @@ export const createCodeQueue = (...parmas) => {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
+};
+
+export const handleHashQueue = (randomQueueCode: string, uxTime: string) => {
+  return getHashSHARandomQueue([randomQueueCode, uxTime]);
+};
+export const handleValidateHashQueue = (
+  randomQueueCode: string,
+  uxTime: string,
+  h: string,
+) => {
+  const encryptText = getHashSHARandomQueue([randomQueueCode, uxTime]);
+
+  return [encryptText.substring(0, 20), h];
+};
+
+export function encryptAES(text: string) {
+  const iv = CryptoJS.lib.WordArray.random(16); // tạo vector khởi tạo ngẫu nhiên 16 byte
+
+  // Mã hóa thông điệp
+  const ciphertext = CryptoJS.AES.encrypt(text, process.env.JWT_SECRET, {
+    iv: iv,
+  });
+  const encryptedMessage = iv.toString() + ':' + ciphertext.toString();
+  return encryptedMessage;
+}
+
+// Giải mã văn bản
+export function decryptAES(text: string) {
+  const parts = text.split(':');
+  const decipher = CryptoJS.AES.decrypt(parts[1], process.env.JWT_SECRET, {
+    iv: CryptoJS.enc.Hex.parse(parts[0]),
+  });
+  const decryptedMessage = decipher.toString(CryptoJS.enc.Utf8);
+  return decryptedMessage;
+}
+
+// random queue code
+export const getRandomQueueCode = () => {
+  let result = '';
+  const characters =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const charactersLength = characters.length;
+  for (let i = 0; i < 5; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+};
+
+export const getHashSHARandomQueue = (plainText: string[]) => {
+  const encryptText = CryptoJS.HmacSHA512(
+    plainText.join('|'),
+    process.env.JWT_SECRET,
+  );
+  return encryptText.toString(CryptoJS.enc.Hex);
 };

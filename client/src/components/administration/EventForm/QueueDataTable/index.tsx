@@ -7,7 +7,7 @@ import {
   useQueuesControllerRemoveQueue,
   useQueuesControllerUpdateQueue,
 } from "@api/waitingQueue";
-import { QueueDto } from "@api/waitingQueue.schemas";
+import { QueueDto, UserDto } from "@api/waitingQueue.schemas";
 import {
   Button,
   Card,
@@ -42,6 +42,7 @@ const ManagementQueues: React.FC = () => {
     setSearchText(value);
     setPage(1);
   };
+  const [dataUserInQueue, setDataUserInQueue] = React.useState<UserDto[]>([]);
   const [page, setPage] = React.useState<number>(1);
   const { role } = useSelector(selectUser);
   const {
@@ -51,6 +52,8 @@ const ManagementQueues: React.FC = () => {
   } = useQueuesControllerFindAllQueue({
     eq: [`event.id:${id}`],
     like: [`name:${searchText}`],
+    page: page,
+    size: DEFAULT_PAGE_SIZE,
   });
 
   const {
@@ -58,7 +61,7 @@ const ManagementQueues: React.FC = () => {
     isFetching: loadingMyQueue,
     data: queueMyData,
   } = useQueuesControllerFindAllQueueUserCanSee({
-    eventId: _.toSafeInteger(id),
+    eventId: id,
     search: `${searchText}`,
     page: page,
     size: DEFAULT_PAGE_SIZE,
@@ -79,7 +82,7 @@ const ManagementQueues: React.FC = () => {
       dataIndex: "name",
       key: "name",
       render: (text, record) => (
-        <Link to={`/event/${id}/queue/${record.id}`}>{text}</Link>
+        <Link to={`/event/${id}/queue/${record.code}`}>{text}</Link>
       ),
     },
     {
@@ -102,7 +105,14 @@ const ManagementQueues: React.FC = () => {
     {
       title: "Người điều hành",
       key: "operateUser",
-      render: (record: QueueDto) => <UserOperateQueue id={record.id} />,
+      render: (record: QueueDto) => (
+        <>
+          <UserOperateQueue
+            setDataUserInQueue={setDataUserInQueue}
+            queueCode={record.code}
+          />
+        </>
+      ),
     },
 
     {
@@ -110,7 +120,7 @@ const ManagementQueues: React.FC = () => {
       fixed: "right",
       width: 100,
       key: "key",
-      render: (record) => {
+      render: (record: QueueDto) => {
         return (
           <>
             {role === "ADMIN" && (
@@ -126,7 +136,7 @@ const ManagementQueues: React.FC = () => {
                 <Tooltip title="Xóa">
                   <Popconfirm
                     title="XÁC NHẬN XÓA"
-                    onConfirm={() => handleDelete(record.id)}
+                    onConfirm={() => handleDelete(record.code)}
                     okText="Xóa"
                     okButtonProps={{
                       loading: loadingDelete,
@@ -172,9 +182,9 @@ const ManagementQueues: React.FC = () => {
       getAllMyQueueByEventId();
     }
   };
-  const handleDelete = async (id: string) => {
-    await deleteQueue({
-      id: _.parseInt(id),
+  const handleDelete = (queueCode: string) => {
+    deleteQueue({
+      queueCode: queueCode,
     }).then(() => {
       if (!loadingDelete) {
         notification.success({

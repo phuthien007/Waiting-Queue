@@ -17,17 +17,20 @@ export class EnrollQueue {
   @Column({
     name: 'start_serve',
     nullable: true,
+    type: 'timestamp',
   })
   startServe: Date;
 
   @Column({
     name: 'end_serve',
     nullable: true,
+    type: 'timestamp',
   })
   endServe: Date;
 
   @Column({
     name: 'enroll_time',
+    type: 'timestamp',
   })
   enrollTime: Date;
 

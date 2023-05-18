@@ -13,6 +13,8 @@ import Title from "antd/lib/typography/Title";
 import {
   useEventsControllerFindAllEvent,
   useEventsControllerFindAllEventUserCanSee,
+  useQueuesControllerCountFindAllQueue,
+  useQueuesControllerCountFindAllQueueUserCanSee,
 } from "@api/waitingQueue";
 import { useSelector } from "react-redux";
 import { selectUser } from "store/userSlice";
@@ -40,6 +42,9 @@ const DashboardAlpha: FC = () => {
     sort: "id:DESC",
   });
 
+  const { refetch: getAllQueue, data: dataQueue } =
+    useQueuesControllerCountFindAllQueue();
+
   useEffect(() => {
     if (role === "ADMIN") setData(dataEvent?.data);
     else if (role === "OPERATOR") setData(myEvent?.data);
@@ -47,14 +52,27 @@ const DashboardAlpha: FC = () => {
   }, [dataEvent, myEvent]);
 
   useEffect(() => {
-    if (role === "ADMIN") getAllEvent();
-    else if (role === "OPERATOR") getAllMyEvent();
+    if (role === "ADMIN") {
+      getAllEvent();
+      getAllQueue();
+    } else if (role === "OPERATOR") {
+      getAllMyEvent();
+    }
   }, []);
 
   return (
     <>
       <Helmet title="Trang chủ" />
-      <StatisticCard />
+
+      <StatisticCard
+        role={role}
+        totalEvent={
+          role === "ADMIN"
+            ? dataEvent?.pagination?.total
+            : myEvent?.pagination?.total
+        }
+        totalQueue={dataQueue}
+      />
       <Divider>
         <span style={{ fontSize: 22 }}> Danh sách sự kiện gần đây </span>
       </Divider>

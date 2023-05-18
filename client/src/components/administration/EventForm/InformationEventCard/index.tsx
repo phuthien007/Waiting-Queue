@@ -26,9 +26,12 @@ const InformationEventCard: React.FC<Props> = ({ data }) => {
       <Descriptions.Item label="Thời gian">
         {data?.daily
           ? "Hàng ngày"
-          : `Từ ${moment(data?.from).format(FORMAT_DATE_MINUTE)} đến ${moment(
-              data?.to
-            ).format(FORMAT_DATE_MINUTE)}`}
+          : `Từ ${
+              (data?.from && moment(data?.from).format(FORMAT_DATE_MINUTE)) ??
+              "..."
+            } đến ${
+              (data?.to && moment(data?.to).format(FORMAT_DATE_MINUTE)) ?? "..."
+            }`}
       </Descriptions.Item>
       <Descriptions.Item label="Mô tả">{data?.description}</Descriptions.Item>
       <Descriptions.Item label="Ghi chú">{data?.note}</Descriptions.Item>

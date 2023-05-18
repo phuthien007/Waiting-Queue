@@ -42,6 +42,7 @@ const ProfileTenant = () => {
       name: tenant?.name || "Tên công ty",
       website: tenant?.website || "Website",
       note: tenant?.note || "Ghi chú",
+      tenantCode: tenant?.tenantCode || "Ghi chú",
     });
     if (isOwnerTenant) {
       setRenderOptionInput({ readOnly: false, bordered: true });
@@ -74,7 +75,7 @@ const ProfileTenant = () => {
         loading={userLoading}
         title={
           <>
-            <UserOutlined className="mr-2" /> <strong>Thông tin cá nhân</strong>
+            <UserOutlined className="mr-2" /> <strong>Thông tin công ty</strong>
           </>
         }
       >
@@ -87,6 +88,9 @@ const ProfileTenant = () => {
           onFinish={onFinish}
         >
           <Form.Item name="contactEmail" label="Email">
+            <Input readOnly bordered={false} />
+          </Form.Item>
+          <Form.Item name="tenantCode" label="Mã công ty">
             <Input readOnly bordered={false} />
           </Form.Item>
           <Form.Item

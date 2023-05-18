@@ -6,6 +6,7 @@ import { Request } from 'express';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Session } from './entities/session.entity';
 import { Repository } from 'typeorm';
+import * as moment from 'moment';
 
 @Injectable()
 export class SessionsService {
@@ -21,34 +22,41 @@ export class SessionsService {
    */
   async createOrRetrieve() {
     // if not have session id in cookie then create new session
-    if ((await this.getCurrentSession()) === null) {
-      const headersReq = this.request.rawHeaders;
-      const newCreateSession = new Session();
-      const indexUserAgent = headersReq.findIndex(
-        (item) => item === 'User-Agent',
+
+    const headersReq = this.request.rawHeaders;
+    const newCreateSession = new Session();
+    const indexUserAgent = headersReq.findIndex(
+      (item) => item === 'User-Agent',
+    );
+    newCreateSession.browser = headersReq[indexUserAgent + 1];
+    newCreateSession.createdAt = new Date();
+    newCreateSession.updatedAt = new Date();
+    const newSession = await this.sessionRepository.save(newCreateSession);
+
+    // create a cookie http only and max age is left hour of that day with the session id and return it
+
+    const getSecondFromNowToMidnight = () => {
+      const now = new Date();
+      const midnight = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate() + 1,
+        0,
+        0,
+        0,
       );
-      newCreateSession.browser = headersReq[indexUserAgent + 1];
-      newCreateSession.createdAt = new Date();
-      newCreateSession.updatedAt = new Date();
-      const newSession = await this.sessionRepository.save(newCreateSession);
+      return Math.floor((midnight.getTime() - now.getTime()) / 1000);
+    };
 
-      console.log('new session:', newSession.id);
+    const cookie = `sessionId=${
+      newSession.id
+    }; HttpOnly; Max-Age=${getSecondFromNowToMidnight()}; Secure SameSite=None; Path=/; Domain=${
+      process.env.DOMAIN
+    }`;
 
-      // create a cookie http only and max age is left hour of that day with the session id and return it
-      const date = new Date();
-      const maxAge =
-        24 * 60 * 60 * 1000 -
-        (date.getHours() * 60 * 60 * 1000 +
-          date.getMinutes() * 60 * 1000 +
-          date.getSeconds() * 1000);
-      const cookie = `sessionId=${newSession.id}; HttpOnly; Max-Age=${maxAge}; Securel SameSite=None; Path=/; Domain=${process.env.DOMAIN}`;
-
-      // set cookie to response
-      this.request.res.setHeader('Set-Cookie', cookie);
-      return newSession.id;
-    } else {
-      return this.getCurrentSession();
-    }
+    // set cookie to response
+    this.request.res.setHeader('Set-Cookie', cookie);
+    return newSession.id;
   }
 
   // findAll() {
@@ -73,8 +81,6 @@ export class SessionsService {
    */
   private async getCurrentSession() {
     // get sessionId in header request
-    console.log('request:', this.request.rawHeaders);
-    console.log('request:', this.request.cookies);
 
     if (this.request.cookies) {
       const tokenObj = this.request.cookies as any;

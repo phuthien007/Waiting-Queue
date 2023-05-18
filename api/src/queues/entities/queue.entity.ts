@@ -51,6 +51,11 @@ export class Queue extends BaseEntity {
   })
   status: string;
 
+  @Column({
+    nullable: true,
+  })
+  randomCode: string;
+
   // relations
   @ManyToOne(() => Event, (event) => event.queues)
   @JoinColumn({

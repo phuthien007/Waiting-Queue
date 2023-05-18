@@ -64,7 +64,6 @@ const TenantForm = ({ type, data, saveData, loading, reloadData }) => {
   const onFinish = (values) => {
     values.id = data.id;
     // saveData({ ...values })
-    console.log("values", values);
     saveData({
       id: values.id,
       data: { ...values },

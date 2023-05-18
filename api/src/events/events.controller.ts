@@ -9,6 +9,8 @@ import {
   Query,
   ParseIntPipe,
   Req,
+  UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
@@ -25,12 +27,15 @@ import { EventDto } from './dto/event.dto';
 import { FilterOperator } from 'src/common/filters.vm';
 import { RoleEnum } from 'src/common/enum';
 import { PaginateDto } from 'src/common/paginate.dto';
+import { RoleGuard } from 'src/auth/role.guard';
+import { HasRole } from 'src/common/decorators';
 
 /**
  * Events controller class for events endpoints (create, update, delete, etc.)
  */
 @ApiTags('events')
 @Controller('/api/events')
+@UseGuards(RoleGuard)
 export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
 
@@ -40,6 +45,7 @@ export class EventsController {
    * @returns Created event DTO object
    */
   @Post()
+  @HasRole(RoleEnum.ADMIN)
   @ApiCreatedResponse({ type: EventDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   createEvent(@Body() createEventDto: CreateEventDto) {
@@ -58,6 +64,7 @@ export class EventsController {
     type: FilterOperator,
     description: 'Search query',
   })
+  @HasRole(RoleEnum.ADMIN)
   @ApiOkResponse({ type: [EventDto] })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   findAllEvent(@Query() search: any): Promise<PaginateDto<EventDto>> {
@@ -90,6 +97,7 @@ export class EventsController {
   })
   @ApiOkResponse({ type: [EventDto] })
   @ApiBadRequestResponse({ description: 'Bad Request' })
+  @HasRole(RoleEnum.OPERATOR, RoleEnum.ADMIN)
   findAllEventUserCanSee(
     @Req() req: any,
     @Query('search') search?: string,
@@ -115,10 +123,11 @@ export class EventsController {
    */
   @Get(':id')
   @ApiOkResponse({ type: EventDto })
+  @HasRole(RoleEnum.ADMIN, RoleEnum.OPERATOR)
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
-  findOneEvent(@Param('id', ParseIntPipe) id: number) {
-    return this.eventsService.findOne(+id);
+  findOneEvent(@Param('id') id: string) {
+    return this.eventsService.findOne(id);
   }
 
   /**
@@ -130,14 +139,12 @@ export class EventsController {
    * @returns Not found message (event not found) with id
    */
   @Patch(':id')
+  @HasRole(RoleEnum.ADMIN)
   @ApiOkResponse({ type: EventDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
-  updateEvent(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateEventDto: UpdateEventDto,
-  ) {
-    return this.eventsService.update(+id, updateEventDto);
+  updateEvent(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
+    return this.eventsService.update(id, updateEventDto);
   }
 
   /**
@@ -147,10 +154,18 @@ export class EventsController {
    * @returns Bad request message
    */
   @Delete(':id')
+  @HasRole(RoleEnum.ADMIN)
   @ApiOkResponse({ description: 'OK' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
-  removeEvent(@Param('id', ParseIntPipe) id: number) {
-    return this.eventsService.remove(+id);
+  removeEvent(@Param('id') id: string) {
+    return this.eventsService
+      .remove(id)
+      .then((res) => {
+        return true;
+      })
+      .catch((err) => {
+        throw new BadRequestException('Không thể xóa');
+      });
   }
 }

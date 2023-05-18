@@ -26,9 +26,7 @@ export const loadCurrentAccount = createAsyncThunk(
   "user/loadCurrentAccount",
   async (arg, { getState }) => {
     const { user } = getState();
-    console.log("start loadCurrentAccount");
     const current = await jwt.currentAccount();
-    console.log("end loadCurrentAccount");
 
     if (current) return { ...user, ...current, authorized: true };
 

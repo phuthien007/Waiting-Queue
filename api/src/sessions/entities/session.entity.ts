@@ -1,3 +1,5 @@
+import * as moment from 'moment';
+
 import { BaseEntity } from 'src/common/base.entity';
 import { EnrollQueue } from 'src/enroll-queues/entities/enroll-queue.entity';
 import {
@@ -18,11 +20,13 @@ export class Session {
   browser: string;
   @Column({
     name: 'created_at',
+    type: 'timestamp',
   })
   createdAt: Date;
 
   @Column({
     name: 'updated_at',
+    type: 'timestamp',
   })
   updatedAt: Date;
 

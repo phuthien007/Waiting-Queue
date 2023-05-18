@@ -9,6 +9,7 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
+import * as moment from 'moment';
 
 /**
  * AllExceptionsFilter catches all exceptions and returns a standard response
@@ -23,13 +24,12 @@ export class AllExceptionsFilter implements ExceptionFilter {
       exception instanceof HttpException
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
-    console.log('exception', request);
     const message: any =
       exception instanceof HttpException ? exception?.getResponse() : exception;
 
     response.status(status).json({
       statusCode: status,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date(),
       path: request.url,
       message: message?.message || 'Internal server error',
     });

@@ -17,19 +17,21 @@ import {
  */
 @Entity('Events')
 export class Event extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({})
   name: string;
 
   @Column({
     nullable: true,
+    type: 'timestamp',
   })
   from: Date;
 
   @Column({
     nullable: true,
+    type: 'timestamp',
   })
   to: Date;
 

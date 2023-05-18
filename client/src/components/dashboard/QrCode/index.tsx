@@ -1,18 +1,32 @@
-import { Button, Modal, Row } from "antd";
+import { Button, Modal, Row, Space } from "antd";
 import React, { Component } from "react";
-import QrReader from "react-qr-scanner";
+import { QrReader } from "react-qr-reader";
 
 const delay: number = 500;
 const previewStyle = {
   height: "100%",
   width: "100%",
 };
+
+const frontFacingConstraints = {
+  facingMode: "user",
+  frameRate: { ideal: 30, max: 60 },
+};
+
+const rearFacingConstraints = {
+  facingMode: "environment",
+  frameRate: { ideal: 30, max: 60 },
+};
+
 const QrCodeComponent: React.FC = () => {
   const [result, setResult] = React.useState<string>("");
   const [isOpenModal, setIsOpenModal] = React.useState<boolean>(false);
-
+  const [facingMode, setFacingMode] = React.useState<"user" | "environment">(
+    "environment"
+  );
   const showModal = () => {
     setIsOpenModal(true);
+    setResult("");
   };
 
   const handleOk = () => {
@@ -22,21 +36,10 @@ const QrCodeComponent: React.FC = () => {
   const handleCancel = () => {
     setIsOpenModal(false);
   };
-
-  const handleScan = (data: any) => {
-    if (data) {
-      setResult(data?.text);
-    }
-  };
-  const handleError = (err: any) => {
-    console.error(err);
-  };
-
   return (
     <div>
       <Button
         type="primary"
-        className="mr-2 br-8"
         icon={<i className="fa fa-camera mr-2" />}
         onClick={showModal}
       >
@@ -50,15 +53,40 @@ const QrCodeComponent: React.FC = () => {
         onCancel={handleCancel}
         onOk={handleOk}
       >
+        <Button
+          type="primary"
+          onClick={() => {
+            if (facingMode === "environment") {
+              setFacingMode("user");
+            } else {
+              setFacingMode("environment");
+            }
+          }}
+          icon={<i className="fa fa-camera mr-2" />}
+        >
+          Đổi camera
+        </Button>
         <QrReader
-          delay={delay}
-          style={previewStyle}
-          onError={handleError}
-          onScan={handleScan}
+          videoStyle={previewStyle}
+          onResult={(result, error) => {
+            if (result && result.getText()) {
+              setResult(result.getText());
+            }
+
+            if (!!error) {
+              console.info(error);
+            }
+          }}
+          constraints={
+            facingMode === "environment"
+              ? rearFacingConstraints
+              : frontFacingConstraints
+          }
+          scanDelay={delay}
         />
         {/* Link to result text */}
         {result?.length > 0 && (
-          <Row justify="center">
+          <Row justify="center" className="mt-2">
             <Button type="primary" href={result} target="_self">
               Đi đến kết quả
             </Button>

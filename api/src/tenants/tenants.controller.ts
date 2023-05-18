@@ -48,6 +48,7 @@ export class TenantsController {
    * @throws {NotFoundException} - if event with id from createTenantDto.eventId not found
    */
   @Post()
+  @HasRole(RoleEnum.SUPER_ADMIN)
   @ApiCreatedResponse({ type: TenantDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   async createTenant(
@@ -82,6 +83,7 @@ export class TenantsController {
    * @throws {InternalServerErrorException} - if error occurs during finding tenants
    */
   @Get()
+  @HasRole(RoleEnum.SUPER_ADMIN)
   @ApiOkResponse({ type: [TenantDto] })
   @ApiQuery({
     name: 'search',
@@ -104,6 +106,7 @@ export class TenantsController {
    */
   @Get(':id')
   @ApiOkResponse({ type: TenantDto })
+  @HasRole(RoleEnum.SUPER_ADMIN)
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
   findOneTenant(@Param('id', ParseIntPipe) id: number) {
@@ -120,6 +123,7 @@ export class TenantsController {
    * @throws {NotFoundException} - if tenant with id not found
    */
   @Patch(':id')
+  @HasRole(RoleEnum.SUPER_ADMIN)
   @ApiOkResponse({ type: TenantDto })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
@@ -146,11 +150,19 @@ export class TenantsController {
    * @throws {NotFoundException} - if tenant with id not found
    */
   @Delete(':id')
+  @HasRole(RoleEnum.SUPER_ADMIN)
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
   @ApiOkResponse({ description: 'OK' })
   removeTenant(@Param('id', ParseIntPipe) id: number) {
-    return this.tenantsService.remove(+id);
+    return this.tenantsService
+      .remove(+id)
+      .then((res) => {
+        return true;
+      })
+      .catch((err) => {
+        throw new BadRequestException('Không thể xóa');
+      });
   }
 
   /**
@@ -158,6 +170,7 @@ export class TenantsController {
    * @param req - request object from request
    */
   @Patch('/profile/myTenant')
+  @HasRole(RoleEnum.ADMIN, RoleEnum.OPERATOR)
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiNotFoundResponse({ description: 'Not Found' })
   @ApiOkResponse({ description: 'OK' })

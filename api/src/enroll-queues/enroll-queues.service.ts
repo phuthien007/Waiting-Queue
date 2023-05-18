@@ -13,7 +13,23 @@ import { CreateEnrollQueueDto } from './dto/create-enroll-queue.dto';
 import { EnrollQueueDto } from './dto/enroll-queue.dto';
 import { EnrollQueuesRepository } from './enroll-queues.repository';
 import { EnrollQueue } from './entities/enroll-queue.entity';
-import { Equal, FindOptionsOrder } from 'typeorm';
+import {
+  Equal,
+  FindOptionsOrder,
+  In,
+  LessThan,
+  LessThanOrEqual,
+  Not,
+} from 'typeorm';
+import {
+  getRandomQueueCode,
+  handleValidateHashQueue,
+} from 'src/common/algorithm';
+import * as moment from 'moment';
+import { QueuesService } from 'src/queues/queues.service';
+import { EnrollQueueEnum, QueueEnum } from 'src/common/enum';
+import _ from 'lodash';
+import { CacheKey } from '@nestjs/cache-manager';
 
 @Injectable()
 export class EnrollQueuesService {
@@ -24,6 +40,7 @@ export class EnrollQueuesService {
     private readonly sessionsService: SessionsService,
     private readonly queuesRepository: QueuesRepository,
     @Inject(REQUEST) private readonly request: Request,
+    private readonly queuesService: QueuesService,
   ) {}
 
   /**
@@ -31,7 +48,13 @@ export class EnrollQueuesService {
    * @param createEnrollQueueDto  dto for create enroll queue
    * @returns
    */
-  async create(createEnrollQueueDto: CreateEnrollQueueDto) {
+  async create(
+    tmpSession: string,
+    createEnrollQueueDto: CreateEnrollQueueDto,
+    q: string,
+    uxTime: number,
+    h: string,
+  ) {
     // check exist queueCode
     const existQueue = await this.queuesRepository.findOne({
       where: { code: createEnrollQueueDto.queueCode },
@@ -43,14 +66,49 @@ export class EnrollQueuesService {
           ' không tồn tại',
       );
     }
+    // check hash queue random
+    const [encryptText, hashQueue] = handleValidateHashQueue(
+      existQueue.randomCode,
+      uxTime.toString(),
+      h,
+    );
+
+    // check have hash queue and time valid
+    if (!encryptText || !hashQueue || !uxTime || encryptText !== hashQueue) {
+      throw new BadRequestException('Hash queue không hợp lệ');
+    }
+
+    // check time valid
+    if (new Date().getTime() > new Date(uxTime).getTime()) {
+      const randomCodeQueue = getRandomQueueCode();
+      await this.queuesRepository.update(existQueue.id, {
+        ...existQueue,
+        randomCode: randomCodeQueue,
+      });
+      throw new BadRequestException('Hash queue đã hết hạn');
+    }
+
     // check and get sessionId from sesionsService
-    const sessionId = await this.sessionsService.createOrRetrieve();
+    let sessionId = tmpSession;
+    if (!sessionId) {
+      sessionId = await this.sessionsService.createOrRetrieve();
+    }
     if (!sessionId) {
       throw new BadRequestException('Không thể tạo hoặc lấy được session');
     }
     // check exist enrollInQueue
     const existEnrollQueue = await this.enrollQueueRepository.findOne({
-      where: { queue: { id: existQueue.id }, session: { id: sessionId } },
+      where: {
+        status: Not(Equal(EnrollQueueEnum.DONE)),
+        queue: {
+          id: existQueue.id,
+          status: Not(Equal(EnrollQueueEnum.BLOCKED)),
+          event: {
+            status: true,
+          },
+        },
+        session: { id: sessionId },
+      },
     });
     if (existEnrollQueue) {
       return plainToInstance(EnrollQueueDto, existEnrollQueue, {
@@ -58,8 +116,11 @@ export class EnrollQueuesService {
       });
     }
 
-    const sequenceNumberCurrent = await this.enrollQueueRepository.count({
+    const sequenceNumberCurrent = await this.enrollQueueRepository.findOne({
       where: { queue: { id: existQueue.id } },
+      order: {
+        sequenceNumber: 'DESC',
+      },
     });
 
     // not exist create enrollQueue
@@ -69,12 +130,16 @@ export class EnrollQueuesService {
     newEnrollQueue.queue = existQueue;
     newEnrollQueue.session = new Session();
     newEnrollQueue.session.id = sessionId;
-    newEnrollQueue.sequenceNumber = sequenceNumberCurrent + 1;
+    newEnrollQueue.sequenceNumber =
+      (sequenceNumberCurrent ? sequenceNumberCurrent.sequenceNumber : 0) + 1;
 
     // default is pending
     // newEnrollQueue.status = EnrollQueueEnum.PENDING;
     newEnrollQueue.enrollTime = new Date();
     const result = await this.enrollQueueRepository.save(newEnrollQueue);
+
+    // change random queue code after create enroll queue last
+
     return plainToInstance(EnrollQueueDto, result, {
       excludeExtraneousValues: true,
     });
@@ -86,16 +151,55 @@ export class EnrollQueuesService {
    * get all by sessionId
    * @returns list enroll queue of user
    */
-  async findMyAll() {
-    const sessionId = await this.sessionsService.createOrRetrieve();
+  async findMyAll(tmpSession: string | null | undefined) {
+    const sessionId = tmpSession
+      ? tmpSession
+      : await this.sessionsService.createOrRetrieve();
     // find enrollqueue by sessionId
     const result = await this.enrollQueueRepository.find({
-      where: { session: { id: sessionId } },
+      where: {
+        session: { id: sessionId },
+        queue: {
+          status: Not(Equal(QueueEnum.IS_CLOSED)),
+          event: {
+            status: true,
+          },
+        },
+      },
       relations: ['queue', 'queue.event'],
     });
-    return result.map((item) =>
+    const enrollQueuesDTO = result.map((item) =>
       plainToInstance(EnrollQueueDto, item, { excludeExtraneousValues: true }),
     );
+    const newArr = [];
+    for (let i = 0; i < enrollQueuesDTO.length; i++) {
+      if (enrollQueuesDTO[i].status === EnrollQueueEnum.PENDING) {
+        const statisticQueueDto = await this.queuesService.getStatisticQueue(
+          enrollQueuesDTO[i].queue.code,
+        );
+
+        // count number sequence from current serving to this enroll queue
+        const countSequence = await this.enrollQueueRepository.count({
+          where: {
+            queue: { id: enrollQueuesDTO[i].queue.id },
+            sequenceNumber: LessThanOrEqual(enrollQueuesDTO[i].sequenceNumber),
+            status: Equal(EnrollQueueEnum.PENDING),
+          },
+          order: { sequenceNumber: 'ASC' },
+        });
+
+        enrollQueuesDTO[i].willEnrollWhen = new Date(
+          enrollQueuesDTO[i].enrollTime.getTime() +
+            statisticQueueDto.timeWaitAvg * 1000 * countSequence,
+        );
+        enrollQueuesDTO[i].serveTimeAvg = statisticQueueDto?.timeServeAvg || 0;
+        newArr.push(enrollQueuesDTO[i]);
+        // return item;
+      } else {
+        newArr.push(enrollQueuesDTO[i]);
+      }
+    }
+    return newArr;
   }
 
   /**
@@ -108,7 +212,7 @@ export class EnrollQueuesService {
   async findAll(
     page: number,
     size: number,
-    queueId: number,
+    queueCode: string,
     status?: string,
     sort?: string,
   ): Promise<PaginateDto<EnrollQueueDto>> {
@@ -123,7 +227,7 @@ export class EnrollQueuesService {
     }
 
     const sortObj: FindOptionsOrder<EnrollQueue> = {
-      enrollTime: 'ASC',
+      sequenceNumber: 'ASC',
     };
     if (sort) {
       const sortArr = sort.split(',');
@@ -136,21 +240,36 @@ export class EnrollQueuesService {
     // get enroll queue with queueId and event contain queue and same tenant
     const [enrollQueues, totalCount] =
       await this.enrollQueueRepository.findAndCount({
-        where: {
-          ...payload,
-          queue: {
-            id: Equal(queueId),
-            event: {
-              user: {
-                tenant: {
-                  tenantCode: userInRequest.tenantCode,
+        where: [
+          {
+            ...payload,
+            queue: [
+              {
+                code: Equal(queueCode),
+                event: {
+                  status: true,
+                  user: {
+                    tenant: {
+                      tenantCode: userInRequest.tenantCode,
+                    },
+                    id: Equal(userInRequest.id),
+                    role: 'admin',
+                  },
                 },
               },
-            },
+              {
+                code: Equal(queueCode),
+                users: {
+                  id: In([userInRequest.id]),
+                },
+              },
+            ],
           },
-        },
+        ],
         relations: ['queue'],
         order: sortObj,
+        take: size,
+        skip: (page - 1) * size,
       });
     const result = enrollQueues.map((item) =>
       plainToInstance(EnrollQueueDto, item, { excludeExtraneousValues: true }),
@@ -188,6 +307,7 @@ export class EnrollQueuesService {
             id: id,
             queue: {
               event: {
+                status: true,
                 user: {
                   tenant: {
                     tenantCode: userInRequest.tenantCode,
@@ -197,19 +317,29 @@ export class EnrollQueuesService {
             },
           },
         });
+
         if (existEnrollQueue) {
           return this.enrollQueueRepository.delete({ id: id });
         }
       }
-    }
-    // check is owner by sessionId
-    const sessionId = await this.sessionsService.createOrRetrieve();
-    const enrollQueue = await this.enrollQueueRepository.findOne({
-      where: { id: id, session: { id: sessionId } },
-    });
-    if (enrollQueue) {
-      return this.enrollQueueRepository.delete({ id: id });
+    } else {
+      // check is owner by sessionId
+      const sessionId = await this.sessionsService.createOrRetrieve();
+      const enrollQueue = await this.enrollQueueRepository.findOne({
+        where: { id: id, session: { id: sessionId } },
+      });
+      if (enrollQueue) {
+        return this.enrollQueueRepository.delete({ id: id });
+      }
     }
     throw new BadRequestException('Bạn không thể xóa số thứ tự này');
+  }
+
+  async updateStatus(id: string, status: string) {
+    const enrollQueueUpdate = await this.enrollQueueRepository.update(
+      { id: id },
+      { status: status, endServe: new Date() },
+    );
+    return enrollQueueUpdate;
   }
 }

@@ -8,6 +8,7 @@ import {
   EyeOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
+import { CreateQueueDto, UpdateQueueDto } from "@api/waitingQueue.schemas";
 
 import {
   Button,
@@ -52,7 +53,10 @@ const tailLayout = {
 type Props = {
   type: "add" | "edit" | "view";
   data: any;
-  saveData?: (data: any) => Promise<any>;
+  saveData?: (data: {
+    queueCode?: string;
+    data: CreateQueueDto | UpdateQueueDto;
+  }) => Promise<any>;
   loading?: boolean;
   reloadData?: () => void;
 };
@@ -93,10 +97,10 @@ const QueueForm: React.FC<Props> = ({
   };
 
   const onFinish = (values) => {
-    values.id = data.id;
+    values.code = data.code;
     // saveData({ ...values })
     saveData({
-      id: values.id,
+      queueCode: values.code,
       data: { ...values, eventId: id },
     }).then((res) => {
       if (res) {
