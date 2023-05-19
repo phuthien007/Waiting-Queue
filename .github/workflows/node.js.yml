@@ -61,19 +61,22 @@ jobs:
             ssh-add ${{ secrets.SERVER_SECRET_KEY }}
             ssh-keyscan -t rsa ${{ secrets.HOST }} >> ~/.ssh/known_hosts
             chmod 644 ~/.ssh/known_hosts
+            #copy file
+            scp -r -P ${{ secrets.PORT }} client/build/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/home/dev/thienphu/client
+            #restart nginx
+            ssh -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} "service nginx reload"
 
-      - name: SSH to server
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.SERVER_PASSWORD }}
-          port: ${{ secrets.PORT }}
-          script: |
-            echo "Deploying..."
-            echo "Starting copy build files to server..."
-            scp -r  -P ${{ secrets.PORT }} client/build/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/home/dev/thienphu/client
-            echo "Copy build files to server successfully"
-            echo "Restarting nginx..."
-            service nginx reload
-            echo "Reload nginx successfully"
+      # - name: SSH to server
+      #   uses: appleboy/ssh-action@master
+      #   with:
+      #     host: ${{ secrets.HOST }}
+      #     username: ${{ secrets.USERNAME }}
+      #     password: ${{ secrets.SERVER_PASSWORD }}
+      #     port: ${{ secrets.PORT }}
+      #     script: |
+      #       echo "Deploying..."
+      #       echo "Starting copy build files to server..."
+      #       echo "Copy build files to server successfully"
+      #       echo "Restarting nginx..."
+      #       service nginx reload
+      #       echo "Reload nginx successfully"
