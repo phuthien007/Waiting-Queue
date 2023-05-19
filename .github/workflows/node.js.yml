@@ -84,6 +84,6 @@ jobs:
           ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} "service nginx reload"
       - name: Deploy nestjs
         run: |
-          ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} "cd /home/dev/thienphu/api && pwd && rm -rf *"
+          ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} "cd /home/dev/thienphu/api && pwd && pwd"
           scp -o StrictHostKeyChecking=no -P ${{ secrets.PORT }} -rf api/destination_folder/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/home/dev/thienphu/api
           ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} "yarn install && ./reload-api.sh"
