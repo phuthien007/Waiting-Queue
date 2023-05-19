@@ -38,12 +38,12 @@ ON u.id = rqu.user_id
     const queryRunner = this.dataSource.createQueryRunner();
     const queryBuilder = queryRunner.manager
       .createQueryBuilder()
-      // .distinct(true)
-      .select('q.event_id', 'eventId')
-      .addSelect('e.*')
+      .distinct(true)
+      .select('e.*')
+      .addSelect('q.event_id', 'eventId')
       .addSelect('e.draw_image_path', 'drawImagePath')
-      .from(Queue, 'q')
-      .leftJoin(Event, 'e', 'e.id = q.event_id')
+      .from(Event, 'e')
+      .leftJoin(Queue, 'q', 'e.id = q.event_id')
       .leftJoin('RelQueuesUsers', 'rqu', 'rqu.queue_id = q.id')
       .leftJoin(User, 'u', 'u.id = rqu.user_id')
       .where('u.id = :userId', { userId })
@@ -51,6 +51,7 @@ ON u.id = rqu.user_id
     if (query) {
       queryBuilder.andWhere('e.name LIKE :query', { query: `%${query}%` });
     }
+
     queryBuilder
       .take(size)
       .skip((page - 1) * size)
