@@ -167,7 +167,6 @@ export class EventsService {
         excludeExtraneousValues: true,
       }),
     );
-
     return new PaginateDto<EventDto>(
       result,
       page,
