@@ -32,7 +32,9 @@ jobs:
           yarn install
           yarn build
       - name: Copy API files
-        run: cp api/dist api/.env api/package.json api/uploads destination_folder/
+        run: |
+          mkdir api/destination_folder
+          cp api/dist api/.env api/package.json api/uploads  api/destination_folder
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
