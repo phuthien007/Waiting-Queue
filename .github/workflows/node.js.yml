@@ -56,6 +56,12 @@ jobs:
         uses: webfactory/ssh-agent@v0.5.2
         with:
           ssh-private-key: ${{ secrets.SERVER_SECRET_KEY }}
+          script: |
+            ssh-add -D
+            ssh-add ${{ secrets.SERVER_SECRET_KEY }}
+            ssh-keyscan -t rsa ${{ secrets.HOST }} >> ~/.ssh/known_hosts
+            chmod 644 ~/.ssh/known_hosts
+            scp -r client/build/* -P ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/home/dev/thienphu/client
 
       - name: SSH to server
         uses: appleboy/ssh-action@master
@@ -67,7 +73,7 @@ jobs:
           script: |
             echo "Deploying..."
             echo "Starting copy build files to server..."
-            scp -r client/build/* -P ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/home/dev/thienphu/client
+
             echo "Copy build files to server successfully"
             echo "Restarting nginx..."
             sudo service nginx reload
