@@ -61,11 +61,10 @@ jobs:
             ssh-add ${{ secrets.SERVER_SECRET_KEY }}
             ssh-keyscan -t rsa ${{ secrets.HOST }} >> ~/.ssh/known_hosts
             chmod 644 ~/.ssh/known_hosts
-            #copy file
-            scp -r -P ${{ secrets.PORT }} client/build/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/home/dev/thienphu/client
-            #restart nginx
-            ssh -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} "service nginx reload"
-
+      - name: Process SSH
+        run: |
+          ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} "cd /home/dev/thienphu/client && pwd"
+          scp -o StrictHostKeyChecking=no -P ${{ secrets.PORT }} -r client/build/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/home/dev/thienphu/client
       # - name: SSH to server
       #   uses: appleboy/ssh-action@master
       #   with:
