@@ -41,6 +41,7 @@ ON u.id = rqu.user_id
       // .distinct(true)
       .select('q.event_id', 'eventId')
       .addSelect('e.*')
+      .addSelect('e.draw_image_path', 'drawImagePath')
       .from(Queue, 'q')
       .leftJoin(Event, 'e', 'e.id = q.event_id')
       .leftJoin('RelQueuesUsers', 'rqu', 'rqu.queue_id = q.id')

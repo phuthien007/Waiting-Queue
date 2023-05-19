@@ -28,38 +28,39 @@ export class EventDto {
   @ApiPropertyOptional()
   @Expose()
   name: string;
-  @Expose()
+
   @ApiPropertyOptional()
   @Expose()
   from: Date;
-  @Expose()
+
   @ApiPropertyOptional()
   @Expose()
   to: Date;
-  @Expose()
+
   @ApiPropertyOptional()
   @Expose()
   note: string;
-  @Expose()
+
   @ApiPropertyOptional()
   @Expose()
   place: string;
-  @Expose()
+
   @ApiPropertyOptional()
   @Expose()
   drawImagePath: string;
-  @Expose()
+
   @ApiPropertyOptional()
   @Expose()
   daily: boolean;
-  @Expose()
+
   @ApiPropertyOptional()
   @Expose()
   description: string;
+
   @Expose()
   @ApiPropertyOptional()
   status: boolean;
-  @ApiPropertyOptional()
+
   // relations
   @ApiPropertyOptional()
   @Expose()
@@ -75,6 +76,7 @@ export class EventDto {
     return null;
   })
   tenant: TenantDto;
+
   @Exclude()
   @ApiPropertyOptional()
   user: UserDto;
