@@ -5,19 +5,18 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ["master"]
   pull_request:
-    branches: [ "master", "dev" ]
+    branches: ["master", "dev"]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     # strategy:
     #   matrix:
     #     node-version: [14.x, 16.x, 18.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+    # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
       - uses: actions/checkout@v3
@@ -41,4 +40,27 @@ jobs:
         with:
           name: build-client
           path: client/build
-  
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: build-client
+          path: client/build
+      - name: SSH to server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            # cd /var/www/html
+            # rm -rf *
+            # cp -r /home/runner/work/My-Portfolio/My-Portfolio/client/build/* .
+            # sudo service nginx restart
+            echo "Hello World"
