@@ -61,7 +61,7 @@ jobs:
             ssh-add ${{ secrets.SERVER_SECRET_KEY }}
             ssh-keyscan -t rsa ${{ secrets.HOST }} >> ~/.ssh/known_hosts
             chmod 644 ~/.ssh/known_hosts
-            scp -r client/build/* -P ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/home/dev/thienphu/client
+            scp -r  -P ${{ secrets.PORT }} client/build/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/home/dev/thienphu/client
 
       - name: SSH to server
         uses: appleboy/ssh-action@master
