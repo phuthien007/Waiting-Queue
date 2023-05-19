@@ -51,6 +51,12 @@ jobs:
         with:
           name: build-client
           path: client/build
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.2
+        with:
+          ssh-private-key: ${{ secrets.SERVER_SECRET_KEY }}
+
       - name: SSH to server
         uses: appleboy/ssh-action@master
         with:
@@ -64,8 +70,5 @@ jobs:
             scp -r client/build/* -P ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/home/dev/thienphu/client
             echo "Copy build files to server successfully"
             echo "Restarting nginx..."
-            sudo service nginx restart
-            # rm -rf *
-            # cp -r /home/runner/work/My-Portfolio/My-Portfolio/client/build/* .
-            # sudo service nginx restart
-            echo "Hello World"
+            sudo service nginx reload
+            echo "Reload nginx successfully"
