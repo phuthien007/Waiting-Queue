@@ -57,11 +57,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download artifacts
+      - name: Download artifacts Client
         uses: actions/download-artifact@v2
         with:
           name: build-client
           path: client/build
+      - name: Download artifacts Nestjs
+        uses: actions/download-artifact@v2
+        with:
+          name: build-api
+          path: api/destination_folder
 
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.5.2
@@ -74,9 +79,11 @@ jobs:
             chmod 644 ~/.ssh/known_hosts
       - name: Deploy client
         run: |
-          ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} "cd /home/dev/thienphu/client && pwd && rm -rf *"
-          scp -o StrictHostKeyChecking=no -P ${{ secrets.PORT }} -r client/build/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/home/dev/thienphu/client
+          ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} "cd /home/dev/thienphu/client && pwd"
+          scp -o StrictHostKeyChecking=no -P ${{ secrets.PORT }} -rf client/build/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/home/dev/thienphu/client
           ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} "service nginx reload"
       - name: Deploy nestjs
         run: |
-          pwd && ls -la
+        ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} "cd /home/dev/thienphu/client && pwd && rm -rf *"
+        scp -o StrictHostKeyChecking=no -P ${{ secrets.PORT }} -rf client/build/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/home/dev/thienphu/client
+        ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} "service nginx reload"
