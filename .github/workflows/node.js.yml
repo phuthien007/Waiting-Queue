@@ -33,9 +33,9 @@ jobs:
           yarn build
       - name: Copy API files
         run: |
-          pwd && ls -la
-          mkdir api/destination_folder
-          cp api/dist api/.env api/package.json api/uploads  api/destination_folder
+          cd api
+          mkdir ./destination_folder
+          cp ./dist ./.env ./package.json ./uploads  ./destination_folder
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
