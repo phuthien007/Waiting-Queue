@@ -61,7 +61,7 @@ jobs:
           script: |
             echo "Deploying..."
             echo "Starting copy build files to server..."
-            scp -r client/build/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/home/dev/thienphu/client
+            scp -r client/build/* -P ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/home/dev/thienphu/client
             echo "Copy build files to server successfully"
             echo "Restarting nginx..."
             sudo service nginx restart
