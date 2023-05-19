@@ -35,7 +35,7 @@ jobs:
         run: |
           cd api
           mkdir ./destination_folder
-          cp ./dist ./.env ./package.json ./uploads  ./destination_folder
+          cp -rf ./dist ./.env ./package.json ./destination_folder
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
