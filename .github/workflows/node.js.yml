@@ -61,7 +61,6 @@ jobs:
             ssh-add ${{ secrets.SERVER_SECRET_KEY }}
             ssh-keyscan -t rsa ${{ secrets.HOST }} >> ~/.ssh/known_hosts
             chmod 644 ~/.ssh/known_hosts
-            scp -r  -P ${{ secrets.PORT }} client/build/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/home/dev/thienphu/client
 
       - name: SSH to server
         uses: appleboy/ssh-action@master
@@ -73,8 +72,8 @@ jobs:
           script: |
             echo "Deploying..."
             echo "Starting copy build files to server..."
-
+            scp -r  -P ${{ secrets.PORT }} client/build/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/home/dev/thienphu/client
             echo "Copy build files to server successfully"
             echo "Restarting nginx..."
-            sudo service nginx reload
+            service nginx reload
             echo "Reload nginx successfully"
