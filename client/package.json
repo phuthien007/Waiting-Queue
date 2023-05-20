@@ -43,7 +43,7 @@
     "@types/qs": "^6.9.7",
     "@types/react-qr-reader": "^2.1.4",
     "@types/store": "^2.0.2",
-    "antd": "^4.23.0",
+    "antd": "^5.5.0",
     "axios": "^0.27.0",
     "axios-mock-adapter": "^1.18.1",
     "bootstrap": "^4.5.2",
