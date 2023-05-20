@@ -79,7 +79,8 @@ jobs:
             chmod 644 ~/.ssh/known_hosts
       - name: Deploy client
         run: |
-          ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} "cd /home/dev/thienphu/client && pwd"
+          ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} "cd /home/dev/thienphu/client && rm -rf ./**"
 
+# scp -o StrictHostKeyChecking=no -P ${{ secrets.PORT }} -r client/build ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/home/dev/thienphu/client
 # ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} "service nginx reload"
 # ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} "cd /home/dev/thienphu/api && pwd && pwd"
