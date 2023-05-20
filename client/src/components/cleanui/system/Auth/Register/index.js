@@ -44,7 +44,11 @@ const Register = () => {
   return (
     <div className="mt-2">
       <div className={`card ${style.container}`}>
-        <img src="/resources/images/tf-logo.jpg" alt="Logo của bạn" />
+        <img
+          src="/resources/images/tf-logo.svg"
+          style={{ height: 240 }}
+          alt="Logo của bạn"
+        />
 
         <div className="text-dark font-size-24 mb-4">
           <strong>Đăng ký thông tin công ty</strong>

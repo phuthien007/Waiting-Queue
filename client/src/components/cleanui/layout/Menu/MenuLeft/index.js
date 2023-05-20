@@ -200,21 +200,22 @@ const MenuLeft = () => {
               : "calc(100% - 110px)",
         }}
       >
-        <div className={style.logoContainer}>
-          <div className={style.logo}>
+        {/* <div className="mr-4" style={{ marginTop: "0.8rem" }}>
+        <Actions />
+      </div> */}
+        <div className={`${style.logoContainer} mt-4 mb-4`}>
+          <div className={`${style.logo} mb-4`}>
             <img
-              src="/resources/images/tf-logo.jpg"
-              className="mr-2"
+              src="/resources/images/tf-logo.svg"
+              style={{ height: "110px", width: "100%" }}
+              className="mr-2 mt-4"
               alt="Waiting Queue"
             />
             {/* <div className={style.name}>{logo}</div> */}
             {/* {logo === "Waiting" && <div className={style.descr}>QUEUE</div>} */}
           </div>
         </div>
-        {/* <div className="mr-4" style={{ marginTop: "0.8rem" }}>
-        <Actions />
-      </div> */}
-        <PerfectScrollbar>
+        <PerfectScrollbar className="mt-4">
           <Menu
             onClick={handleClick}
             selectedKeys={selectedKeys}

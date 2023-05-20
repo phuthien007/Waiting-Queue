@@ -5,19 +5,18 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ["master"]
   pull_request:
-    branches: [ "master", "dev" ]
+    branches: ["master", "dev"]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     # strategy:
     #   matrix:
     #     node-version: [14.x, 16.x, 18.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+    # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
       - uses: actions/checkout@v3
@@ -31,6 +30,17 @@ jobs:
         run: |
           cd api
           yarn install
+          yarn build
+      - name: Copy API files
+        run: |
+          cd api
+          mkdir ./destination_folder
+          cp -rf ./dist ./.env ./package.json ./destination_folder
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-api
+          path: api/destination_folder
       - name: Install Dependencies And Build In Client
         run: |
           cd client
@@ -41,4 +51,40 @@ jobs:
         with:
           name: build-client
           path: client/build
-  
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download artifacts Client
+        uses: actions/download-artifact@v2
+        with:
+          name: build-client
+          path: client/build
+      - name: Download artifacts Nestjs
+        uses: actions/download-artifact@v2
+        with:
+          name: build-api
+          path: api/destination_folder
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.2
+        with:
+          ssh-private-key: ${{ secrets.SERVER_SECRET_KEY }}
+          script: |
+            ssh-add -D
+            ssh-add ${{ secrets.SERVER_SECRET_KEY }}
+            ssh-keyscan -t rsa ${{ secrets.HOST }} >> ~/.ssh/known_hosts
+            chmod 644 ~/.ssh/known_hosts
+      - name: Deploy client
+        run: |
+          ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} "cd /home/dev/thienphu/client && rm -rf ./**"
+          scp -o StrictHostKeyChecking=no -P ${{ secrets.PORT }} -r client/build/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/home/dev/thienphu/client
+      - name: Deploy api
+        run: |
+          scp -o StrictHostKeyChecking=no -P ${{ secrets.PORT }} -r api/destination_folder/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/home/dev/thienphu/api
+          ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} "cd /home/dev/thienphu/api && yarn install && ./reload-prod.sh"
+
+# ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} "service nginx reload"
+# ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} "cd /home/dev/thienphu/api && pwd && pwd"

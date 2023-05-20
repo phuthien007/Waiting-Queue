@@ -58,7 +58,11 @@ const Login = () => {
 
   return (
     <div className={`card ${style.container}`}>
-      <img src="/resources/images/tf-logo.jpg" alt="Logo của bạn" />
+      <img
+        src="/resources/images/tf-logo.svg"
+        style={{ height: 240 }}
+        alt="Logo của bạn"
+      />
       <div
         className="text-dark font-size-24 mb-3 mt-5"
         style={{ textAlign: "center" }}
