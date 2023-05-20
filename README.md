@@ -74,7 +74,7 @@ Need:
 </ul>
 ## 🚀 Deployment <a name = "deployment"></a>
 
-Add additional notes about how to deploy this on a live system.
+You can access live website: https://xephang.online
 
 ## ⛏️ Built Using <a name = "built_using"></a>
 
