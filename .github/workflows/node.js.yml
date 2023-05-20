@@ -81,6 +81,10 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} "cd /home/dev/thienphu/client && rm -rf ./**"
           scp -o StrictHostKeyChecking=no -P ${{ secrets.PORT }} -r client/build/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/home/dev/thienphu/client
+      #ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} "sudo service nginx reload"
+      - name: Deploy api
+        run: |
+          scp -o StrictHostKeyChecking=no -P ${{ secrets.PORT }} -r api/destination_folder/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/home/dev/thienphu/api
 
 # ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} "service nginx reload"
 # ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} "cd /home/dev/thienphu/api && pwd && pwd"
