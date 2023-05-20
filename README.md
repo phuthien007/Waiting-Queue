@@ -1,6 +1,6 @@
 <p align="center">
   <a href="" rel="noopener">
- <img width=200px height=200px src="https://i.imgur.com/6wj0hh6.jpg" alt="Project logo"></a>
+ <img width=200px height=200px src="https://github.com/phuthien007/Waiting-Queue/blob/master/client/public/resources/images/tf-logo.svg" alt="Project logo"></a>
 </p>
 
 <h3 align="center">Waiting Queue project</h3>
@@ -79,7 +79,7 @@ Add additional notes about how to deploy this on a live system.
 
 ## ⛏️ Built Using <a name = "built_using"></a>
 
-- [MySq](https://www.mysql.com/) - Database
+- [MySql](https://www.mysql.com/) - Database
 - [NestJs](https://nestjs.com/) - Server Framework
 - [ReactJs](https://react.dev/) - Web Framework
 - [NodeJs](https://nodejs.org/en/) - Server Environment
