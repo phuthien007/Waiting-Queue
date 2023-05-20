@@ -112,8 +112,6 @@ export class EventsController {
     );
   }
 
-  // TODO: api upload image place
-
   /**
    * Find one event endpoint (GET /events/:id) with id param
    * @param id Event id from request param (id)
