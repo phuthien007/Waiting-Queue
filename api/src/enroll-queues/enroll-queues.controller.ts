@@ -34,8 +34,6 @@ import { EnrollQueueEnum, RoleEnum } from 'src/common/enum';
 import { PaginateDto } from 'src/common/paginate.dto';
 import { Request } from 'express';
 
-// TODO: add number of people in queue
-
 @ApiTags('enroll-queues')
 @Controller('/api/enroll-queues')
 @UseGuards(RoleGuard)

@@ -50,7 +50,7 @@ import { TaskSchedulesModule } from './task-schedules/task-schedules.module';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        synchronize: false,
+        synchronize: configService.get<boolean>('DB_SYNC'),
         logging: ['error', 'warn', 'migration', 'log'],
         logger:
           // 'advanced-console',

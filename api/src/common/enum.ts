@@ -30,7 +30,6 @@ export enum QueueEnum {
 
 /**
  * @description: enum for status of enroll queue (when patient enroll queue)
- * TODO: modify later
  */
 export enum EnrollQueueEnum {
   PENDING = 'pending',

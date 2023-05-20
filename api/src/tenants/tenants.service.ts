@@ -46,8 +46,6 @@ export class TenantsService {
 
     // validate  contactEmail
 
-    // TODO: transaction when create tenant and user admin error
-
     const tenantObjEmail = await this.tenantRepository.exist({
       where: { contactEmail: createTenantDto.contactEmail },
     });

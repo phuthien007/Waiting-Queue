@@ -119,7 +119,6 @@ const Layout = ({ children }) => {
     // if (isPublicLayout) return <Container>{children}</Container>;
     if (isPublicLayout && isUserAuthorized) navigate("/home");
     // redirect to login page if current is not login page and user not authorized
-    // TODO: move it to separate layout component
     if (!isAuthLayout && !isPublicLayout && !isUserAuthorized) {
       console.log("redirect to login page");
       if (!settingsConfig.logout)
