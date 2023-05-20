@@ -1,6 +1,6 @@
 <p align="center">
   <a href="" rel="noopener">
- <img width=200px height=200px src="https://github.com/phuthien007/Waiting-Queue/blob/master/client/public/resources/images/tf-logo.svg" alt="Project logo"></a>
+ <img width=200px height=200px src="https://github.com/phuthien007/Waiting-Queue/blob/master/client/public/resources/images/tf-logo.jpg" alt="Project logo"></a>
 </p>
 
 <h3 align="center">Waiting Queue project</h3>
