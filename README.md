@@ -41,9 +41,9 @@ Api is writing by NestJs
 
 Need:
 
-- NodeJs : >= v16.x, 18.x
-  yarn - Using npm to install yarn: npm insatll -g yarn
-- Orval - Restful client generator: yarn add global orval
+- NodeJs : >= v16.x, 18.x <br/>
+- <p>yarn - Using npm to install yarn:  </p> <pre>$ npm insatll -g yarn</pre>
+- <p>Orval - Restful client generator:  </p><pre>$ yarn add global orval </pre>
 - Mysql
 
 ### Installing
@@ -54,24 +54,42 @@ Need:
 <h1> 
   Api
 </h1>
+<pre>
+  $ cd api
+  $ yarn install
+</pre>
 <p>
-  - cd api
-  - yarn install
-  if you want start dev mode, run: yarn start:dev
-  if you want start prod mode, run: yarn build && yarn start:prod
-</p>
+  if you want start dev mode, run: </p>
+  
+  <pre>
+  $ yarn start:dev
+  </pre>
+
+<p>
+  if you want start prod mode, run: 
+  </p>
+
+  <pre>
+  $ yarn build 
+  $ yarn start:prod
+  </pre>
+
 </li>
+
 <li>
+
 <h1> 
   Client
 </h1>
-<p>
-  - cd client
-  - yarn install
-  - yarn start
-</p>
+
+<pre>
+  $ cd client
+  $ yarn install
+  $ yarn start
+</pre>
 </li>
 </ul>
+
 ## 🚀 Deployment <a name = "deployment"></a>
 
 You can access live website: https://xephang.online
