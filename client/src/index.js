@@ -50,7 +50,7 @@ const handleError = (error) => {
     } else if (status === 401) {
       notification.error({
         message: "Lỗi",
-        description: "Phiên đăng nhập đã hết hạn",
+        description: "Vui lòng đăng nhập lại",
       });
       history.push("/auth/login");
     } else if (status === 400) {
