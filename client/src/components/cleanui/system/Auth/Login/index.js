@@ -17,7 +17,7 @@ import {
 } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import store from "store";
-// import ReCAPTCHA from "react-google-recaptcha";
+import ReCAPTCHA from "react-google-recaptcha";
 // import { useAuthenticate, useAuthenticateOTP, useSendOTP } from "@api/auth";
 import settingsConfig from "configs/settingsConfig";
 import { loadCurrentAccount } from "store/userSlice";
@@ -34,7 +34,7 @@ const initialAccount = {
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const [tokenCaptcha, setTokenCaptcha] = useState(null);
   const { isLoading: isAuthenticating, mutateAsync } = useAuthControllerLogin();
 
   const onFinish = async (values) => {
@@ -44,12 +44,17 @@ const Login = () => {
         email: values.email,
         password: values.password,
         tenantCode: values.tenantCode,
+        token: tokenCaptcha,
       },
     });
     if (authenticatedData) {
       dispatch(loadCurrentAccount());
       navigate(settingsConfig.getLoginRedirectUrl() || "/");
     }
+  };
+
+  const handleRecaptcha = (value) => {
+    setTokenCaptcha(value);
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -110,7 +115,17 @@ const Login = () => {
         >
           <Input size="large" type="text" placeholder="Mã công ty" />
         </Form.Item>
-
+        <Form.Item
+          name="recaptcha"
+          rules={[
+            { required: true, message: "Vui lòng hoàn thành mã captcha" },
+          ]}
+        >
+          <ReCAPTCHA
+            sitekey={process.env.REACT_APP_KEYCAPTCHA}
+            onChange={handleRecaptcha}
+          />
+        </Form.Item>
         <Button
           type="primary"
           size="large"

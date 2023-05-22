@@ -11,6 +11,8 @@ const Register = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [form] = Form.useForm();
+  // const [tokenCaptcha, setTokenCaptcha] = useState(null);
+
   const { isLoading, mutateAsync: registerTenant } =
     useTenantsControllerRegisterTenant();
 
@@ -19,6 +21,7 @@ const Register = () => {
     registerTenant({
       data: {
         ...values,
+        // token: tokenCaptcha,
       },
     }).then((res) => {
       if (res) {
@@ -37,6 +40,9 @@ const Register = () => {
     console.log("Failed:", errorInfo);
   };
 
+  // const handleRecaptcha = (value) => {
+  //   setTokenCaptcha(value);
+  // };
   useEffect(() => {
     form.resetFields();
   }, []);
@@ -120,7 +126,17 @@ const Register = () => {
           <Form.Item name="note" rules={[]}>
             <Input.TextArea rows={4} placeholder="Ghi chú" />
           </Form.Item>
-
+          {/* <Form.Item
+            name="recaptcha"
+            rules={[
+              { required: true, message: "Vui lòng hoàn thành mã captcha" },
+            ]}
+          >
+            <ReCAPTCHA
+              sitekey={process.env.REACT_APP_KEYCAPTCHA}
+              onChange={handleRecaptcha}
+            />
+          </Form.Item> */}
           <Button
             type="primary"
             htmlType="submit"
