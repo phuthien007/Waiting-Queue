@@ -83,7 +83,7 @@ jobs:
           scp -o StrictHostKeyChecking=no -P ${{ secrets.PORT }} -r client/build/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/home/dev/thienphu/client
       - name: Deploy api
         run: |
-          scp -o StrictHostKeyChecking=no -P ${{ secrets.PORT }} -r api/destination_folder/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/home/dev/thienphu/api
+          scp -o StrictHostKeyChecking=no -P ${{ secrets.PORT }} -rf api/destination_folder/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/home/dev/thienphu/api
           ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} "cd /home/dev/thienphu/api && yarn install && pm2 stop api-xephang && pm2 start api-xephang"
 
 # ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} "service nginx reload"
