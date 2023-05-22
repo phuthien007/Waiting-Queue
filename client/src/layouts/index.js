@@ -48,7 +48,7 @@ const Layout = ({ children }) => {
   console.log("pathname", pathname, search);
 
   // GA4
-  // usePageTracking();
+  usePageTracking();
 
   // NProgress & ScrollTop Management
   const currentPath = pathname + search;

@@ -15,12 +15,12 @@ const usePageTracking = () => {
     }
   }, [location]);
 
-  useEffect(() => {
-    // track user with gtag / react-ga / react-ga4, for example:
-    if (process.env.NODE_ENV === "production") {
-      ReactGA.gtag("set", "user_properties", { user_id: user?.username });
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   // track user with gtag / react-ga / react-ga4, for example:
+  //   if (process.env.NODE_ENV === "production") {
+  //     ReactGA.gtag("set", "user_properties", { user_id: user?.username });
+  //   }
+  // }, [user]);
 };
 
 export default usePageTracking;
