@@ -60,6 +60,7 @@ import { TaskSchedulesModule } from './task-schedules/task-schedules.module';
         entities: [User, Tenant, Queue, EnrollQueue, Event, Session],
         toRetry: (error: any) => {
           if (error instanceof Error) {
+            console.log('error database', error);
             return true;
           }
           return false;

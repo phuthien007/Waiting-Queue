@@ -35,6 +35,13 @@ export class CreateQueueDto extends BaseDto {
   @IsEnum(QueueEnum)
   status: string;
 
+  @ApiPropertyOptional({
+    default: false,
+  })
+  isDynamic: boolean;
+
+  @ApiPropertyOptional()
+  dateGetQrcode: Date;
   // relations
 
   @ApiPropertyOptional()

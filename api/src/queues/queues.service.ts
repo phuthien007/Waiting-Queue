@@ -75,10 +75,39 @@ export class QueuesService {
     if (!queue) {
       throw new NotFoundException('Không tìm thấy queue');
     }
-
     let hashQueue = '';
+    let startTime = new Date().getTime();
+
+    // if is not dynamic qrcode
+    if (!queue.isDynamic) {
+      console.log('not sdynamic');
+      if (
+        queue.dateGetQrcode &&
+        moment().isBefore(
+          moment(queue.dateGetQrcode.getTime()).add(
+            process.env.LONG_TIMEOUT_VERIFY,
+            'seconds',
+          ),
+        )
+      ) {
+        startTime = queue.dateGetQrcode.getTime();
+      } else {
+        // need inital or update time get qrcode
+        await this.queueRepository.update(queue.id, {
+          ...queue,
+          dateGetQrcode: new Date(),
+        });
+      }
+    }
+
     const uxTime =
-      new Date().getTime() + parseInt(process.env.TIMEOUT_VERIFY) * 1000;
+      startTime +
+      parseInt(
+        queue.isDynamic
+          ? process.env.TIMEOUT_VERIFY
+          : process.env.LONG_TIMEOUT_VERIFY,
+      ) *
+        1000;
 
     // if queue not have randomCode
 
@@ -359,6 +388,11 @@ export class QueuesService {
     updateQueueDto.createdAt = data.createdAt;
     updateQueueDto.updatedAt = new Date();
     data = partialMapping(data, updateQueueDto) as Queue;
+
+    // when update dynamic => reset dateGetQrcode
+    if (data.isDynamic) {
+      data.dateGetQrcode = null;
+    }
 
     return plainToInstance(QueueDto, this.queueRepository.save(data), {
       excludeExtraneousValues: true,

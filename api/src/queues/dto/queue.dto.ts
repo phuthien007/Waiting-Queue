@@ -40,8 +40,14 @@ export class QueueDto {
   @ApiPropertyOptional()
   @Expose()
   status: string;
+
   @ApiPropertyOptional()
   @Expose()
+  isDynamic: boolean;
+
+  @ApiPropertyOptional()
+  @Expose()
+  dateGetQrcode: Date;
   // relations
   @ApiPropertyOptional()
   @Expose()
