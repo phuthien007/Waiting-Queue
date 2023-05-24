@@ -240,6 +240,19 @@ const QueueForm: React.FC<Props> = ({
               ))}
             </Select>
           </Form.Item>
+          <Form.Item
+            style={{ marginBottom: 0 }}
+            label="Tạo mã QRCode động:"
+            name="isDynamic"
+          >
+            <Select
+              bordered={type === "view" ? null : true}
+              disabled={type === "view"}
+            >
+              <Select.Option value={false}>Không</Select.Option>
+              <Select.Option value={true}>Cho phép</Select.Option>
+            </Select>
+          </Form.Item>
 
           <Form.Item
             label="Mô tả"

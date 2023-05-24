@@ -41,6 +41,7 @@ export class EnrollQueuesService {
     private readonly queuesRepository: QueuesRepository,
     @Inject(REQUEST) private readonly request: Request,
     private readonly queuesService: QueuesService,
+    private readonly queueRepository: QueuesRepository,
   ) {}
 
   /**
@@ -139,6 +140,17 @@ export class EnrollQueuesService {
     const result = await this.enrollQueueRepository.save(newEnrollQueue);
 
     // change random queue code after create enroll queue last
+
+    // get new
+    if (result && existQueue.isDynamic) {
+      const randomCodeQueue = getRandomQueueCode();
+      // update randomCode for queue
+      await this.queueRepository.update(existQueue.id, {
+        ...existQueue,
+
+        randomCode: randomCodeQueue,
+      });
+    }
 
     return plainToInstance(EnrollQueueDto, result, {
       excludeExtraneousValues: true,

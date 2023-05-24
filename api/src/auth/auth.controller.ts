@@ -10,6 +10,7 @@ import {
   Req,
   Res,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
 import { LocalAuthGuard } from './local-auth.guard';
@@ -25,12 +26,13 @@ import { HasRole } from 'src/common/decorators';
 import { RoleGuard } from './role.guard';
 import { ResetPasswordDto } from './dto/resetPassword.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { RecaptchaInterceptor } from './recaptcha.interceptor';
+import { RoleEnum } from 'src/common/enum';
 
 /**
  * Auth controller class for auth endpoints (login, logout, etc.)
  */
 @Controller('/api/auth')
-@UseGuards(RoleGuard)
 @ApiTags('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -44,6 +46,7 @@ export class AuthController {
    * @returns Login failed message
    */
   @Post('login')
+  @UseGuards(RoleGuard)
   @HasRole()
   @ApiCreatedResponse({ description: 'Login success' })
   @ApiUnauthorizedResponse({ description: 'Login failed' })
@@ -73,6 +76,7 @@ export class AuthController {
    * @returns Create reset password success message
    */
   @Post('reset-password')
+  @UseGuards(RoleGuard)
   @HasRole()
   @ApiCreatedResponse({ description: 'Create reset password success' })
   createResetPassword(@Body() resetPassword: ResetPasswordDto) {
@@ -90,6 +94,7 @@ export class AuthController {
    * @returns Finish reset password success message
    */
   @Post('finish-reset-password/:token')
+  @UseGuards(RoleGuard)
   @HasRole()
   @ApiBody({
     schema: {
@@ -118,6 +123,7 @@ export class AuthController {
    * @returns Logout success message
    */
   @Post('logout')
+  @UseGuards(RoleGuard)
   @HasRole()
   @ApiCreatedResponse({ description: 'Logout success' })
   async logout(@Res({ passthrough: true }) res: any) {
@@ -144,6 +150,8 @@ export class AuthController {
    * @throws {UnprocessableEntityException} - if new password is the same as old password
    */
   @Post('change-password')
+  @UseGuards(RoleGuard)
+  @HasRole(RoleEnum.ADMIN, RoleEnum.OPERATOR, RoleEnum.SUPER_ADMIN)
   @ApiCreatedResponse({ description: 'Change password success' })
   @ApiUnauthorizedResponse({ description: 'Change password failed' })
   changePassword(@Req() req: any, @Body() changePassword: ChangePasswordDto) {

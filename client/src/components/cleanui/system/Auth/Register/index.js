@@ -6,6 +6,7 @@ import style from "../style.module.scss";
 import { ValidateEmail } from "services/utils/validates";
 import { useTenantsControllerRegisterTenant } from "@api/waitingQueue";
 import { useEffect } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const Register = () => {
   const dispatch = useDispatch();
@@ -21,7 +22,7 @@ const Register = () => {
     registerTenant({
       data: {
         ...values,
-        // token: tokenCaptcha,
+        token: tokenCaptcha,
       },
     }).then((res) => {
       if (res) {
@@ -40,9 +41,9 @@ const Register = () => {
     console.log("Failed:", errorInfo);
   };
 
-  // const handleRecaptcha = (value) => {
-  //   setTokenCaptcha(value);
-  // };
+  const handleRecaptcha = (value) => {
+    setTokenCaptcha(value);
+  };
   useEffect(() => {
     form.resetFields();
   }, []);
@@ -126,7 +127,7 @@ const Register = () => {
           <Form.Item name="note" rules={[]}>
             <Input.TextArea rows={4} placeholder="Ghi chú" />
           </Form.Item>
-          {/* <Form.Item
+          <Form.Item
             name="recaptcha"
             rules={[
               { required: true, message: "Vui lòng hoàn thành mã captcha" },
@@ -136,7 +137,7 @@ const Register = () => {
               sitekey={process.env.REACT_APP_KEYCAPTCHA}
               onChange={handleRecaptcha}
             />
-          </Form.Item> */}
+          </Form.Item>
           <Button
             type="primary"
             htmlType="submit"

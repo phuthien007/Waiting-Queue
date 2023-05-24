@@ -56,6 +56,19 @@ export class Queue extends BaseEntity {
   })
   randomCode: string;
 
+  @Column({
+    default: false,
+    name: 'is_dynamic',
+  })
+  isDynamic: boolean;
+
+  @Column({
+    nullable: true,
+    name: 'date_get_qrcode',
+    type: 'timestamp',
+  })
+  dateGetQrcode: Date;
+
   // relations
   @ManyToOne(() => Event, (event) => event.queues)
   @JoinColumn({

@@ -7,6 +7,11 @@ import { commonEnum } from 'src/common/enum';
  * CreateTenantDto class for create tenant DTO object from request body
  */
 export class CreateTenantDto extends BaseDto {
+  @ApiPropertyOptional({
+    required: false,
+  })
+  token?: string;
+
   @IsNotEmpty()
   @IsString()
   @ApiPropertyOptional()

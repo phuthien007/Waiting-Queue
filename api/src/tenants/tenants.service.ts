@@ -11,7 +11,11 @@ import { Tenant } from './entities/tenants.entity';
 import { FindOptionsOrder, Repository } from 'typeorm';
 import { TenantsRepository } from './tenants.repository';
 import { plainToInstance } from 'class-transformer';
-import { partialMapping, randomCodeTenant } from 'src/common/algorithm';
+import {
+  partialMapping,
+  randomCodeTenant,
+  validateRecaptcha,
+} from 'src/common/algorithm';
 import { TenantDto } from './dto/tenant.dto';
 import { ERROR_TYPE, transformError } from 'src/common/constant.error';
 import { UsersService } from 'src/users/users.service';
@@ -41,6 +45,13 @@ export class TenantsService {
    *
    */
   async create(createTenantDto: CreateTenantDto): Promise<TenantDto> {
+    if (createTenantDto.token) {
+      const resRecaptcha = await validateRecaptcha(createTenantDto.token);
+      if (resRecaptcha.success === false) {
+        throw new BadRequestException('Captcha không hợp lệ');
+      }
+    }
+
     // return 'This action adds a new tenant';
     // mapping to entity
 

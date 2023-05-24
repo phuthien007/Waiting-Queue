@@ -50,7 +50,7 @@ sort?: string;
 
 export type EnrollQueuesControllerCreateEnrollQueueParams = {
 q: string;
-uxTime: string;
+uxTime: number;
 h: string;
 };
 
@@ -192,6 +192,7 @@ export interface UpdateQueueDto {
   code?: string;
   description?: string;
   status?: UpdateQueueDtoStatus;
+  isDynamic?: boolean;
   eventId?: string;
 }
 
@@ -205,6 +206,7 @@ export interface QueueDto {
   code?: string;
   description?: string;
   status?: string;
+  isDynamic?: boolean;
   event?: EventDto;
 }
 
@@ -243,6 +245,7 @@ export interface CreateQueueDto {
   code?: string;
   description?: string;
   status?: CreateQueueDtoStatus;
+  isDynamic?: boolean;
   eventId?: string;
 }
 

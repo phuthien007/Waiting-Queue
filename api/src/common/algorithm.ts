@@ -126,9 +126,23 @@ export const createCodeQueue = (...parmas) => {
   return result;
 };
 
+/**
+ *  function create hash code queue with sha256
+ * @param randomQueueCode a random code queue with length is 5
+ * @param uxTime a time when user click button get queue
+ * @returns a hash code queue with length is 20
+ */
 export const handleHashQueue = (randomQueueCode: string, uxTime: string) => {
   return getHashSHARandomQueue([randomQueueCode, uxTime]);
 };
+
+/**
+ * function create hash code queue with sha256
+ * @param randomQueueCode  a random code queue with length is 5
+ * @param uxTime a time when user click button get queue
+ * @param h a hash code queue with length is 20
+ * @returns a hash code queue with length is 20 and h is a part of hash code queue
+ */
 export const handleValidateHashQueue = (
   randomQueueCode: string,
   uxTime: string,
@@ -139,6 +153,12 @@ export const handleValidateHashQueue = (
   return [encryptText.substring(0, 20), h];
 };
 
+/**
+ * function create hash code queue with sha256
+ * @param text a string need to encrypt
+ * @returns a string after encrypt
+ * @example  "randomQueueCode:uxTime" => "hash"
+ */
 export function encryptAES(text: string) {
   const iv = CryptoJS.lib.WordArray.random(16); // tạo vector khởi tạo ngẫu nhiên 16 byte
 
@@ -151,6 +171,11 @@ export function encryptAES(text: string) {
 }
 
 // Giải mã văn bản
+/**
+ *
+ * @param text a string need to decrypt
+ * @returns a string after decrypt
+ */
 export function decryptAES(text: string) {
   const parts = text.split(':');
   const decipher = CryptoJS.AES.decrypt(parts[1], process.env.JWT_SECRET, {
@@ -161,6 +186,10 @@ export function decryptAES(text: string) {
 }
 
 // random queue code
+/**
+ *
+ * @returns a random queue code with length is 5
+ */
 export const getRandomQueueCode = () => {
   let result = '';
   const characters =
@@ -172,10 +201,30 @@ export const getRandomQueueCode = () => {
   return result;
 };
 
+/**
+ *  function create hash string
+ * @param plainText  a list of plain text
+ * @returns  a hash string
+ */
 export const getHashSHARandomQueue = (plainText: string[]) => {
   const encryptText = CryptoJS.HmacSHA512(
     plainText.join('|'),
     process.env.JWT_SECRET,
   );
   return encryptText.toString(CryptoJS.enc.Hex);
+};
+
+/**
+ * function to validate token recaptcha send from client
+ * @param token token recaptcha send from client
+ * @returns a boolean value
+ */
+export const validateRecaptcha = async (token: string) => {
+  const response = await fetch(
+    `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${token}`,
+    {
+      method: 'POST',
+    },
+  );
+  return await response.json();
 };
