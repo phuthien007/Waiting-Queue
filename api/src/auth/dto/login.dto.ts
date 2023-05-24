@@ -9,7 +9,9 @@ export class LoginDto {
    * Tenant code of the tenant
    */
   @ApiProperty()
-  @IsNotEmpty()
+  @IsNotEmpty({
+    message: 'Mã công ty không được trống',
+  })
   tenantCode: string;
 
   /**
@@ -17,12 +19,28 @@ export class LoginDto {
    */
   @ApiProperty()
   @IsEmail()
+  @IsNotEmpty({
+    message: 'Email không được trống',
+  })
   email: string;
 
   /**
    * Password of the user
    */
   @ApiProperty()
-  @IsNotEmpty()
+  @IsNotEmpty({
+    message: 'Mật khẩu không được trống',
+  })
   password: string;
+
+  /**
+   * Recaptcha token
+   * @example 03AGdBq24XQY7...
+   */
+
+  @ApiProperty()
+  @IsNotEmpty({
+    message: 'Recaptcha token không được trống',
+  })
+  token: string;
 }

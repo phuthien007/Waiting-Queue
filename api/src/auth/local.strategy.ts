@@ -28,10 +28,12 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
    * @returns throw UnauthorizedException if validate failed
    */
   async validate({ body }): Promise<any> {
+    console.log('STARTVAL');
     const user = await this.authService.validateUser({
       ...body,
     });
 
+    console.log('ENDVALI');
     // throw UnauthorizedException if validate failed
     if (!user) {
       throw new UnauthorizedException('Tài khoản hoặc mật khẩu không đúng');

@@ -9,7 +9,11 @@ import { JwtService } from '@nestjs/jwt';
 import { RoleEnum } from 'src/common/enum';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
-import { createResetTokenPassword, randomPassword } from 'src/common/algorithm';
+import {
+  createResetTokenPassword,
+  randomPassword,
+  validateRecaptcha,
+} from 'src/common/algorithm';
 import { ResetPasswordDto } from './dto/resetPassword.dto';
 import _, { parseInt } from 'lodash';
 import { MailService } from 'src/mail/mail.service';
@@ -34,6 +38,12 @@ export class AuthService {
    * @returns null if user does not exist or password is incorrect
    */
   async validateUser(loginModel: LoginDto) {
+    // validate token
+    const token = loginModel.token;
+    const resRecaptcha = await validateRecaptcha(token);
+    if (resRecaptcha.success === false) {
+      throw new BadRequestException('Captcha không hợp lệ');
+    }
     // check if user exists
     const user = await this.userRepository.findOne({
       where: {

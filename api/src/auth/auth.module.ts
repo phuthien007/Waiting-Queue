@@ -9,6 +9,7 @@ import { JwtAuthGuard } from './jwt-auth.guard';
 import { JwtStrategy } from './jwt.strategy';
 import { RoleGuard } from './role.guard';
 import { MailModule } from 'src/mail/mail.module';
+import { RecaptchaInterceptor } from './recaptcha.interceptor';
 
 @Module({
   imports: [
@@ -28,7 +29,13 @@ import { MailModule } from 'src/mail/mail.module';
     MailModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy, RoleGuard],
-  exports: [RoleGuard],
+  providers: [
+    AuthService,
+    LocalStrategy,
+    JwtStrategy,
+    RoleGuard,
+    RecaptchaInterceptor,
+  ],
+  exports: [RoleGuard, RecaptchaInterceptor],
 })
 export class AuthModule {}

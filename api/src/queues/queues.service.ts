@@ -80,7 +80,6 @@ export class QueuesService {
 
     // if is not dynamic qrcode
     if (!queue.isDynamic) {
-      console.log('not sdynamic');
       if (
         queue.dateGetQrcode &&
         moment().isBefore(
