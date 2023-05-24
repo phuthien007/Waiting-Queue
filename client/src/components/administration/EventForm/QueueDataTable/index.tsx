@@ -97,6 +97,12 @@ const ManagementQueues: React.FC = () => {
     },
 
     {
+      title: "Tạo mã QRCode động",
+      dataIndex: "isDynamic",
+      key: "isDynamic",
+      render: (isDynamic: boolean) => (isDynamic ? "Cho phép" : "Không"),
+    },
+    {
       title: "Trạng thái",
       dataIndex: "status",
       key: "status",

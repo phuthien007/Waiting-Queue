@@ -9,7 +9,13 @@ import { QRCodeSVG, QRCodeCanvas } from "qrcode.react";
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
-const QrCodeRender: React.FC = () => {
+let refetchInterval;
+
+type Props = {
+  isDynamic: boolean;
+};
+
+const QrCodeRender: React.FC<Props> = ({ isDynamic }) => {
   const { queueCode } = useParams();
 
   const [isQrCodeOpen, setIsQrCodeOpen] = React.useState<boolean>(false);
@@ -49,20 +55,20 @@ const QrCodeRender: React.FC = () => {
   };
 
   useEffect(() => {
-    refetch().then((res) => {
-      if (res) {
-        setValueUrl(res.data);
-      }
-    });
-    const refetchInterval = setInterval(() => {
-      refetch().then((res) => {
-        if (res) {
-          setValueUrl(res.data);
-        }
-      });
-    }, 30000);
+    //
+    if (isDynamic) {
+      refetchInterval = setInterval(() => {
+        refetch().then((res) => {
+          if (res) {
+            setValueUrl(res.data);
+          }
+        });
+      }, 30000);
+    } else {
+      clearInterval(refetchInterval);
+    }
     return () => clearInterval(refetchInterval);
-  }, []);
+  }, [isDynamic]);
 
   return (
     <>

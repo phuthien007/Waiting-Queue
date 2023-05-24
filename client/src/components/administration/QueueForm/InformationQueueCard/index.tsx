@@ -17,13 +17,13 @@ const InformationQueueCard: React.FC<Props> = ({ data }) => {
         <Row justify="space-between">
           <Col span={10}>Chi tiết hàng đợi</Col>
           <Col span={10}>
-            <QrCodeRender />
+            <QrCodeRender isDynamic={data?.isDynamic} />
           </Col>
         </Row>
       }
       column={{
         xxl: 3,
-        xl: 3,
+        xl: 2,
         lg: 3,
         md: 2,
         sm: 2,
@@ -34,6 +34,9 @@ const InformationQueueCard: React.FC<Props> = ({ data }) => {
       <Descriptions.Item label="Địa điểm">{data?.coord}</Descriptions.Item>
       <Descriptions.Item label="Trạng thái">
         {StatusQueueRender(data?.status)}
+      </Descriptions.Item>
+      <Descriptions.Item label="Tạo mã qrcode">
+        {data?.isDynamic ? "Cho phép tạo mã qrcode động" : "Mặc định"}
       </Descriptions.Item>
       <Descriptions.Item label="Mô tả">{data?.description}</Descriptions.Item>
       <Descriptions.Item label="Ghi chú">{data?.note}</Descriptions.Item>
