@@ -2370,12 +2370,15 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-22T09:49:07.938Z"
+            "default": "2023-05-28T07:53:50.950Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-22T09:49:07.938Z"
+            "default": "2023-05-28T07:53:50.950Z"
+          },
+          "token": {
+            "type": "string"
           },
           "name": {
             "type": "string"
@@ -2416,12 +2419,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-22T09:49:07.938Z"
+            "default": "2023-05-28T07:53:50.950Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-22T09:49:07.938Z"
+            "default": "2023-05-28T07:53:50.950Z"
           },
           "name": {
             "type": "string"
@@ -2461,12 +2464,15 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-22T09:49:07.938Z"
+            "default": "2023-05-28T07:53:50.950Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-22T09:49:07.938Z"
+            "default": "2023-05-28T07:53:50.950Z"
+          },
+          "token": {
+            "type": "string"
           },
           "name": {
             "type": "string"
@@ -2507,12 +2513,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-22T09:49:07.938Z"
+            "default": "2023-05-28T07:53:50.950Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-22T09:49:07.938Z"
+            "default": "2023-05-28T07:53:50.950Z"
           },
           "email": {
             "type": "string"
@@ -2560,12 +2566,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-22T09:49:07.938Z"
+            "default": "2023-05-28T07:53:50.950Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-22T09:49:07.938Z"
+            "default": "2023-05-28T07:53:50.950Z"
           },
           "email": {
             "type": "string"
@@ -2611,12 +2617,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-22T09:49:07.938Z"
+            "default": "2023-05-28T07:53:50.950Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-22T09:49:07.938Z"
+            "default": "2023-05-28T07:53:50.950Z"
           },
           "email": {
             "type": "string"
@@ -2677,12 +2683,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-22T09:49:07.938Z"
+            "default": "2023-05-28T07:53:50.950Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-22T09:49:07.938Z"
+            "default": "2023-05-28T07:53:50.950Z"
           },
           "email": {
             "type": "string"
@@ -2730,12 +2736,16 @@
           },
           "password": {
             "type": "string"
+          },
+          "token": {
+            "type": "string"
           }
         },
         "required": [
           "tenantCode",
           "email",
-          "password"
+          "password",
+          "token"
         ]
       },
       "ResetPasswordDto": {
@@ -2785,12 +2795,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-22T09:49:09.252Z"
+            "default": "2023-05-28T07:53:59.206Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-22T09:49:09.252Z"
+            "default": "2023-05-28T07:53:59.206Z"
           },
           "name": {
             "type": "string"
@@ -2838,12 +2848,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-22T09:49:09.242Z"
+            "default": "2023-05-28T07:53:59.195Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-22T09:49:09.242Z"
+            "default": "2023-05-28T07:53:59.195Z"
           },
           "name": {
             "type": "string"
@@ -2891,12 +2901,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-22T09:49:09.252Z"
+            "default": "2023-05-28T07:53:59.206Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-22T09:49:09.252Z"
+            "default": "2023-05-28T07:53:59.206Z"
           },
           "name": {
             "type": "string"
@@ -2944,12 +2954,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-22T09:49:07.938Z"
+            "default": "2023-05-28T07:53:50.950Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-22T09:49:07.938Z"
+            "default": "2023-05-28T07:53:50.950Z"
           },
           "name": {
             "type": "string"
@@ -2980,6 +2990,10 @@
             "type": "boolean",
             "default": false
           },
+          "dateGetQrcode": {
+            "format": "date-time",
+            "type": "string"
+          },
           "eventId": {
             "type": "string"
           }
@@ -2994,12 +3008,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-22T09:49:09.264Z"
+            "default": "2023-05-28T07:53:59.220Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-22T09:49:09.264Z"
+            "default": "2023-05-28T07:53:59.220Z"
           },
           "name": {
             "type": "string"
@@ -3022,6 +3036,10 @@
           "isDynamic": {
             "type": "boolean"
           },
+          "dateGetQrcode": {
+            "format": "date-time",
+            "type": "string"
+          },
           "event": {
             "$ref": "#/components/schemas/EventDto"
           }
@@ -3036,12 +3054,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-22T09:49:07.938Z"
+            "default": "2023-05-28T07:53:50.950Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "default": "2023-05-22T09:49:07.938Z"
+            "default": "2023-05-28T07:53:50.950Z"
           },
           "name": {
             "type": "string"
@@ -3072,6 +3090,10 @@
             "type": "boolean",
             "default": false
           },
+          "dateGetQrcode": {
+            "format": "date-time",
+            "type": "string"
+          },
           "eventId": {
             "type": "string"
           }
@@ -3084,6 +3106,9 @@
       "EnrollQueueDto": {
         "type": "object",
         "properties": {
+          "currentQueue": {
+            "type": "number"
+          },
           "id": {
             "type": "string"
           },

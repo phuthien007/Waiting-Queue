@@ -11,15 +11,22 @@ export class SessionsRepository extends Repository<Session> {
 
   async deleteAllSessions() {
     const query = this.createQueryBuilder('session');
-    query
+    const result = query
       .leftJoin(
         EnrollQueue,
         'enrollQueue',
         'enrollQueue.sessionId = session.id',
       )
       .andWhere('enrollQueue.status != :status', { status: 'done' })
-      .delete()
       .where('enrollQueue.status != :status', { status: 'done' });
+
+    result.getMany().then((res) => {
+      query
+        .delete()
+        .from(Session)
+        .where('id IN (:...ids)', { ids: res.map((r) => r.id) });
+    });
+
     await query.execute();
   }
 }

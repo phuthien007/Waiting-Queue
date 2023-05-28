@@ -193,6 +193,7 @@ export interface UpdateQueueDto {
   description?: string;
   status?: UpdateQueueDtoStatus;
   isDynamic?: boolean;
+  dateGetQrcode?: string;
   eventId?: string;
 }
 
@@ -207,10 +208,12 @@ export interface QueueDto {
   description?: string;
   status?: string;
   isDynamic?: boolean;
+  dateGetQrcode?: string;
   event?: EventDto;
 }
 
 export interface EnrollQueueDto {
+  currentQueue?: number;
   id?: string;
   willEnrollWhen?: string;
   serveTimeAvg?: number;
@@ -246,6 +249,7 @@ export interface CreateQueueDto {
   description?: string;
   status?: CreateQueueDtoStatus;
   isDynamic?: boolean;
+  dateGetQrcode?: string;
   eventId?: string;
 }
 
@@ -319,6 +323,7 @@ export interface LoginDto {
   tenantCode: string;
   email: string;
   password: string;
+  token: string;
 }
 
 export type UserMeDtoRole = typeof UserMeDtoRole[keyof typeof UserMeDtoRole];
@@ -460,6 +465,7 @@ export interface UpdateTenantDto {
   id?: number;
   createdAt?: string;
   updatedAt?: string;
+  token?: string;
   name?: string;
   tenantCode?: string;
   description?: string;
@@ -490,6 +496,7 @@ export interface CreateTenantDto {
   id?: number;
   createdAt?: string;
   updatedAt?: string;
+  token?: string;
   name?: string;
   tenantCode?: string;
   description?: string;

@@ -15,6 +15,10 @@ import { Session } from 'src/sessions/entities/session.entity';
 export class EnrollQueueDto {
   @ApiPropertyOptional()
   @Expose()
+  currentQueue: number;
+
+  @ApiPropertyOptional()
+  @Expose()
   id: string;
 
   @ApiPropertyOptional()

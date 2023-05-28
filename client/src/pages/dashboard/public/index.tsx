@@ -133,26 +133,26 @@ const PublicDashboard = () => {
           }
 
           // check rung trước đó 5 phút
-          // const filterDataBefore5Min = res.data.filter((item) => {
-          //   if (
-          //     item.status ===
-          //     EnrollQueuesControllerUpdateStatusEnrollQueueStatus.pending
-          //   ) {
-          //     const now = new Date();
-          //     const enrollTime = new Date(item.enrollTime);
-          //     const diff = enrollTime.getTime() - now.getTime();
-          //     if (diff <= 5 * 60 * 1000) {
-          //       return true;
-          //     }
-          //   }
-          //   return false;
-          // });
+          const filterDataBefore5Min = res.data.filter((item) => {
+            if (
+              item.status ===
+              EnrollQueuesControllerUpdateStatusEnrollQueueStatus.pending
+            ) {
+              const now = new Date();
+              const enrollTime = new Date(item.enrollTime);
+              const diff = enrollTime.getTime() - now.getTime();
+              if (diff <= 5 * 60 * 1000) {
+                return true;
+              }
+            }
+            return false;
+          });
 
-          // if (filterDataBefore5Min.length > 0) {
-          //   vibrateMobile();
-          //   // có phần tử thỏa mãn điều kiện
-          //   // show notification rung điện thoại
-          // }
+          if (filterDataBefore5Min.length > 0) {
+            vibrateMobile();
+            // có phần tử thỏa mãn điều kiện
+            // show notification rung điện thoại
+          }
 
           return res.data;
         });
