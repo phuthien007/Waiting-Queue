@@ -185,7 +185,30 @@ export class EnrollQueuesService {
     );
     const newArr = [];
     for (let i = 0; i < enrollQueuesDTO.length; i++) {
+      // get current serve or pending in queue and get first
+
       if (enrollQueuesDTO[i].status === EnrollQueueEnum.PENDING) {
+        const getCurrentServeInQueue = await this.enrollQueueRepository.findOne(
+          {
+            where: {
+              queue: {
+                id: enrollQueuesDTO[i].queue.id,
+                status: Not(Equal(QueueEnum.IS_CLOSED)),
+              },
+              status: Not(Equal(EnrollQueueEnum.BLOCKED)),
+              sequenceNumber: LessThanOrEqual(
+                enrollQueuesDTO[i].sequenceNumber,
+              ),
+            },
+            order: { sequenceNumber: 'DESC' },
+          },
+        );
+        if (getCurrentServeInQueue) {
+          enrollQueuesDTO[i].currentQueue =
+            getCurrentServeInQueue?.sequenceNumber;
+        } else {
+          enrollQueuesDTO[i].currentQueue = -1;
+        }
         const statisticQueueDto = await this.queuesService.getStatisticQueue(
           enrollQueuesDTO[i].queue.code,
         );
@@ -204,13 +227,16 @@ export class EnrollQueuesService {
           enrollQueuesDTO[i].enrollTime.getTime() +
             statisticQueueDto.timeWaitAvg * 1000 * countSequence,
         );
-        enrollQueuesDTO[i].serveTimeAvg = statisticQueueDto?.timeServeAvg || 0;
+        enrollQueuesDTO[i].serveTimeAvg = Math.floor(
+          statisticQueueDto?.timeServeAvg || 0,
+        );
         newArr.push(enrollQueuesDTO[i]);
         // return item;
       } else {
         newArr.push(enrollQueuesDTO[i]);
       }
     }
+
     return newArr;
   }
 
