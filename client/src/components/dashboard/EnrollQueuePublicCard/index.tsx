@@ -86,10 +86,6 @@ const EnrollQueuePublicCard: React.FC<IEnrollQueuePublicCardProps> = ({
                     <>
                       <p>Tên hàng đợi: {item?.queue?.name}</p>
 
-                      {item?.queue?.status === STATUS_QUEUE_ENUM.SERVING && (
-                        <p>Đang phục vụ: {item?.currentQueue + 1}</p>
-                      )}
-
                       {(item?.queue?.status === STATUS_QUEUE_ENUM.WAITING ||
                         item?.queue?.status === STATUS_QUEUE_ENUM.PENDING) && (
                         <p>Hiện tại đến số : {item?.currentQueue + 1}</p>
