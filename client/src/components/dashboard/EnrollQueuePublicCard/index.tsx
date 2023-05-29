@@ -45,7 +45,7 @@ const EnrollQueuePublicCard: React.FC<IEnrollQueuePublicCardProps> = ({
     if (
       (item?.queue?.status === STATUS_QUEUE_ENUM.WAITING ||
         item?.queue?.status === STATUS_QUEUE_ENUM.PENDING) &&
-      item.currentQueue === item.sequenceNumber
+      item.currentQueue + 1 === item.sequenceNumber
     ) {
       console.log("vibrate");
       vibrateMobile();
@@ -87,22 +87,12 @@ const EnrollQueuePublicCard: React.FC<IEnrollQueuePublicCardProps> = ({
                       <p>Tên hàng đợi: {item?.queue?.name}</p>
 
                       {item?.queue?.status === STATUS_QUEUE_ENUM.SERVING && (
-                        <p>
-                          Đang phục vụ:{" "}
-                          {item?.currentQueue !== -1
-                            ? item?.currentQueue
-                            : "Không có"}
-                        </p>
+                        <p>Đang phục vụ: {item?.currentQueue + 1}</p>
                       )}
 
                       {(item?.queue?.status === STATUS_QUEUE_ENUM.WAITING ||
                         item?.queue?.status === STATUS_QUEUE_ENUM.PENDING) && (
-                        <p>
-                          Hiện tại đến số :{" "}
-                          {item?.currentQueue !== -1
-                            ? item?.currentQueue
-                            : "Không có"}
-                        </p>
+                        <p>Hiện tại đến số : {item?.currentQueue + 1}</p>
                       )}
                     </>
                     // </Typography.Text>

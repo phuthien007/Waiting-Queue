@@ -188,26 +188,48 @@ export class EnrollQueuesService {
       // get current serve or pending in queue and get first
 
       if (enrollQueuesDTO[i].status === EnrollQueueEnum.PENDING) {
-        const getCurrentServeInQueue = await this.enrollQueueRepository.findOne(
-          {
+        // queue pending/ waiting -> done cuoi cung
+        // queue serving -> serving cuoi cung
+        let getCurrentServeInQueue;
+        if (
+          enrollQueuesDTO[i].queue.status === QueueEnum.PENDING ||
+          enrollQueuesDTO[i].queue.status === QueueEnum.WAITING
+        ) {
+          getCurrentServeInQueue = await this.enrollQueueRepository.findOne({
             where: {
               queue: {
                 id: enrollQueuesDTO[i].queue.id,
                 status: Not(Equal(QueueEnum.IS_CLOSED)),
               },
-              status: Not(Equal(EnrollQueueEnum.BLOCKED)),
+              status: EnrollQueueEnum.DONE,
               sequenceNumber: LessThanOrEqual(
                 enrollQueuesDTO[i].sequenceNumber,
               ),
             },
             order: { sequenceNumber: 'DESC' },
-          },
-        );
+          });
+        }
+        if (enrollQueuesDTO[i].queue.status === QueueEnum.SERVING) {
+          getCurrentServeInQueue = await this.enrollQueueRepository.findOne({
+            where: {
+              queue: {
+                id: enrollQueuesDTO[i].queue.id,
+                status: Not(Equal(QueueEnum.IS_CLOSED)),
+              },
+              status: EnrollQueueEnum.SERVING,
+              sequenceNumber: LessThanOrEqual(
+                enrollQueuesDTO[i].sequenceNumber,
+              ),
+            },
+            order: { sequenceNumber: 'DESC' },
+          });
+        }
+
         if (getCurrentServeInQueue) {
           enrollQueuesDTO[i].currentQueue =
             getCurrentServeInQueue?.sequenceNumber;
         } else {
-          enrollQueuesDTO[i].currentQueue = -1;
+          enrollQueuesDTO[i].currentQueue = 0;
         }
         const statisticQueueDto = await this.queuesService.getStatisticQueue(
           enrollQueuesDTO[i].queue.code,
