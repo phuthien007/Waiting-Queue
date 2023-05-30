@@ -37,6 +37,103 @@ Api is writing by NestJs
 
 ## 🏁 Getting Started <a name = "getting_started"></a>
 
+```mermaid
+
+sequenceDiagram
+
+    title Hiển thị QRCode trên WebClient của POC
+
+    participant WebClientPOC
+
+    participant WebAPI
+
+    WebClientPOC->>WebAPI: /api/queues/{queueCode}/qrcode
+
+    WebAPI->>WebClientPOC: URL của QRcode
+
+    Note right of WebClientPOC: GET với bộ (randomCode, expireddate, hash)
+
+    WebClientPOC-->>WebClientPOC: renđer QRCode
+
+```
+
+```mermaid
+
+sequenceDiagram
+
+    title EndUser đăng kí thứ tự trong Queue
+
+    participant WebEndUser
+
+    participant WebAPI
+
+    WebEndUser->>WebEndUser: get URL from QRCode
+
+    WebEndUser->>WebEndUser: parse QRCode URL
+
+    Note right of WebEndUser: GET với bộ (randomCode, expireddate, hash)
+
+    WebEndUser->>WebAPI: /api/enroll-queues
+
+    Note right of WebAPI: POST với bộ (randomCode, expireddate, hash)
+
+    WebAPI->>WebAPI: Validate
+
+    WebAPI->>WebEndUser: res
+
+```
+
+```mermaid
+
+  graph TD;
+
+      Client[Client GetEnrollQueue]-->Server1;
+
+      Server1[số thứ tự X, và số Y đang phục vụ] --> Client2;
+
+      Client2[Kiểm tra X = Y + 1 => rung]
+
+
+
+
+```
+
+```mermaid
+
+    graph TD;
+
+    subgraph Chuyển trạng thái của Queue phía Server
+
+    Status1[Chờ phục vụ] -- auto --> Status2[Chờ người mới]
+
+    Status2 -- auto --> Status1
+
+    Status1 -- manual --> Status3[Đóng]
+
+    Status2 -- manual --> Status3[Đóng]
+
+    Status3 -- manual --> Status1
+
+    end
+
+
+
+
+    subgraph Chuyển trạng thái của Thứ tự trong Queue của EndUser
+
+        E1[Chờ phục vụ] -- auto --> E2[Đang phục vụ]
+
+        E2 -- auto --> E3[Đã phục vụ]
+
+        E3 -- manual --> E1
+
+    end
+
+
+
+
+```
+
 ### Prerequisites
 
 Need:
