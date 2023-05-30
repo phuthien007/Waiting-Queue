@@ -31,22 +31,26 @@ export class Tenant extends BaseEntity {
 
   @Column({
     nullable: true,
+    default: '',
   })
   description: string;
 
   @Column({
     nullable: true,
+    default: '',
   })
   address: string;
 
   @Column({
     nullable: true,
+    default: '',
   })
   website: string;
 
   @Column({
     name: 'contact_phone',
     nullable: true,
+    default: '',
   })
   contactPhone: string;
 
@@ -61,6 +65,7 @@ export class Tenant extends BaseEntity {
 
   @Column({
     nullable: true,
+    default: '',
   })
   note: string;
 

@@ -5,10 +5,9 @@ const Footer = () => {
     <div className={style.footer}>
       <div className={style.footerInner}>
         <p className="font-weight-bold">
-          ĐẠI HỌC BÁCH KHOA HÀ NỘI - TRƯỜNG CNTT & TT | SOICT
+          @Copyright 2023 - TRẦN THIỆN PHÚ | OTIS TRAN | WEB DEVELOPER
         </p>
-        <p>Địa chỉ: số 1 Đại Cồ Việt</p>
-        <p>Tel: </p>
+        <p>Tel: 0941556192</p>
       </div>
     </div>
   );

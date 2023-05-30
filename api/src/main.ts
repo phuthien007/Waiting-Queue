@@ -21,6 +21,12 @@ async function bootstrap() {
     .setTitle('XepHang API')
     .setDescription('The waiting queue API description')
     .setVersion('1.0')
+    .setContact(
+      'Tran Thien Phu',
+      'https://github.com/phuthien007',
+      'phu.tt194352@sis.hust.edu.vn',
+    )
+
     // .addBearerAuth(
     //   {
     //     type: 'http',
