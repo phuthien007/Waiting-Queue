@@ -96,6 +96,14 @@ export class QueuesService {
           ...queue,
           dateGetQrcode: new Date(),
         });
+        // change randomQueueCode
+        const randomCodeQueue = getRandomQueueCode();
+        queue.randomCode = randomCodeQueue;
+        // update randomCode for queue
+        await this.queueRepository.update(queue.id, {
+          ...queue,
+          randomCode: randomCodeQueue,
+        });
       }
     }
 
