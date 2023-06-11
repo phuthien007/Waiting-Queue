@@ -10,9 +10,9 @@ export class SessionsRepository extends Repository<Session> {
   }
 
   async deleteAllSessions() {
-    const query = this.createQueryBuilder('session');
+    const query = this.createQueryBuilder('Sessions');
     // delete all session
-    query.delete().where('session.id > :id', { id: 0 });
+    query.delete().from(Session);
     await query.execute();
   }
 }
