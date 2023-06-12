@@ -64,6 +64,14 @@ export class Queue extends BaseEntity {
 
   @Column({
     nullable: true,
+    name: 'is_one_time',
+    default: false,
+    comment: 'Can change random code when have a success enroll',
+  })
+  isOneTime: boolean;
+
+  @Column({
+    nullable: true,
     name: 'date_get_qrcode',
     type: 'timestamp',
   })

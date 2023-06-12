@@ -255,6 +255,20 @@ const QueueForm: React.FC<Props> = ({
           </Form.Item>
 
           <Form.Item
+            style={{ marginBottom: 0 }}
+            label="Thay đổi mỗi khi có người mới:"
+            name="isOneTime"
+          >
+            <Select
+              bordered={type === "view" ? null : true}
+              disabled={type === "view"}
+            >
+              <Select.Option value={false}>Không</Select.Option>
+              <Select.Option value={true}>Cho phép</Select.Option>
+            </Select>
+          </Form.Item>
+
+          <Form.Item
             label="Mô tả"
             name="description"
             rules={[

@@ -40,6 +40,11 @@ export class CreateQueueDto extends BaseDto {
   })
   isDynamic: boolean;
 
+  @ApiPropertyOptional({
+    default: false,
+  })
+  isOneTime: boolean;
+
   @ApiPropertyOptional()
   dateGetQrcode: Date;
   // relations

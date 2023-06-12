@@ -5,7 +5,12 @@ const Footer = () => {
     <div className={style.footer}>
       <div className={style.footerInner}>
         <p className="font-weight-bold">
-          @Copyright 2023 - TRẦN THIỆN PHÚ | OTIS TRAN | WEB DEVELOPER
+          {/* icon copyright */}
+          2023
+          <span className="mr-1 ml-1">
+            <i className="fa fa-copyright" />
+          </span>
+          Copyright - TRẦN THIỆN PHÚ | OTIS TRAN | WEB DEVELOPER
         </p>
         <p>Tel: 0941556192</p>
       </div>

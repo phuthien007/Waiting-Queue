@@ -193,6 +193,7 @@ export interface UpdateQueueDto {
   description?: string;
   status?: UpdateQueueDtoStatus;
   isDynamic?: boolean;
+  isOneTime?: boolean;
   dateGetQrcode?: string;
   eventId?: string;
 }
@@ -208,6 +209,7 @@ export interface QueueDto {
   description?: string;
   status?: string;
   isDynamic?: boolean;
+  isOneTime?: boolean;
   dateGetQrcode?: string;
   event?: EventDto;
 }
@@ -249,6 +251,7 @@ export interface CreateQueueDto {
   description?: string;
   status?: CreateQueueDtoStatus;
   isDynamic?: boolean;
+  isOneTime?: boolean;
   dateGetQrcode?: string;
   eventId?: string;
 }

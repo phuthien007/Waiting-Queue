@@ -60,7 +60,7 @@ const ManagementEnrollQueues: React.FC<Props> = ({ status }) => {
 
   const { isFetching, refetch, data } =
     useEnrollQueuesControllerFindAllEnrollQueue({
-      page: 1,
+      page: page,
       size: DEFAULT_PAGE_SIZE,
       queueCode: queueCode,
       status: status
@@ -132,40 +132,40 @@ const ManagementEnrollQueues: React.FC<Props> = ({ status }) => {
   ];
 
   useEffect(() => {
-    // refetch().then((res) => {
-    //   setDataSource((prev) => {
-    //     if (prev) {
-    //       if (res.data.data.length > prev.data.length) {
-    //         const newItemData = res.data.data.filter(
-    //           (item) => !prev.data.find((prevItem) => prevItem.id === item.id)
-    //         );
-    //         if (
-    //           newItemData[0].status ===
-    //           EnrollQueuesControllerFindAllEnrollQueueStatus.pending
-    //         ) {
-    //           message.success("Có người đăng ký mới tham gia hàng đợi");
-    //         }
-    //       }
-    //     }
-    //     return res.data;
-    //   });
-    // });
+    refetch().then((res) => {
+      setDataSource((prev) => {
+        // if (prev) {
+        //   if (res.data.data.length > prev.data.length) {
+        //     const newItemData = res.data.data.filter(
+        //       (item) => !prev.data.find((prevItem) => prevItem.id === item.id)
+        //     );
+        //     if (
+        //       newItemData[0].status ===
+        //       EnrollQueuesControllerFindAllEnrollQueueStatus.pending
+        //     ) {
+        //       message.success("Có người đăng ký mới tham gia hàng đợi");
+        //     }
+        //   }
+        // }
+        return res.data;
+      });
+    });
     const enrollQueueInterval = setInterval(() => {
       refetch().then((res) => {
         setDataSource((prev) => {
-          if (prev) {
-            if (res.data.data.length > prev.data.length) {
-              const newItemData = res.data.data.filter(
-                (item) => !prev.data.find((prevItem) => prevItem.id === item.id)
-              );
-              if (
-                newItemData[0].status ===
-                EnrollQueuesControllerFindAllEnrollQueueStatus.pending
-              ) {
-                message.success("Có người đăng ký mới tham gia hàng đợi");
-              }
-            }
-          }
+          // if (prev) {
+          //   if (res.data.data.length > prev.data.length) {
+          //     const newItemData = res.data.data.filter(
+          //       (item) => !prev.data.find((prevItem) => prevItem.id === item.id)
+          //     );
+          //     if (
+          //       newItemData[0].status ===
+          //       EnrollQueuesControllerFindAllEnrollQueueStatus.pending
+          //     ) {
+          //       message.success("Có người đăng ký mới tham gia hàng đợi");
+          //     }
+          //   }
+          // }
           return res.data;
         });
       });
@@ -174,12 +174,6 @@ const ManagementEnrollQueues: React.FC<Props> = ({ status }) => {
       clearInterval(enrollQueueInterval);
     };
   }, [page, status]);
-
-  useEffect(() => {
-    refetch().then((res) => {
-      setDataSource(res.data);
-    });
-  }, []);
 
   return (
     <>

@@ -142,7 +142,8 @@ export class EnrollQueuesService {
     // change random queue code after create enroll queue last
 
     // get new
-    if (result && existQueue.isDynamic) {
+    // if setup dynamic and allow mode onetime => change randomCode
+    if (result && existQueue.isDynamic && existQueue.isOneTime) {
       const randomCodeQueue = getRandomQueueCode();
       // update randomCode for queue
       await this.queueRepository.update(existQueue.id, {

@@ -15,7 +15,7 @@
     "orval": "orval --config ./orval.config.js",
     "orval-sync": "npm run sync-openapi && npm run orval"
   },
-  "proxy": "https://api-waiting-queue.onrender.com",
+  "proxy": "http://localhost:5000",
   "husky": {
     "hooks": {
       "pre-commit": "npm run lint-staged"

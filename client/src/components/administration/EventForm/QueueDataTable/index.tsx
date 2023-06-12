@@ -103,6 +103,12 @@ const ManagementQueues: React.FC = () => {
       render: (isDynamic: boolean) => (isDynamic ? "Cho phép" : "Không"),
     },
     {
+      title: "Thay đổi khi có người đăng ký",
+      dataIndex: "isDynamic",
+      key: "isDynamic",
+      render: (isOneTime: boolean) => (isOneTime ? "Cho phép" : "Không"),
+    },
+    {
       title: "Trạng thái",
       dataIndex: "status",
       key: "status",

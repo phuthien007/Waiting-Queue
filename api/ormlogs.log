@@ -53,3 +53,23 @@
 [2023-05-19T14:02:08.726Z][QUERY]: SELECT DISTINCT e.*, `q`.`event_id` AS `eventId`, `e`.`draw_image_path` AS `drawImagePath` FROM `Events` `e` LEFT JOIN `Queues` `q` ON `e`.`id` = `q`.`event_id`  LEFT JOIN `RelQueuesUsers` `rqu` ON `rqu`.`queue_id` = `q`.`id`  LEFT JOIN `Users` `u` ON `u`.`id` = `rqu`.`user_id` WHERE `u`.`id` = ? AND `e`.`status` = 1 ORDER BY `e`.`id` DESC -- PARAMETERS: [39]
 [2023-05-19T14:02:08.740Z][QUERY]: SELECT DISTINCT COUNT(DISTINCT `e`.`id`) AS `cnt` FROM `Events` `e` LEFT JOIN `Queues` `q` ON `e`.`id` = `q`.`event_id`  LEFT JOIN `RelQueuesUsers` `rqu` ON `rqu`.`queue_id` = `q`.`id`  LEFT JOIN `Users` `u` ON `u`.`id` = `rqu`.`user_id` WHERE `u`.`id` = ? AND `e`.`status` = 1 -- PARAMETERS: [39]
 [2023-05-19T14:02:24.953Z][QUERY]: SELECT VERSION() AS `version`
+[2023-06-12T07:58:25.606Z][FAILED QUERY]: ALTER TABLE `Queues` ADD `method_generate_code` int ('0', '1', '2') NOT NULL DEFAULT '0'
+[2023-06-12T07:58:25.606Z][QUERY ERROR]: Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''0', '1', '2') NOT NULL DEFAULT '0'' at line 1
+[2023-06-12T07:58:29.103Z][FAILED QUERY]: ALTER TABLE `Queues` ADD `method_generate_code` int ('0', '1', '2') NOT NULL DEFAULT '0'
+[2023-06-12T07:58:29.103Z][QUERY ERROR]: Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''0', '1', '2') NOT NULL DEFAULT '0'' at line 1
+[2023-06-12T07:58:32.391Z][FAILED QUERY]: ALTER TABLE `Queues` ADD `method_generate_code` int ('0', '1', '2') NOT NULL DEFAULT '0'
+[2023-06-12T07:58:32.391Z][QUERY ERROR]: Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''0', '1', '2') NOT NULL DEFAULT '0'' at line 1
+[2023-06-12T07:58:35.680Z][FAILED QUERY]: ALTER TABLE `Queues` ADD `method_generate_code` int ('0', '1', '2') NOT NULL DEFAULT '0'
+[2023-06-12T07:58:35.680Z][QUERY ERROR]: Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''0', '1', '2') NOT NULL DEFAULT '0'' at line 1
+[2023-06-12T07:58:38.989Z][FAILED QUERY]: ALTER TABLE `Queues` ADD `method_generate_code` int ('0', '1', '2') NOT NULL DEFAULT '0'
+[2023-06-12T07:58:38.989Z][QUERY ERROR]: Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''0', '1', '2') NOT NULL DEFAULT '0'' at line 1
+[2023-06-12T07:58:42.347Z][FAILED QUERY]: ALTER TABLE `Queues` ADD `method_generate_code` int ('0', '1', '2') NOT NULL DEFAULT '0'
+[2023-06-12T07:58:42.347Z][QUERY ERROR]: Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''0', '1', '2') NOT NULL DEFAULT '0'' at line 1
+[2023-06-12T07:58:45.711Z][FAILED QUERY]: ALTER TABLE `Queues` ADD `method_generate_code` int ('0', '1', '2') NOT NULL DEFAULT '0'
+[2023-06-12T07:58:45.711Z][QUERY ERROR]: Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''0', '1', '2') NOT NULL DEFAULT '0'' at line 1
+[2023-06-12T07:58:48.973Z][FAILED QUERY]: ALTER TABLE `Queues` ADD `method_generate_code` int ('0', '1', '2') NOT NULL DEFAULT '0'
+[2023-06-12T07:58:48.973Z][QUERY ERROR]: Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''0', '1', '2') NOT NULL DEFAULT '0'' at line 1
+[2023-06-12T07:58:52.281Z][FAILED QUERY]: ALTER TABLE `Queues` ADD `method_generate_code` int ('0', '1', '2') NOT NULL DEFAULT '0'
+[2023-06-12T07:58:52.281Z][QUERY ERROR]: Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''0', '1', '2') NOT NULL DEFAULT '0'' at line 1
+[2023-06-12T07:58:55.618Z][FAILED QUERY]: ALTER TABLE `Queues` ADD `method_generate_code` int ('0', '1', '2') NOT NULL DEFAULT '0'
+[2023-06-12T07:58:55.618Z][QUERY ERROR]: Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''0', '1', '2') NOT NULL DEFAULT '0'' at line 1
