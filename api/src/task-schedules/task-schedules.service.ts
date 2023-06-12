@@ -20,13 +20,26 @@ export class TaskSchedulesService {
   ) {}
 
   @Cron('0 0 0 * * *')
-  handleCron() {
-    this.logger.log('Run task every day at 12:00:00 AM');
+  async handleCron() {
+    this.logger.log('Run task every day at 00:00:00 AM');
     this.logger.log('Clear all data pending in database');
     try {
       this.logger.log('Start clear');
-      this.enrollQueuesRepository.deleteAllPendingEnrollQueues();
-      this.sessionRepository.deleteAllSessions();
+      const listEnrollQueue = await this.enrollQueuesRepository.find({
+        where: [{ status: 'PENDING' }, { status: 'SERVING' }],
+      });
+      if (listEnrollQueue && listEnrollQueue.length > 0) {
+        await this.enrollQueuesRepository.delete(
+          listEnrollQueue.map((item) => item.id),
+        );
+      }
+
+      // get all list session not have relation with enroll queue
+      const listSession =
+        await this.sessionRepository.getAllListSessionNotHaveRelationWithEnrollQueue();
+      if (listSession && listSession.length > 0) {
+        await this.sessionRepository.delete(listSession.map((item) => item.id));
+      }
       this.logger.log('End clear');
     } catch (err) {
       this.logger.error('Error clear \n', err);

@@ -9,10 +9,12 @@ export class SessionsRepository extends Repository<Session> {
     super(Session, dataSource.createEntityManager());
   }
 
-  async deleteAllSessions() {
-    const query = this.createQueryBuilder('session');
-    // delete all session
-    query.delete().where('session.id > :id', { id: 0 });
-    await query.execute();
+  // get all list session not have relation with enroll queue
+  async getAllListSessionNotHaveRelationWithEnrollQueue() {
+    const query = this.createQueryBuilder('Sessions');
+    query.select(['Sessions.id']);
+    query.leftJoinAndSelect('Sessions.enrollQueues', 'EnrollQueues');
+    query.where('EnrollQueues.id IS NULL');
+    return query.getMany();
   }
 }

@@ -44,6 +44,10 @@ export class QueueDto {
   @ApiPropertyOptional()
   @Expose()
   isDynamic: boolean;
+  @ApiPropertyOptional({
+    default: false,
+  })
+  isOneTime: boolean;
 
   @ApiPropertyOptional()
   @Expose()
