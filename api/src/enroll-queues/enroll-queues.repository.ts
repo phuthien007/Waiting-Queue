@@ -10,11 +10,19 @@ export class EnrollQueuesRepository extends Repository<EnrollQueue> {
   }
 
   async deleteAllPendingEnrollQueues() {
+    console.log(' start deleteAllPendingEnrollQueues');
     const query = this.createQueryBuilder('EnrollQueues');
     query
       .delete()
-      .from(EnrollQueue)
-      .where('status = :status', { status: EnrollQueueEnum.PENDING });
+      .where('EnrollQueues.status = :status', {
+        status: EnrollQueueEnum.PENDING,
+      })
+      .orWhere('EnrollQueues.status = :status', {
+        status: EnrollQueueEnum.SERVING,
+      });
+
+    // delete all enroll queue with status pending and serving
     await query.execute();
+    console.log(' end deleteAllPendingEnrollQueues');
   }
 }
