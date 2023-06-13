@@ -203,9 +203,7 @@ export class EnrollQueuesService {
                 status: Not(Equal(QueueEnum.IS_CLOSED)),
               },
               status: EnrollQueueEnum.DONE,
-              sequenceNumber: LessThanOrEqual(
-                enrollQueuesDTO[i].sequenceNumber,
-              ),
+              sequenceNumber: LessThan(enrollQueuesDTO[i].sequenceNumber),
             },
             order: { sequenceNumber: 'DESC' },
           });
@@ -218,9 +216,7 @@ export class EnrollQueuesService {
                 status: Not(Equal(QueueEnum.IS_CLOSED)),
               },
               status: EnrollQueueEnum.SERVING,
-              sequenceNumber: LessThanOrEqual(
-                enrollQueuesDTO[i].sequenceNumber,
-              ),
+              sequenceNumber: LessThan(enrollQueuesDTO[i].sequenceNumber),
             },
             order: { sequenceNumber: 'DESC' },
           });
