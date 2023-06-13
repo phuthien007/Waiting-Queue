@@ -153,6 +153,9 @@ const MenuTop = () => {
       <div className={style.logoContainer}>
         <div className={style.logo}>
           <img
+            onClick={() => {
+              location.href = "/";
+            }}
             src="/resources/images/tf-logo.png"
             height={50}
             className="mr-2"

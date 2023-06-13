@@ -206,6 +206,9 @@ const MenuLeft = () => {
         <div className={`${style.logoContainer} mt-4 mb-4`}>
           <div className={`${style.logo} mb-4`}>
             <img
+              onClick={() => {
+                location.href = "/";
+              }}
               src="/resources/images/tf-logo.svg"
               style={{ height: "110px", width: "100%" }}
               className="mr-2 mt-4"
