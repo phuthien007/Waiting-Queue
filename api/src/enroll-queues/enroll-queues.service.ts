@@ -138,6 +138,9 @@ export class EnrollQueuesService {
     // newEnrollQueue.status = EnrollQueueEnum.PENDING;
     newEnrollQueue.enrollTime = new Date();
     const result = await this.enrollQueueRepository.save(newEnrollQueue);
+    if (!result) {
+      throw new BadRequestException('Có lỗi xảy ra, vui lòng thử lại sau');
+    }
 
     // change random queue code after create enroll queue last
 
