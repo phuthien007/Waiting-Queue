@@ -20,6 +20,7 @@ import {
   LessThan,
   LessThanOrEqual,
   Not,
+  Repository,
 } from 'typeorm';
 import {
   getRandomQueueCode,
@@ -30,6 +31,8 @@ import { QueuesService } from 'src/queues/queues.service';
 import { EnrollQueueEnum, QueueEnum } from 'src/common/enum';
 import _ from 'lodash';
 import { CacheKey } from '@nestjs/cache-manager';
+import { InjectRepository } from '@nestjs/typeorm';
+import { SessionsRepository } from 'src/sessions/sessions.repository';
 
 @Injectable()
 export class EnrollQueuesService {
@@ -38,6 +41,7 @@ export class EnrollQueuesService {
     // private readonly enrollQueue: EventsRepository,
     private readonly log: LoggerService,
     private readonly sessionsService: SessionsService,
+    private readonly sessionRepository: SessionsRepository,
     private readonly queuesRepository: QueuesRepository,
     @Inject(REQUEST) private readonly request: Request,
     private readonly queuesService: QueuesService,
@@ -97,6 +101,24 @@ export class EnrollQueuesService {
     if (!sessionId) {
       throw new BadRequestException('Không thể tạo hoặc lấy được session');
     }
+
+    // check exist sessionId, if not exist => create new session and get sessionId and set cookie
+    if (sessionId) {
+      const existSession = await this.sessionRepository.findOne({
+        where: { id: sessionId },
+      });
+      if (!existSession) {
+        // create new
+        const newSession = new Session();
+        newSession.id = sessionId;
+        newSession.browser = this.request.headers['user-agent'];
+
+        const result = await this.sessionRepository.save(newSession);
+        if (!result) {
+          throw new BadRequestException('Có lỗi xảy ra, vui lòng thử lại sau');
+        }
+      }
+    }
     // check exist enrollInQueue
     const existEnrollQueue = await this.enrollQueueRepository.findOne({
       where: {
@@ -137,6 +159,7 @@ export class EnrollQueuesService {
     // default is pending
     // newEnrollQueue.status = EnrollQueueEnum.PENDING;
     newEnrollQueue.enrollTime = new Date();
+    console.log('result', newEnrollQueue);
     const result = await this.enrollQueueRepository.save(newEnrollQueue);
     if (!result) {
       throw new BadRequestException('Có lỗi xảy ra, vui lòng thử lại sau');
