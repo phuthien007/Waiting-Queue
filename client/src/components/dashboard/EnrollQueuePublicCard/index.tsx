@@ -8,6 +8,7 @@ import moment from "moment";
 import React from "react";
 import {
   FORMAT_DATE_MINUTE,
+  STATUS_ENROLL_QUEUE_ENUM,
   STATUS_QUEUE_ENUM,
 } from "services/utils/constants";
 import {
@@ -87,9 +88,10 @@ const EnrollQueuePublicCard: React.FC<IEnrollQueuePublicCardProps> = ({
                       <p>Tên hàng đợi: {item?.queue?.name}</p>
 
                       {(item?.queue?.status === STATUS_QUEUE_ENUM.WAITING ||
-                        item?.queue?.status === STATUS_QUEUE_ENUM.PENDING) && (
-                        <p>Hiện tại đến số : {item?.currentQueue + 1}</p>
-                      )}
+                        item?.queue?.status === STATUS_QUEUE_ENUM.PENDING) &&
+                        item.status === STATUS_ENROLL_QUEUE_ENUM.PENDING && (
+                          <p>Hiện tại đến số : {item?.currentQueue}</p>
+                        )}
                     </>
                     // </Typography.Text>
                   }
