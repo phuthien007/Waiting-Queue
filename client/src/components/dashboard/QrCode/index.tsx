@@ -1,4 +1,4 @@
-import { Button, Modal, Row, Space } from "antd";
+import { Button, Col, Modal, Row, Space, Typography } from "antd";
 import React, { Component } from "react";
 import { QrReader } from "react-qr-reader";
 
@@ -62,7 +62,7 @@ const QrCodeComponent: React.FC = () => {
               setFacingMode("environment");
             }
           }}
-          icon={<i className="fa fa-camera mr-2" />}
+          icon={<i className="fa fa-camera mr-1 mt-1 mb-1" />}
         >
           Đổi camera
         </Button>
@@ -87,6 +87,10 @@ const QrCodeComponent: React.FC = () => {
         {/* Link to result text */}
         {result?.length > 0 && (
           <Row justify="center" className="mt-2">
+            <Col span={24} className="text-center">
+              <Typography.Text strong>Đã quét thành công: </Typography.Text>
+              <Typography.Text>{result}</Typography.Text>
+            </Col>
             <Button type="primary" href={result} target="_self">
               Đi đến kết quả
             </Button>
