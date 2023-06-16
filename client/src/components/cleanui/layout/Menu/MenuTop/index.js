@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Button, Menu, Tooltip } from "antd";
+import { Button, Col, Menu, Row, Tooltip } from "antd";
 import { Link, useLocation } from "react-router-dom";
 import classNames from "classnames";
 import store from "store";
@@ -178,21 +178,27 @@ const MenuTop = () => {
       </div> */}
       {!authorized ? (
         <div className="mt-2 mr-5">
-          <Button
-            className="mr-2"
-            icon={<i className="fa fa-camera mr-2" />}
-            type="primary"
-          >
-            Mở camera
-          </Button>
-          <Button
-            className="mr-2"
-            icon={<i className="fe fe-log-in mr-2" />}
-            type="primary"
-            href="/auth/login"
-          >
-            Đăng nhập
-          </Button>
+          <Row>
+            <Col span={12}>
+              <Button
+                className="mr-2"
+                icon={<i className="fa fa-camera mr-2" />}
+                type="primary"
+              >
+                Mở camera
+              </Button>
+            </Col>
+            <Col span={12}>
+              <Button
+                className="mr-2"
+                icon={<i className="fe fe-log-in mr-2" />}
+                type="primary"
+                href="/auth/login"
+              >
+                Đăng nhập
+              </Button>
+            </Col>
+          </Row>
         </div>
       ) : (
         <div className="mt-2 mr-5">
