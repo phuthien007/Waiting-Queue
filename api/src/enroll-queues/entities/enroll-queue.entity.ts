@@ -1,9 +1,16 @@
 import { EnrollQueueEnum } from 'src/common/enum';
 import { Queue } from 'src/queues/entities/queue.entity';
 import { Session } from 'src/sessions/entities/session.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  Unique,
+} from 'typeorm';
 
 @Entity('EnrollQueues')
+@Unique(['queue', 'sequenceNumber'])
 export class EnrollQueue {
   @PrimaryGeneratedColumn('uuid')
   id: string;

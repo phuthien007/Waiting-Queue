@@ -124,6 +124,8 @@ const DetailEvent = () => {
         if (res.isWorking === false) {
           // if have current serial
           if (currentSerial) {
+            getStatisticQueue();
+
             // update status current serial to done
             await updateStatusEnrollQueue({
               id: currentSerial.id,
@@ -154,6 +156,8 @@ const DetailEvent = () => {
   };
 
   const handleNextSerial = async () => {
+    getStatisticQueue();
+
     // if have current serial
     if (currentSerial) {
       // update status current serial to done
@@ -173,7 +177,6 @@ const DetailEvent = () => {
         setTime(0);
         // update status current serial to serving
         setCurrentSerial(res.data);
-
         // check status queue not serving then update to serving
         if (dataQueue.status !== STATUS_QUEUE_ENUM.SERVING) {
           getDataQueue();

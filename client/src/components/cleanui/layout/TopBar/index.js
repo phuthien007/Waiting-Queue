@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { selectUser } from "store/userSlice";
-import { Button } from "antd";
+import { Button, Col, Row } from "antd";
 import LanguageSwitcher from "./LanguageSwitcher";
 import UserMenu from "./UserMenu";
 import style from "./style.module.scss";
@@ -32,17 +32,21 @@ const TopBar = () => {
         <Actions />
       </div> */}
       {!user.authorized ? (
-        <div className="mt-2 mr-5">
-          <QrCodeComponent />
-          <Button
-            className="mr-2"
-            icon={<i className="fe fe-log-in mr-2" />}
-            type="link"
-            href="/auth/login"
-          >
-            Đăng nhập
-          </Button>
-        </div>
+        <Row justify="end">
+          <Col span={12}>
+            <QrCodeComponent />
+          </Col>
+          <Col span={12}>
+            <Button
+              className="mr-4"
+              icon={<i className="fe fe-log-in mr-2" />}
+              // type="link"
+              href="/auth/login"
+            >
+              Đăng nhập
+            </Button>
+          </Col>
+        </Row>
       ) : (
         <div className="mt-2 mr-5">
           <UserMenu />

@@ -64,6 +64,9 @@ const Login = () => {
   return (
     <div className={`card ${style.container}`}>
       <img
+        onClick={() => {
+          location.href = "/";
+        }}
         src="/resources/images/tf-logo.svg"
         style={{ height: 240 }}
         alt="Logo của bạn"

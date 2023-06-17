@@ -31,7 +31,7 @@ import { Request } from 'express';
 import { EnrollQueuesRepository } from 'src/enroll-queues/enroll-queues.repository';
 import * as moment from 'moment';
 import { StatisticQueueDto } from './dto/statistic-queue.dto';
-import _ from 'lodash';
+import _, { isSafeInteger, parseInt, toSafeInteger } from 'lodash';
 
 /**
  * QueuesService class for queues service with CRUD operations for queues and other operations
@@ -106,13 +106,11 @@ export class QueuesService {
         });
       }
     }
-
+    const timeLong = toSafeInteger(process.env.LONG_TIMEOUT_VERIFY) * 86400;
     const uxTime =
       startTime +
       parseInt(
-        queue.isDynamic
-          ? process.env.TIMEOUT_VERIFY
-          : process.env.LONG_TIMEOUT_VERIFY,
+        queue.isDynamic ? process.env.TIMEOUT_VERIFY : timeLong.toString(),
       ) *
         1000;
 
