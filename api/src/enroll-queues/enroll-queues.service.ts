@@ -424,5 +424,31 @@ export class EnrollQueuesService {
       { status: status, endServe: new Date() },
     );
     return enrollQueueUpdate;
+
+    /**
+     *  // get enroll queue by id
+    const enrollQueue = await this.enrollQueueRepository.findOne({
+      where: { id: id },
+      relations: ['queue'],
+    });
+    if (!enrollQueue) {
+      throw new BadRequestException('Không tìm thấy số thứ tự này');
+    }
+    // get all enroll queue have sequence number less than enrollQueue and status is serving
+    const getEnrollQueueLessThan = await this.enrollQueueRepository.find({
+      where: {
+        queue: { id: enrollQueue.queue.id },
+        status: EnrollQueueEnum.SERVING,
+        sequenceNumber: LessThanOrEqual(enrollQueue.sequenceNumber),
+      },
+      order: { sequenceNumber: 'DESC' },
+    });
+    // update all enroll queue in list getEnrollQueueLessThan to done
+    const updateEnrollQueue = getEnrollQueueLessThan.map((item) => {
+      item.status = EnrollQueueEnum.DONE;
+      return item;
+    });
+    await this.enrollQueueRepository.save(updateEnrollQueue);
+     */
   }
 }

@@ -222,7 +222,7 @@ const DetailEvent = () => {
     getStatisticQueue();
     const statisticInterval = setInterval(() => {
       getStatisticQueue();
-    }, 30000);
+    }, 5000);
     return () => clearInterval(statisticInterval);
   }, []);
 
@@ -327,7 +327,7 @@ const DetailEvent = () => {
             xxl={8}
           >
             <Button
-              loading={loadingGetNextUser}
+              loading={loadingGetNextUser || loadingUpdateStatusEnrollQueue}
               style={{ width: "50%" }}
               type="primary"
               onClick={handleNextSerial}
