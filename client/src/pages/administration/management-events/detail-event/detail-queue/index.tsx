@@ -287,10 +287,10 @@ const DetailEvent = () => {
             }}
             sm={24}
             xs={24}
-            md={10}
-            lg={10}
-            xl={10}
-            xxl={10}
+            md={8}
+            lg={8}
+            xl={8}
+            xxl={8}
           >
             {/* <Card className="br-8" title="Thời gian phục vụ"> */}
             <Typography.Title level={4}>Thời gian phục vụ:</Typography.Title>
@@ -303,9 +303,12 @@ const DetailEvent = () => {
                 currentSerial?.sequenceNumber ? "box-shadow-ant" : ""
               }`}
             >
-              <h1 style={{ fontSize: "7rem" }}>
+              <Typography.Title
+                level={1}
+                style={{ fontSize: "5.5em", marginBottom: 0 }}
+              >
                 {currentSerial?.sequenceNumber || 0}
-              </h1>
+              </Typography.Title>
             </Card>
           </Col>
           <Col
@@ -318,10 +321,10 @@ const DetailEvent = () => {
             }}
             sm={24}
             xs={24}
-            md={10}
-            lg={10}
-            xl={10}
-            xxl={10}
+            md={8}
+            lg={8}
+            xl={8}
+            xxl={8}
           >
             <Button
               loading={loadingGetNextUser}
