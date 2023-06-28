@@ -133,47 +133,21 @@ const ManagementEnrollQueues: React.FC<Props> = ({ status }) => {
 
   useEffect(() => {
     refetch().then((res) => {
-      setDataSource((prev) => {
-        // if (prev) {
-        //   if (res.data.data.length > prev.data.length) {
-        //     const newItemData = res.data.data.filter(
-        //       (item) => !prev.data.find((prevItem) => prevItem.id === item.id)
-        //     );
-        //     if (
-        //       newItemData[0].status ===
-        //       EnrollQueuesControllerFindAllEnrollQueueStatus.pending
-        //     ) {
-        //       message.success("Có người đăng ký mới tham gia hàng đợi");
-        //     }
-        //   }
-        // }
-        return res.data;
-      });
+      setDataSource(res?.data);
     });
+  }, [page, status]);
+
+  useEffect(() => {
     const enrollQueueInterval = setInterval(() => {
       refetch().then((res) => {
-        setDataSource((prev) => {
-          // if (prev) {
-          //   if (res.data.data.length > prev.data.length) {
-          //     const newItemData = res.data.data.filter(
-          //       (item) => !prev.data.find((prevItem) => prevItem.id === item.id)
-          //     );
-          //     if (
-          //       newItemData[0].status ===
-          //       EnrollQueuesControllerFindAllEnrollQueueStatus.pending
-          //     ) {
-          //       message.success("Có người đăng ký mới tham gia hàng đợi");
-          //     }
-          //   }
-          // }
-          return res.data;
-        });
+        setDataSource(res?.data);
+        setPage(1);
       });
-    }, 5000);
+    }, 15000);
     return () => {
       clearInterval(enrollQueueInterval);
     };
-  }, [page, status]);
+  }, []);
 
   return (
     <>

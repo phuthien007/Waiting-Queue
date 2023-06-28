@@ -1,5 +1,15 @@
 import React, { useEffect } from "react";
-import { Badge, Card, Col, Descriptions, Divider, Row, Typography } from "antd";
+import {
+  Alert,
+  Badge,
+  Card,
+  Col,
+  Descriptions,
+  Divider,
+  Row,
+  Spin,
+  Typography,
+} from "antd";
 import { useEnrollQueuesControllerFindAllMyEnrollQueue } from "@api/waitingQueue";
 import Title from "antd/lib/skeleton/Title";
 import {
@@ -56,11 +66,15 @@ function compareByStatus(a, b) {
 
 const PublicDashboard = () => {
   const [data, setData] = React.useState<EnrollQueueDto[]>([]);
+  const [fetchFistTime, setFetchFistTime] = React.useState<boolean>(false);
   const { isFetching, refetch } =
     useEnrollQueuesControllerFindAllMyEnrollQueue();
 
   useEffect(() => {
     refetch().then((res) => {
+      setTimeout(() => {
+        setFetchFistTime(true);
+      }, 500);
       setData((prev) => {
         // check prev data and new data is same status
         // lọc các phần tử trước đó có status là pending và sau đó có status là serving
@@ -165,46 +179,62 @@ const PublicDashboard = () => {
 
   return (
     <>
-      <Row justify="center">
-        {data && data?.length <= 0 && (
-          <>
-            <Row justify="center" gutter={[20, 20]}>
-              <Col span={24} style={{ textAlign: "center" }}>
-                <Typography.Title level={4}>
-                  Bạn chưa tham gia hàng đợi nào
-                </Typography.Title>
-              </Col>
-              <Col span={24} style={{ textAlign: "center" }}>
-                <Typography.Text strong>
-                  Để tham gia 1 hàng đợi, bạn có thể quét mã được cung cấp bằng
-                  ứng dụng trên điện thoại hoặc nhấn vào nút "Mở camera" để quét
-                  mã
-                </Typography.Text>
-              </Col>
-            </Row>
-          </>
-        )}
-      </Row>
-      {data && data?.length > 0 && (
-        <Card style={{ borderRadius: 5 }}>
+      {!fetchFistTime ? (
+        <Row justify="center">
+          <Col span={24} style={{ textAlign: "center" }}>
+            <Spin tip="Đang xử lý ...">
+              <Alert
+                message="Đang lấy dữ liệu"
+                description="Đang lấy số thứ tự của bạn, vui lòng đợi trong giây lát"
+                type="info"
+              />
+            </Spin>
+          </Col>
+        </Row>
+      ) : (
+        <>
           <Row justify="center">
-            {data && data?.length > 0 && (
-              <Typography.Title level={2}>
-                Danh sách số thứ tự chờ của bạn
-              </Typography.Title>
+            {data && data?.length <= 0 && (
+              <>
+                <Row justify="center" gutter={[20, 20]}>
+                  <Col span={24} style={{ textAlign: "center" }}>
+                    <Typography.Title level={4}>
+                      Bạn chưa tham gia hàng đợi nào
+                    </Typography.Title>
+                  </Col>
+                  <Col span={24} style={{ textAlign: "center" }}>
+                    <Typography.Text strong>
+                      Để tham gia 1 hàng đợi, bạn có thể quét mã được cung cấp
+                      bằng ứng dụng trên điện thoại hoặc nhấn vào nút "Mở
+                      camera" để quét mã
+                    </Typography.Text>
+                  </Col>
+                </Row>
+              </>
             )}
           </Row>
-          <Row justify="center" gutter={[20, 20]}>
-            {/* sort data follow status serving is top  */}
-            {data?.sort(compareByStatus)?.map((item, index) => {
-              return (
-                // <div key={index}>
-                <EnrollQueuePublicCard key={index} item={item} />
-                // </div>
-              );
-            })}
-          </Row>
-        </Card>
+          {data && data?.length > 0 && (
+            <Card style={{ borderRadius: 5 }}>
+              <Row justify="center">
+                {data && data?.length > 0 && (
+                  <Typography.Title level={2}>
+                    Danh sách số thứ tự chờ của bạn
+                  </Typography.Title>
+                )}
+              </Row>
+              <Row justify="center" gutter={[20, 20]}>
+                {/* sort data follow status serving is top  */}
+                {data?.sort(compareByStatus)?.map((item, index) => {
+                  return (
+                    // <div key={index}>
+                    <EnrollQueuePublicCard key={index} item={item} />
+                    // </div>
+                  );
+                })}
+              </Row>
+            </Card>
+          )}
+        </>
       )}
     </>
   );
