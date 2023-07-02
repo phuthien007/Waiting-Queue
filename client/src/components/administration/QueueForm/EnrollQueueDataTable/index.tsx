@@ -183,17 +183,20 @@ const ManagementEnrollQueues: React.FC<Props> = ({ status }) => {
                   description={
                     <>
                       <p>
+                        Thời gian tham gia:{" "}
                         {item?.enrollTime
                           ? moment(item?.enrollTime).format(FORMAT_DATE_MINUTE)
                           : null}
                       </p>
 
                       <p>
+                        Thời gian bắt đầu phục vụ{" "}
                         {item?.startServe
                           ? moment(item?.startServe).format(FORMAT_DATE_MINUTE)
                           : null}
                       </p>
                       <p>
+                        Thời gian kết thúc phục vụ{" "}
                         {item?.endServe
                           ? moment(item?.endServe).format(FORMAT_DATE_MINUTE)
                           : null}
