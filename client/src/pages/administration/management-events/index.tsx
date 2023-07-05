@@ -12,6 +12,8 @@ import {
   Card,
   Col,
   Divider,
+  List,
+  Pagination,
   Popconfirm,
   Row,
   Space,
@@ -226,13 +228,55 @@ const ManagementEvents: React.FC = () => {
         </Col>
       </Row>
       <Row>
-        <Card className="br-8" style={{ width: "100%" }}>
-          <Table
-            loading={loadingData || loadingMyData}
-            columns={columns}
+        <Col xs={0} sm={0} md={24} xl={24} xxl={24} lg={24}>
+          <Card className="br-8" style={{ width: "100%" }}>
+            <Table
+              loading={loadingData || loadingMyData}
+              columns={columns}
+              dataSource={role === "ADMIN" ? dataEvent?.data : myEvent?.data}
+              scroll={{ x: 1000 }}
+              pagination={{
+                current: page,
+                pageSize: DEFAULT_PAGE_SIZE,
+                showSizeChanger: false,
+                total:
+                  (role === "ADMIN"
+                    ? dataEvent?.pagination?.total
+                    : myEvent?.pagination?.total) || 0,
+              }}
+              onChange={(pagination) => {
+                setPage(pagination.current);
+              }}
+            />
+          </Card>
+        </Col>
+        <Col xs={24} sm={24} md={0} xl={0} xxl={0} lg={0}>
+          <List
+            itemLayout="horizontal"
             dataSource={role === "ADMIN" ? dataEvent?.data : myEvent?.data}
-            scroll={{ x: 1000 }}
+            renderItem={(item: EventDto) => (
+              <List.Item>
+                <List.Item.Meta
+                  title={
+                    <>
+                      <Link to={`/event/${item.id}`}>{item.name}</Link>
+                      <br />{" "}
+                      <p>
+                        {item.daily
+                          ? "Hàng ngày"
+                          : "Từ " +
+                            moment(item.from).format(FORMAT_DATE_MINUTE) +
+                            " đến " +
+                            moment(item.to).format(FORMAT_DATE_MINUTE)}
+                      </p>
+                    </>
+                  }
+                  description={item.description}
+                />
+              </List.Item>
+            )}
             pagination={{
+              responsive: true,
               current: page,
               pageSize: DEFAULT_PAGE_SIZE,
               showSizeChanger: false,
@@ -240,12 +284,13 @@ const ManagementEvents: React.FC = () => {
                 (role === "ADMIN"
                   ? dataEvent?.pagination?.total
                   : myEvent?.pagination?.total) || 0,
-            }}
-            onChange={(pagination) => {
-              setPage(pagination.current);
+
+              onChange: (page) => {
+                setPage(page);
+              },
             }}
           />
-        </Card>
+        </Col>
       </Row>
     </>
   );

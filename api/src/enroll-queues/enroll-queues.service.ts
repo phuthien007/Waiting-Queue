@@ -62,7 +62,12 @@ export class EnrollQueuesService {
   ) {
     // check exist queueCode
     const existQueue = await this.queuesRepository.findOne({
-      where: { code: createEnrollQueueDto.queueCode },
+      where: {
+        code: createEnrollQueueDto.queueCode,
+        event: {
+          status: true,
+        },
+      },
     });
     if (!existQueue) {
       throw new BadRequestException(
@@ -159,7 +164,6 @@ export class EnrollQueuesService {
     // default is pending
     // newEnrollQueue.status = EnrollQueueEnum.PENDING;
     newEnrollQueue.enrollTime = new Date();
-    console.log('result', newEnrollQueue);
     const result = await this.enrollQueueRepository.save(newEnrollQueue);
     if (!result) {
       throw new BadRequestException('Có lỗi xảy ra, vui lòng thử lại sau');
