@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /*
 https://docs.nestjs.com/providers#services
 */
@@ -51,7 +52,7 @@ export class TaskSchedulesService {
     }
   }
 
-  @Cron('0 3 * * * *')
+  @Cron('0 * * * * *')
   async handleTriggerEvent() {
     // get all event
     // if have end time < now => update status event to false
@@ -62,10 +63,16 @@ export class TaskSchedulesService {
         to: Not(IsNull()),
       },
     });
+
     if (eventList && eventList.length > 0) {
       eventList.forEach(async (event) => {
         if (event.to < new Date()) {
-          await this.eventRepository.update(event.id, { status: false });
+          try {
+            // @ts-ignore
+            await this.eventRepository.update(event.id, { status: 0 });
+          } catch (err) {
+            this.logger.error('Error update status event \n', err);
+          }
         }
       });
     }
