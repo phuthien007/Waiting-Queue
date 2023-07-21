@@ -126,6 +126,12 @@ const EventForm: React.FC<Props> = ({
           message: "Lỗi",
           description: "Không thể cùng lúc chọn sự kiện lặp lại và thời gian",
         });
+      } else if ((values.from && !values.to) || (!values.from && values.to)) {
+        notification.error({
+          message: "Lỗi",
+          description:
+            "Cần phải có cả ngày bắt đầu và kết thúc nếu chọn khoảng thời gian",
+        });
       }
 
       // handle Image
@@ -310,16 +316,16 @@ const EventForm: React.FC<Props> = ({
                       )
                     );
                   }
-                  if (!value || moment().isBefore(value)) {
-                    return Promise.resolve();
-                  }
-                  if (!moment().isBefore(value)) {
-                    return Promise.reject(
-                      new Error("Ngày bắt đầu phải lớn hơn ngày hiện tại")
-                    );
-                  }
+                  // if (!value || moment().isBefore(value)) {
+                  return Promise.resolve();
+                  // }
+                  // if (!moment().isBefore(value)) {
+                  //   return Promise.reject(
+                  //     new Error("Ngày bắt đầu phải lớn hơn ngày hiện tại")
+                  //   );
+                  // }
 
-                  return Promise.reject(new Error("Ngày bắt đầu không hợp lệ"));
+                  // return Promise.reject(new Error("Ngày bắt đầu không hợp lệ"));
                 },
               }),
             ]}
