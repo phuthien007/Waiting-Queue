@@ -48,11 +48,19 @@ const handleError = (error) => {
       });
       // history.push("/error/403");
     } else if (status === 401) {
-      notification.error({
-        message: "Lỗi",
-        description: "Vui lòng đăng nhập lại",
-      });
+      if(messageError){
+        notification.error({
+          message: "Lỗi",
+          description: messageError,
+        });
+      }else{
+        notification.error({
+          message: "Lỗi",
+          description: "Vui lòng đăng nhập lại",
+        });
+      }
       history.push("/auth/login");
+      
     } else if (status === 400) {
       notification.error({
         message: "Lỗi",
