@@ -62,13 +62,21 @@ export class EnrollQueuesService {
   ) {
     // check exist queueCode
     const existQueue = await this.queuesRepository.findOne({
-      where: { code: createEnrollQueueDto.queueCode },
+      where: {
+        code: createEnrollQueueDto.queueCode,
+        event: {
+          status: true,
+        },
+      },
     });
     if (!existQueue) {
-      throw new BadRequestException(
+      this.log.error(
         'Queue với mã code ' +
           createEnrollQueueDto.queueCode +
           ' không tồn tại',
+      );
+      throw new BadRequestException(
+        'Hàng đợi không tồn tại hoặc đã bị khóa, vui lòng thử lại sau',
       );
     }
     // check hash queue random
@@ -80,7 +88,8 @@ export class EnrollQueuesService {
 
     // check have hash queue and time valid
     if (!encryptText || !hashQueue || !uxTime || encryptText !== hashQueue) {
-      throw new BadRequestException('Hash queue không hợp lệ');
+      this.log.error('Hash queue không hợp lệ');
+      throw new BadRequestException('Mã QR không hợp lệ');
     }
 
     // check time valid
@@ -90,7 +99,8 @@ export class EnrollQueuesService {
         ...existQueue,
         randomCode: randomCodeQueue,
       });
-      throw new BadRequestException('Hash queue đã hết hạn');
+      this.log.error('Thời gian QR đã hết hạn, Hash queue đã hết hạn');
+      throw new BadRequestException('Mã QR không hợp lệ');
     }
 
     // check and get sessionId from sesionsService
@@ -99,7 +109,10 @@ export class EnrollQueuesService {
       sessionId = await this.sessionsService.createOrRetrieve();
     }
     if (!sessionId) {
-      throw new BadRequestException('Không thể tạo hoặc lấy được session');
+      this.log.error('Không thể tạo hoặc lấy được session');
+      throw new BadRequestException(
+        'Có lỗi trong quá trình lấy số thứ tự, vui lòng thử lại sau',
+      );
     }
 
     // check exist sessionId, if not exist => create new session and get sessionId and set cookie
@@ -115,7 +128,9 @@ export class EnrollQueuesService {
 
         const result = await this.sessionRepository.save(newSession);
         if (!result) {
-          throw new BadRequestException('Có lỗi xảy ra, vui lòng thử lại sau');
+          throw new BadRequestException(
+            'Có lỗi trong quá trình lấy số thứ tự, vui lòng thử lại sau',
+          );
         }
       }
     }
@@ -159,10 +174,11 @@ export class EnrollQueuesService {
     // default is pending
     // newEnrollQueue.status = EnrollQueueEnum.PENDING;
     newEnrollQueue.enrollTime = new Date();
-    console.log('result', newEnrollQueue);
     const result = await this.enrollQueueRepository.save(newEnrollQueue);
     if (!result) {
-      throw new BadRequestException('Có lỗi xảy ra, vui lòng thử lại sau');
+      throw new BadRequestException(
+        'Có lỗi trong quá trình lấy số thứ tự, vui lòng thử lại sau',
+      );
     }
 
     // change random queue code after create enroll queue last

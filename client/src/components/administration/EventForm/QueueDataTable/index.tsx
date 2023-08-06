@@ -13,6 +13,7 @@ import {
   Card,
   Col,
   Divider,
+  List,
   Popconfirm,
   Row,
   Space,
@@ -249,13 +250,51 @@ const ManagementQueues: React.FC = () => {
         </Col>
       </Row>
       <Row>
-        <Card style={{ width: "100%" }}>
-          <Table
-            scroll={{ x: 1000 }}
-            loading={loadingQueue || loadingMyQueue}
-            columns={columns}
+        <Col xs={0} sm={0} md={24} xl={24} xxl={24} lg={24}>
+          <Card style={{ width: "100%" }}>
+            <Table
+              scroll={{ x: 1000 }}
+              loading={loadingQueue || loadingMyQueue}
+              columns={columns}
+              dataSource={
+                role === "ADMIN" ? queueData?.data : queueMyData?.data
+              }
+              pagination={{
+                current: page,
+                pageSize: DEFAULT_PAGE_SIZE,
+                showSizeChanger: false,
+                total:
+                  (role === "ADMIN"
+                    ? queueData?.pagination?.total
+                    : queueMyData?.pagination?.total) || 0,
+              }}
+              onChange={(pagination) => {
+                setPage(pagination.current);
+              }}
+            />
+          </Card>
+        </Col>
+        <Col xs={24} sm={24} md={0} xl={0} xxl={0} lg={0}>
+          <List
+            itemLayout="horizontal"
             dataSource={role === "ADMIN" ? queueData?.data : queueMyData?.data}
+            renderItem={(item: QueueDto) => (
+              <List.Item>
+                <List.Item.Meta
+                  title={
+                    <>
+                      <Link to={`/event/${id}/queue/${item.code}`}>
+                        {item.name}
+                      </Link>
+                      <br /> <p>Mã: {item.code}</p>
+                    </>
+                  }
+                  description={item.description}
+                />
+              </List.Item>
+            )}
             pagination={{
+              responsive: true,
               current: page,
               pageSize: DEFAULT_PAGE_SIZE,
               showSizeChanger: false,
@@ -263,12 +302,13 @@ const ManagementQueues: React.FC = () => {
                 (role === "ADMIN"
                   ? queueData?.pagination?.total
                   : queueMyData?.pagination?.total) || 0,
-            }}
-            onChange={(pagination) => {
-              setPage(pagination.current);
+
+              onChange: (page) => {
+                setPage(page);
+              },
             }}
           />
-        </Card>
+        </Col>
       </Row>
     </>
   );

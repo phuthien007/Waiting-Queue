@@ -13,6 +13,7 @@ import {
   Card,
   Col,
   Divider,
+  List,
   Popconfirm,
   Row,
   Space,
@@ -152,23 +153,72 @@ const ManagementEnrollQueues: React.FC<Props> = ({ status }) => {
   return (
     <>
       <Row>
-        <Card style={{ width: "100%" }} className="br-8">
-          <Table
-            scroll={{ x: 800 }}
-            // loading={isFetching}
-            columns={columns}
+        <Col xs={0} sm={0} md={24} xl={24} xxl={24} lg={24}>
+          <Card style={{ width: "100%" }} className="br-8">
+            <Table
+              scroll={{ x: 800 }}
+              // loading={isFetching}
+              columns={columns}
+              dataSource={dataSource?.data}
+              pagination={{
+                current: page,
+                pageSize: DEFAULT_PAGE_SIZE,
+                showSizeChanger: false,
+                total: dataSource?.pagination.total || 0,
+              }}
+              onChange={(pagination) => {
+                setPage(pagination.current);
+              }}
+            />
+          </Card>
+        </Col>
+        <Col xs={24} sm={24} md={0} xl={0} xxl={0} lg={0}>
+          <List
+            itemLayout="horizontal"
             dataSource={dataSource?.data}
+            renderItem={(item: EnrollQueueDto) => (
+              <List.Item>
+                <List.Item.Meta
+                  title={`Số: ${item.sequenceNumber}`}
+                  description={
+                    <>
+                      <p>
+                        Thời gian tham gia:{" "}
+                        {item?.enrollTime
+                          ? moment(item?.enrollTime).format(FORMAT_DATE_MINUTE)
+                          : null}
+                      </p>
+
+                      <p>
+                        Thời gian bắt đầu phục vụ{" "}
+                        {item?.startServe
+                          ? moment(item?.startServe).format(FORMAT_DATE_MINUTE)
+                          : null}
+                      </p>
+                      <p>
+                        Thời gian kết thúc phục vụ{" "}
+                        {item?.endServe
+                          ? moment(item?.endServe).format(FORMAT_DATE_MINUTE)
+                          : null}
+                      </p>
+                    </>
+                  }
+                />
+              </List.Item>
+            )}
             pagination={{
+              responsive: true,
               current: page,
               pageSize: DEFAULT_PAGE_SIZE,
               showSizeChanger: false,
               total: dataSource?.pagination.total || 0,
-            }}
-            onChange={(pagination) => {
-              setPage(pagination.current);
+
+              onChange: (page) => {
+                setPage(page);
+              },
             }}
           />
-        </Card>
+        </Col>
       </Row>
     </>
   );
