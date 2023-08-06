@@ -59,7 +59,7 @@ const handleError = (error) => {
           description: "Vui lòng đăng nhập lại",
         });
       }
-      history.push("/public/home");
+      history.push("/auth/login");
       
     } else if (status === 400) {
       notification.error({
