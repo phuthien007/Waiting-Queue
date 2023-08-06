@@ -3,7 +3,16 @@ import {
   EnrollQueuesControllerFindAllEnrollQueueStatus,
   EnrollQueuesControllerUpdateStatusEnrollQueueStatus,
 } from "@api/waitingQueue.schemas";
-import { Badge, Card, Col, Descriptions, Divider, Row, Typography } from "antd";
+import {
+  Alert,
+  Badge,
+  Card,
+  Col,
+  Descriptions,
+  Divider,
+  Row,
+  Typography,
+} from "antd";
 import _ from "lodash";
 import moment from "moment";
 import React from "react";
@@ -18,6 +27,7 @@ import {
   StatusEnrollQueueRenderColor,
   StatusQueueRender,
 } from "services/utils/format";
+import Marquee from "react-fast-marquee";
 
 interface IEnrollQueuePublicCardProps {
   item: EnrollQueueDto;
@@ -71,6 +81,20 @@ const EnrollQueuePublicCard: React.FC<IEnrollQueuePublicCardProps> = ({
   return (
     <>
       <Col sm={12} xs={24} md={8} lg={8} xl={8} xxl={8}>
+        {(item?.queue?.status === STATUS_QUEUE_ENUM.WAITING ||
+          item?.queue?.status === STATUS_QUEUE_ENUM.PENDING) &&
+        item.currentQueue + 1 === item.sequenceNumber ? (
+          <Alert
+            message={
+              <Marquee pauseOnHover gradient={false}>
+                Số thứ tự của bạn tại {item.queue.name} đã sắp đến, vui lòng trở
+                lại phòng chờ để tiếp tục chờ đợi!
+              </Marquee>
+            }
+            banner
+            closable
+          />
+        ) : null}
         <Badge.Ribbon
           text={StatusEnrollQueueRender(item?.status)}
           color={StatusEnrollQueueRenderColor(item?.status)}
