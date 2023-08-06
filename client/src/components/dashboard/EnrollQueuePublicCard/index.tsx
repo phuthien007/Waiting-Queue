@@ -4,6 +4,7 @@ import {
   EnrollQueuesControllerUpdateStatusEnrollQueueStatus,
 } from "@api/waitingQueue.schemas";
 import { Badge, Card, Col, Descriptions, Divider, Row, Typography } from "antd";
+import _ from "lodash";
 import moment from "moment";
 import React from "react";
 import addNotification from "react-push-notification";
@@ -119,7 +120,9 @@ const EnrollQueuePublicCard: React.FC<IEnrollQueuePublicCardProps> = ({
                           {(item?.serveTimeAvg &&
                             item?.serveTimeAvg &&
                             item?.serveTimeAvg !== 0 &&
-                            item?.serveTimeAvg) + " s" ?? "Chưa có dữ liệu"}
+                            Math.floor(
+                              _.toSafeInteger(item?.serveTimeAvg) / 60
+                            )) + " phút" ?? "Chưa có dữ liệu"}
                         </b>
                       </Descriptions.Item>
                       <Descriptions.Item
