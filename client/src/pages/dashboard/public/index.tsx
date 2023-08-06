@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import {
   Alert,
   Badge,
+  Button,
   Card,
   Col,
   Descriptions,
@@ -23,6 +24,7 @@ import {
   EnrollQueuesControllerUpdateStatusEnrollQueueStatus,
 } from "@api/waitingQueue.schemas";
 import EnrollQueuePublicCard from "components/dashboard/EnrollQueuePublicCard";
+import addNotification from "react-push-notification";
 
 // const vibrateMobile = () => {
 //   // if (navigator.vibrate) {
@@ -175,6 +177,14 @@ const PublicDashboard = () => {
     return () => {
       clearInterval(intervalEnrollQueue);
     };
+  }, []);
+  React.useEffect(() => {
+    addNotification({
+      title: "Thông báo",
+      message: "Bạn đã kích hoạt cho phép thông báo",
+      theme: "darkblue",
+      native: true, // when using native, your OS will handle theming.
+    });
   }, []);
 
   return (

@@ -6,6 +6,7 @@ import {
 import { Badge, Card, Col, Descriptions, Divider, Row, Typography } from "antd";
 import moment from "moment";
 import React from "react";
+import addNotification from "react-push-notification";
 import {
   FORMAT_DATE_MINUTE,
   STATUS_ENROLL_QUEUE_ENUM,
@@ -44,14 +45,27 @@ const EnrollQueuePublicCard: React.FC<IEnrollQueuePublicCardProps> = ({
 }) => {
   React.useEffect(() => {
     if (
+      // queue ở trạng thái chờ hoặc đang phục vụ và số được gọi là số tiếp theo của queue
       (item?.queue?.status === STATUS_QUEUE_ENUM.WAITING ||
         item?.queue?.status === STATUS_QUEUE_ENUM.PENDING) &&
       item.currentQueue + 1 === item.sequenceNumber
     ) {
       console.log("vibrate");
       vibrateMobile();
+      pushMessage(`
+      Số ${item.sequenceNumber} tại hàng đợi ${item.queue.name} đã sắp đến lượt, vui lòng trở lại phòng chờ để tiếp tục chờ đợi
+      `);
     }
   });
+
+  const pushMessage = (message) => {
+    addNotification({
+      title: "Thông báo",
+      message,
+      theme: "darkblue",
+      native: true, // when using native, your OS will handle theming.
+    });
+  };
 
   return (
     <>
