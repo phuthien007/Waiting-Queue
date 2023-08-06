@@ -178,14 +178,9 @@ const PublicDashboard = () => {
       clearInterval(intervalEnrollQueue);
     };
   }, []);
-  React.useEffect(() => {
-    addNotification({
-      title: "Thông báo",
-      message: "Bạn đã kích hoạt cho phép thông báo",
-      theme: "darkblue",
-      native: true, // when using native, your OS will handle theming.
-    });
-  }, []);
+  // React.useEffect(() => {
+
+  // }, []);
 
   return (
     <>
@@ -204,6 +199,18 @@ const PublicDashboard = () => {
       ) : (
         <>
           <Row justify="center">
+            <Button
+              onClick={() => {
+                addNotification({
+                  title: "Thông báo",
+                  message: "Bạn đã kích hoạt cho phép thông báo",
+                  theme: "darkblue",
+                  native: true, // when using native, your OS will handle theming.
+                });
+              }}
+            >
+              Cho phép
+            </Button>
             {data && data?.length <= 0 && (
               <>
                 <Row justify="center" gutter={[20, 20]}>
