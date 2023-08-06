@@ -123,7 +123,7 @@ const Layout = ({ children }) => {
       console.log("redirect to login page");
       if (!settingsConfig.logout)
         settingsConfig.loginRedirectUrl = `${pathname}${search || ""}`;
-      return <Navigate to="/auth/login" />;
+      return <Navigate to="/public/home" />;
     }
 
     // authority url with role
