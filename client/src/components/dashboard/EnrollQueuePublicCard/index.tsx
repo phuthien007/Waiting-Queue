@@ -87,12 +87,12 @@ const EnrollQueuePublicCard: React.FC<IEnrollQueuePublicCardProps> = ({
           <Alert
             message={
               <Marquee pauseOnHover gradient={false}>
+                {" "}
                 Số thứ tự của bạn tại {item.queue.name} đã sắp đến, vui lòng trở
-                lại phòng chờ để tiếp tục chờ đợi!
+                lại phòng chờ để tiếp tục chờ đợi!{" "}
               </Marquee>
             }
             banner
-            closable
           />
         ) : null}
         <Badge.Ribbon
