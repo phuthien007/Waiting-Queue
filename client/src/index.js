@@ -17,6 +17,7 @@ import store from "./store";
 import Localization from "./localization";
 import * as serviceWorker from "./serviceWorker";
 import AppRouter from "./router";
+import { Notifications } from "react-push-notification";
 
 ReactGA.initialize(process.env.REACT_APP_GA4);
 
@@ -48,19 +49,18 @@ const handleError = (error) => {
       });
       // history.push("/error/403");
     } else if (status === 401) {
-      if(messageError){
+      if (messageError) {
         notification.error({
           message: "Lỗi",
           description: messageError,
         });
-      }else{
+      } else {
         notification.error({
           message: "Lỗi",
           description: "Vui lòng đăng nhập lại",
         });
       }
       history.push("/auth/login");
-      
     } else if (status === 400) {
       notification.error({
         message: "Lỗi",
@@ -110,6 +110,7 @@ root.render(
     <Localization>
       <QueryClientProvider client={queryClient}>
         <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
+        <Notifications />
         <AppRouter history={history} />
       </QueryClientProvider>
     </Localization>
