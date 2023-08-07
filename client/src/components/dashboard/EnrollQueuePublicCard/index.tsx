@@ -44,7 +44,8 @@ const vibrateMobile = () => {
   try {
     navigator.vibrate([
       500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500,
-      500, 500,
+      500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500,
+      500, 500, 500, 500,
     ]);
   } catch (error) {
     console.log("er", error);
@@ -76,7 +77,7 @@ const EnrollQueuePublicCard: React.FC<IEnrollQueuePublicCardProps> = ({
   item,
   dataList,
 }) => {
-  React.useEffect(() => {
+  React.useCallback(() => {
     if (
       // queue ở trạng thái chờ hoặc đang phục vụ và số được gọi là số tiếp theo của queue
       (item?.queue?.status === STATUS_QUEUE_ENUM.WAITING ||
