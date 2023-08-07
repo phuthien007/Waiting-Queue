@@ -53,6 +53,14 @@ const QrCodeRenderPage: React.FC = () => {
   };
 
   useEffect(() => {
+    refetch().then((res) => {
+      if (res) {
+        setValueUrl(res.data);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
     //
     if (isDynamic) {
       refetchInterval = setInterval(() => {
