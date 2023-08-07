@@ -96,11 +96,11 @@ const EnrollQueuePublicCard: React.FC<IEnrollQueuePublicCardProps> = ({
       // `);
 
       // check exist id in dataNotif
-      const existId = _.find(dataNotif, { id: item.id });
-      if (existId && existId.newDataNotif <3) {
+      const existId = dataNotif.find((item) => item.id === item.id);
+      if (existId && existId.newDataNotif < 3) {
         sendPushNotification(
           `
-  Số ${item.sequenceNumber} tại hàng đợi ${item.queue.name} đã sắp đến lượt, vui lòng trở lại phòng chờ để tiếp tục chờ đợi
+      Số ${item.sequenceNumber} tại hàng đợi ${item.queue.name} đã sắp đến lượt, vui lòng trở lại phòng chờ để tiếp tục chờ đợi
   `,
           process.env.REACT_APP_PUBLIC_URL + "/public/home"
         );

@@ -187,25 +187,28 @@ const PublicDashboard = () => {
   }, []);
 
   useEffect(() => {
-    setDataNotif((prev) => {
-      const oldData = prev;
-      const newData = data;
-      const newDataNotif = [];
-      // check newData have new item not in oldData push to newDataNotif
-      // if exist do nothing
-      newData.forEach((item) => {
-        const oldItem = oldData.find((oldItem) => oldItem.id === item.id);
-        if (!oldItem) {
-          newDataNotif.push({
-            id: item.id,
-            // thong bao 3 lan
-            numberNotif: 0,
-            queueId: item.queue.id,
-          });
-        }
+    if (data && data.length > 0) {
+      console.log("update data notif");
+      setDataNotif((prev) => {
+        const oldData = prev;
+        const newData = data;
+        const newDataNotif = [];
+        // check newData have new item not in oldData push to newDataNotif
+        // if exist do nothing
+        newData.forEach((item) => {
+          const oldItem = oldData.find((oldItem) => oldItem.id === item.id);
+          if (!oldItem) {
+            newDataNotif.push({
+              id: item.id,
+              // thong bao 3 lan
+              numberNotif: 0,
+              queueId: item.queue.id,
+            });
+          }
+        });
+        return newDataNotif;
       });
-      return newDataNotif;
-    });
+    }
   }, [data]);
 
   return (
