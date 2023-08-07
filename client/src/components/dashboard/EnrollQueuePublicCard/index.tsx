@@ -89,7 +89,7 @@ Số ${item.sequenceNumber} tại hàng đợi ${item.queue.name} đã sắp đ�
         process.env.REACT_APP_PUBLIC_URL + "/public/home"
       );
     }
-  }, []);
+  }, [item]);
   React.useEffect(() => {
     if (
       // queue ở trạng thái chờ hoặc đang phục vụ và số được gọi là số tiếp theo của queue
