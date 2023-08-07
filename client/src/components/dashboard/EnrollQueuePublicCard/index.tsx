@@ -78,33 +78,33 @@ const EnrollQueuePublicCard: React.FC<IEnrollQueuePublicCardProps> = ({
   React.useEffect(() => {
     if (
       // queue ở trạng thái chờ hoặc đang phục vụ và số được gọi là số tiếp theo của queue
-      (item?.queue?.status === STATUS_QUEUE_ENUM.WAITING ||
-        item?.queue?.status === STATUS_QUEUE_ENUM.PENDING ||
-        item?.queue?.status === STATUS_QUEUE_ENUM.SERVING) &&
-      item.currentQueue + 1 === item.sequenceNumber
+      item?.queue?.status === STATUS_QUEUE_ENUM.WAITING ||
+      item?.queue?.status === STATUS_QUEUE_ENUM.PENDING ||
+      item?.queue?.status === STATUS_QUEUE_ENUM.SERVING
     ) {
-      sendPushNotification(
-        `
-Số ${item.sequenceNumber} tại hàng đợi ${item.queue.name} đã sắp đến lượt, vui lòng trở lại phòng chờ để tiếp tục chờ đợi
-`,
-        process.env.REACT_APP_PUBLIC_URL + "/public/home"
-      );
+      if (item.currentQueue + 1 === item.sequenceNumber) {
+        sendPushNotification(
+          `
+    Số ${item.sequenceNumber} tại hàng đợi ${item.queue.name} đã sắp đến lượt, vui lòng trở lại phòng chờ để tiếp tục chờ đợi
+    `,
+          process.env.REACT_APP_PUBLIC_URL + "/public/home"
+        );
+      } else {
+        if (
+          // queue ở trạng thái chờ hoặc đang phục vụ và số được gọi là số tiếp theo của queue
+
+          item.currentQueue === item.sequenceNumber
+        ) {
+          sendPushNotification(
+            `
+      Số ${item.sequenceNumber} tại hàng đợi ${item.queue.name} đã đến lượt bạn, vui lòng trở lại phòng chờ để chuẩn bị
+      `,
+            process.env.REACT_APP_PUBLIC_URL + "/public/home"
+          );
+        }
+      }
     }
-    if (
-      // queue ở trạng thái chờ hoặc đang phục vụ và số được gọi là số tiếp theo của queue
-      (item?.queue?.status === STATUS_QUEUE_ENUM.WAITING ||
-        item?.queue?.status === STATUS_QUEUE_ENUM.PENDING ||
-        item?.queue?.status === STATUS_QUEUE_ENUM.SERVING) &&
-      item.currentQueue === item.sequenceNumber
-    ) {
-      sendPushNotification(
-        `
-Số ${item.sequenceNumber} tại hàng đợi ${item.queue.name} đã đến lượt bạn, vui lòng trở lại phòng chờ để chuẩn bị
-`,
-        process.env.REACT_APP_PUBLIC_URL + "/public/home"
-      );
-    }
-  }, [item, item.status, item.currentQueue]);
+  }, [item]);
   React.useEffect(() => {
     if (
       // queue ở trạng thái chờ hoặc đang phục vụ và số được gọi là số tiếp theo của queue
