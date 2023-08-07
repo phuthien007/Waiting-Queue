@@ -26,6 +26,7 @@ const routes = [
     exact: true,
   },
   // enroll queue
+
   {
     path: "public/queues/enroll",
     Component: lazy(() => import("pages/guest-enroll-queue")),
@@ -103,6 +104,10 @@ const routes = [
       import("pages/administration/management-events/detail-event/detail-queue")
     ),
     exact: true,
+  },
+  {
+    path: "event/queue/:queueCode/qrcode",
+    Component: lazy(() => import("pages/qr-code-render")),
   },
 
   // statistic

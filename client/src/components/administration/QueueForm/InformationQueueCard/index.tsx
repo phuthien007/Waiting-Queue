@@ -17,7 +17,7 @@ const InformationQueueCard: React.FC<Props> = ({ data }) => {
         <Row justify="space-between">
           <Col span={10}>Chi tiết hàng đợi</Col>
           <Col span={10}>
-            <QrCodeRender isDynamic={data?.isDynamic} />
+            <QrCodeRender name={data?.name} isDynamic={data?.isDynamic} />
           </Col>
         </Row>
       }

@@ -7,16 +7,18 @@ import html2canvas from "html2canvas";
 import _ from "lodash";
 import { QRCodeSVG, QRCodeCanvas } from "qrcode.react";
 import React, { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 let refetchInterval;
 
 type Props = {
   isDynamic: boolean;
+  name: string;
 };
 
-const QrCodeRender: React.FC<Props> = ({ isDynamic }) => {
+const QrCodeRender: React.FC<Props> = ({ isDynamic, name }) => {
   const { queueCode } = useParams();
+  const natigate = useNavigate();
 
   const [isQrCodeOpen, setIsQrCodeOpen] = React.useState<boolean>(false);
   const [valueUrl, setValueUrl] = React.useState<string>(
@@ -123,8 +125,35 @@ const QrCodeRender: React.FC<Props> = ({ isDynamic }) => {
                 // gutter={[20, 20]}
                 style={{ marginTop: "20px" }}
               >
+                <b>{`Hàng đợi: ${name} `}</b>
+              </Row>
+              <Row
+                justify="center"
+                // gutter={[20, 20]}
+                style={{ marginTop: "20px" }}
+              >
                 <Button onClick={downloadQRCode} type="primary">
                   Tải xuống
+                </Button>
+              </Row>
+              <Row
+                justify="center"
+                gutter={[20, 20]}
+                style={{ marginTop: "20px" }}
+              >
+                <Button
+                  // type="primary"
+                  onClick={() => {
+                    natigate(`/event/queue/${queueCode}/qrcode`, {
+                      state: {
+                        isDynamic,
+                        name,
+                      },
+                    });
+                  }}
+                  // icon="fa fa-new"
+                >
+                  Mở sang trang mới
                 </Button>
               </Row>
             </Card>
@@ -153,11 +182,38 @@ const QrCodeRender: React.FC<Props> = ({ isDynamic }) => {
               </Row>
               <Row
                 justify="center"
+                // gutter={[20, 20]}
+                style={{ marginTop: "20px" }}
+              >
+                <b>{`Hàng đợi: ${name} `}</b>
+              </Row>
+              <Row
+                justify="center"
                 gutter={[20, 20]}
                 style={{ marginTop: "20px" }}
               >
                 <Button onClick={downloadQRCode} type="primary">
                   Tải xuống
+                </Button>
+              </Row>
+              <Row
+                justify="center"
+                gutter={[20, 20]}
+                style={{ marginTop: "20px" }}
+              >
+                <Button
+                  // type="primary"
+                  onClick={() => {
+                    natigate(`/event/queue/${queueCode}/qrcode`, {
+                      state: {
+                        isDynamic,
+                        name,
+                      },
+                    });
+                  }}
+                  // icon="fa fa-new"
+                >
+                  Mở sang trang mới
                 </Button>
               </Row>
             </Card>
