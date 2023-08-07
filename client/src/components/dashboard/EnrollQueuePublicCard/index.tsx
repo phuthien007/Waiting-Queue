@@ -44,8 +44,6 @@ const vibrateMobile = () => {
   try {
     navigator.vibrate([
       500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500,
-      500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500,
-      500, 500, 500, 500,
     ]);
   } catch (error) {
     console.log("er", error);
@@ -84,11 +82,6 @@ const EnrollQueuePublicCard: React.FC<IEnrollQueuePublicCardProps> = ({
         item?.queue?.status === STATUS_QUEUE_ENUM.PENDING) &&
       item.currentQueue + 1 === item.sequenceNumber
     ) {
-      console.log("vibrate");
-      vibrateMobile();
-      // pushMessage(`
-      // Số ${item.sequenceNumber} tại hàng đợi ${item.queue.name} đã sắp đến lượt, vui lòng trở lại phòng chờ để tiếp tục chờ đợi
-      // `);
       sendPushNotification(
         `
 Số ${item.sequenceNumber} tại hàng đợi ${item.queue.name} đã sắp đến lượt, vui lòng trở lại phòng chờ để tiếp tục chờ đợi
@@ -97,6 +90,20 @@ Số ${item.sequenceNumber} tại hàng đợi ${item.queue.name} đã sắp đ�
       );
     }
   }, [dataList]);
+  React.useEffect(() => {
+    if (
+      // queue ở trạng thái chờ hoặc đang phục vụ và số được gọi là số tiếp theo của queue
+      (item?.queue?.status === STATUS_QUEUE_ENUM.WAITING ||
+        item?.queue?.status === STATUS_QUEUE_ENUM.PENDING) &&
+      item.currentQueue + 1 === item.sequenceNumber
+    ) {
+      console.log("vibrate");
+      vibrateMobile();
+      // pushMessage(`
+      // Số ${item.sequenceNumber} tại hàng đợi ${item.queue.name} đã sắp đến lượt, vui lòng trở lại phòng chờ để tiếp tục chờ đợi
+      // `);
+    }
+  }, []);
 
   const pushMessage = (message) => {
     addNotification({
