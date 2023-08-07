@@ -244,7 +244,7 @@ export class EnrollQueuesService {
                 id: enrollQueuesDTO[i].queue.id,
                 status: Not(Equal(QueueEnum.IS_CLOSED)),
               },
-              status: EnrollQueueEnum.DONE,
+              status: In[(EnrollQueueEnum.DONE, EnrollQueueEnum.SERVING)],
               sequenceNumber: LessThan(enrollQueuesDTO[i].sequenceNumber),
             },
             order: { sequenceNumber: 'DESC' },
