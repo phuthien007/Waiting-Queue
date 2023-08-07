@@ -102,7 +102,7 @@ Số ${item.sequenceNumber} tại hàng đợi ${item.queue.name} đã đến l�
         process.env.REACT_APP_PUBLIC_URL + "/public/home"
       );
     }
-  }, [item]);
+  }, [item, item.status, item.currentQueue]);
   React.useEffect(() => {
     if (
       // queue ở trạng thái chờ hoặc đang phục vụ và số được gọi là số tiếp theo của queue
@@ -142,6 +142,18 @@ Số ${item.sequenceNumber} tại hàng đợi ${item.queue.name} đã đến l�
             banner
           />
         ) : null}
+        {(item?.queue?.status === STATUS_QUEUE_ENUM.WAITING ||
+          item?.queue?.status === STATUS_QUEUE_ENUM.PENDING) &&
+        item.currentQueue === item.sequenceNumber ? (
+          <Alert
+            message={
+              <Marquee pauseOnHover gradient={false}>
+                {`  Số thứ tự của bạn tại "${item.queue.name}" đã  đến, vui lòng trở lại phòng chờ để chuẩn bị !   `}
+              </Marquee>
+            }
+            banner
+          />
+        ) : null}
         <Badge.Ribbon
           text={StatusEnrollQueueRender(item?.status)}
           color={StatusEnrollQueueRenderColor(item?.status)}
@@ -173,9 +185,8 @@ Số ${item.sequenceNumber} tại hàng đợi ${item.queue.name} đã đến l�
                     <>
                       <p>Tên hàng đợi: {item?.queue?.name}</p>
 
-                      {(item?.queue?.status === STATUS_QUEUE_ENUM.WAITING ||
-                        item?.queue?.status === STATUS_QUEUE_ENUM.PENDING) &&
-                        item.status === STATUS_ENROLL_QUEUE_ENUM.PENDING && (
+                      {item.status === STATUS_ENROLL_QUEUE_ENUM.PENDING &&
+                        item?.currentQueue > 0 && (
                           <p>Hiện tại đến số : {item?.currentQueue}</p>
                         )}
                     </>
