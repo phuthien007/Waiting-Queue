@@ -79,7 +79,8 @@ const EnrollQueuePublicCard: React.FC<IEnrollQueuePublicCardProps> = ({
     if (
       // queue ở trạng thái chờ hoặc đang phục vụ và số được gọi là số tiếp theo của queue
       (item?.queue?.status === STATUS_QUEUE_ENUM.WAITING ||
-        item?.queue?.status === STATUS_QUEUE_ENUM.PENDING) &&
+        item?.queue?.status === STATUS_QUEUE_ENUM.PENDING ||
+        item?.queue?.status === STATUS_QUEUE_ENUM.SERVING) &&
       item.currentQueue + 1 === item.sequenceNumber
     ) {
       sendPushNotification(
@@ -92,7 +93,8 @@ Số ${item.sequenceNumber} tại hàng đợi ${item.queue.name} đã sắp đ�
     if (
       // queue ở trạng thái chờ hoặc đang phục vụ và số được gọi là số tiếp theo của queue
       (item?.queue?.status === STATUS_QUEUE_ENUM.WAITING ||
-        item?.queue?.status === STATUS_QUEUE_ENUM.PENDING) &&
+        item?.queue?.status === STATUS_QUEUE_ENUM.PENDING ||
+        item?.queue?.status === STATUS_QUEUE_ENUM.SERVING) &&
       item.currentQueue === item.sequenceNumber
     ) {
       sendPushNotification(
@@ -107,7 +109,8 @@ Số ${item.sequenceNumber} tại hàng đợi ${item.queue.name} đã đến l�
     if (
       // queue ở trạng thái chờ hoặc đang phục vụ và số được gọi là số tiếp theo của queue
       (item?.queue?.status === STATUS_QUEUE_ENUM.WAITING ||
-        item?.queue?.status === STATUS_QUEUE_ENUM.PENDING) &&
+        item?.queue?.status === STATUS_QUEUE_ENUM.PENDING ||
+        item?.queue?.status === STATUS_QUEUE_ENUM.SERVING) &&
       item.currentQueue + 1 === item.sequenceNumber
     ) {
       console.log("vibrate");
