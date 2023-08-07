@@ -178,14 +178,14 @@ const PublicDashboard = () => {
       clearInterval(intervalEnrollQueue);
     };
   }, []);
-  React.useEffect(() => {
-    addNotification({
-      title: "Thông báo",
-      message: "Bạn đã kích hoạt cho phép thông báo",
-      theme: "darkblue",
-      native: true, // when using native, your OS will handle theming.
-    });
-  }, []);
+  // React.useEffect(() => {
+  //   addNotification({
+  //     title: "Thông báo",
+  //     message: "Bạn đã kích hoạt cho phép thông báo",
+  //     theme: "darkblue",
+  //     native: true, // when using native, your OS will handle theming.
+  //   });
+  // }, []);
 
   return (
     <>

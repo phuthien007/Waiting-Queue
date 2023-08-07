@@ -25,7 +25,7 @@
   },
   "include": [
     "src"
-  ],
+, "src/serviceWorker.js"  ],
   "exclude": [
     "node_modules",
     "build",

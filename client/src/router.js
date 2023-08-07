@@ -1,4 +1,4 @@
-import { lazy, Suspense, useLayoutEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useLayoutEffect, useState } from "react";
 import { Route, Navigate, Routes, Router } from "react-router-dom";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { useSelector } from "react-redux";
@@ -189,6 +189,15 @@ const routes = [
 ];
 
 const AppRouter = ({ history, basename }) => {
+  useEffect(() => {
+    if ("Notification" in window && "serviceWorker" in navigator) {
+      Notification.requestPermission().then((permission) => {
+        if (permission === "granted") {
+          // Quyền thông báo đã được chấp nhận, bạn có thể gửi thông báo đẩy
+        }
+      });
+    }
+  }, []);
   const { routerAnimation } = useSelector(selectSettings);
   const [state, setState] = useState({
     action: history.action,
