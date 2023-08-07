@@ -75,7 +75,7 @@ const EnrollQueuePublicCard: React.FC<IEnrollQueuePublicCardProps> = ({
   item,
   dataList,
 }) => {
-  React.useCallback(() => {
+  React.useEffect(() => {
     if (
       // queue ở trạng thái chờ hoặc đang phục vụ và số được gọi là số tiếp theo của queue
       (item?.queue?.status === STATUS_QUEUE_ENUM.WAITING ||
@@ -89,7 +89,7 @@ Số ${item.sequenceNumber} tại hàng đợi ${item.queue.name} đã sắp đ�
         process.env.REACT_APP_PUBLIC_URL + "/public/home"
       );
     }
-  }, [dataList]);
+  }, []);
   React.useEffect(() => {
     if (
       // queue ở trạng thái chờ hoặc đang phục vụ và số được gọi là số tiếp theo của queue
@@ -103,7 +103,7 @@ Số ${item.sequenceNumber} tại hàng đợi ${item.queue.name} đã sắp đ�
       // Số ${item.sequenceNumber} tại hàng đợi ${item.queue.name} đã sắp đến lượt, vui lòng trở lại phòng chờ để tiếp tục chờ đợi
       // `);
     }
-  }, []);
+  });
 
   const pushMessage = (message) => {
     addNotification({
