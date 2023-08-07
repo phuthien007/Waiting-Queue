@@ -74,7 +74,7 @@ const sendPushNotification = async (message, url) => {
 const EnrollQueuePublicCard: React.FC<IEnrollQueuePublicCardProps> = ({
   item,
 }) => {
-  React.useEffect(() => {
+  React.useCallback(() => {
     if (
       // queue ở trạng thái chờ hoặc đang phục vụ và số được gọi là số tiếp theo của queue
       (item?.queue?.status === STATUS_QUEUE_ENUM.WAITING ||
