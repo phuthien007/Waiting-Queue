@@ -68,6 +68,13 @@ function compareByStatus(a, b) {
 
 const PublicDashboard = () => {
   const [data, setData] = React.useState<EnrollQueueDto[]>([]);
+  const [dataNotif, setDataNotif] = React.useState<
+    {
+      id: string;
+      newDataNotif: number;
+      queueId: string;
+    }[]
+  >([]);
   const [fetchFistTime, setFetchFistTime] = React.useState<boolean>(false);
   const { isFetching, refetch } =
     useEnrollQueuesControllerFindAllMyEnrollQueue();
@@ -178,14 +185,28 @@ const PublicDashboard = () => {
       clearInterval(intervalEnrollQueue);
     };
   }, []);
-  // React.useEffect(() => {
-  //   addNotification({
-  //     title: "Thông báo",
-  //     message: "Bạn đã kích hoạt cho phép thông báo",
-  //     theme: "darkblue",
-  //     native: true, // when using native, your OS will handle theming.
-  //   });
-  // }, []);
+
+  useEffect(() => {
+    setDataNotif((prev) => {
+      const oldData = prev;
+      const newData = data;
+      const newDataNotif = [];
+      // check newData have new item not in oldData push to newDataNotif
+      // if exist do nothing
+      newData.forEach((item) => {
+        const oldItem = oldData.find((oldItem) => oldItem.id === item.id);
+        if (!oldItem) {
+          newDataNotif.push({
+            id: item.id,
+            // thong bao 3 lan
+            numberNotif: 0,
+            queueId: item.queue.id,
+          });
+        }
+      });
+      return newDataNotif;
+    });
+  }, [data]);
 
   return (
     <>
@@ -249,7 +270,12 @@ const PublicDashboard = () => {
                 {data?.sort(compareByStatus)?.map((item, index) => {
                   return (
                     // <div key={index}>
-                    <EnrollQueuePublicCard key={index} item={item} />
+                    <EnrollQueuePublicCard
+                      setDataNotif={setDataNotif}
+                      dataNotif={dataNotif}
+                      key={index}
+                      item={item}
+                    />
                     // </div>
                   );
                 })}

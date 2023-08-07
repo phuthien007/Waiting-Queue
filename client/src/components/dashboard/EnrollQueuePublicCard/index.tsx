@@ -31,6 +31,12 @@ import Marquee from "react-fast-marquee";
 
 interface IEnrollQueuePublicCardProps {
   item: EnrollQueueDto;
+  dataNotif: {
+    id: string;
+    newDataNotif: number;
+    queueId: string;
+  }[];
+  setDataNotif: (any) => void;
 }
 
 const vibrateMobile = () => {
@@ -73,6 +79,8 @@ const sendPushNotification = async (message, url) => {
 
 const EnrollQueuePublicCard: React.FC<IEnrollQueuePublicCardProps> = ({
   item,
+  dataNotif,
+  setDataNotif
 }) => {
   React.useEffect(() => {
     if (
@@ -83,15 +91,34 @@ const EnrollQueuePublicCard: React.FC<IEnrollQueuePublicCardProps> = ({
     ) {
       console.log("vibrate");
       vibrateMobile();
-      pushMessage(`
-      Số ${item.sequenceNumber} tại hàng đợi ${item.queue.name} đã sắp đến lượt, vui lòng trở lại phòng chờ để tiếp tục chờ đợi
-      `);
-      sendPushNotification(
-        `
-Số ${item.sequenceNumber} tại hàng đợi ${item.queue.name} đã sắp đến lượt, vui lòng trở lại phòng chờ để tiếp tục chờ đợi
-`,
-        process.env.REACT_APP_PUBLIC_URL + "/public/home"
-      );
+      // pushMessage(`
+      // Số ${item.sequenceNumber} tại hàng đợi ${item.queue.name} đã sắp đến lượt, vui lòng trở lại phòng chờ để tiếp tục chờ đợi
+      // `);
+
+      // check exist id in dataNotif
+      const existId = _.find(dataNotif, { id: item.id });
+      if (existId && existId.newDataNotif <3) {
+        sendPushNotification(
+          `
+  Số ${item.sequenceNumber} tại hàng đợi ${item.queue.name} đã sắp đến lượt, vui lòng trở lại phòng chờ để tiếp tục chờ đợi
+  `,
+          process.env.REACT_APP_PUBLIC_URL + "/public/home"
+        );
+        // update count in dataNotif
+        const newDataNotif = dataNotif.map((item) => {
+          if (item.id === existId.id) {
+            return {
+              ...item,
+              newDataNotif: item.newDataNotif + 1,
+            };
+          }
+          return item;
+        });
+        setDataNotif(newDataNotif);
+      }
+
+     
+
     }
   });
 
