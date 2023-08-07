@@ -15,7 +15,7 @@ import {
 } from "antd";
 import _ from "lodash";
 import moment from "moment";
-import React from "react";
+import React, { memo } from "react";
 import addNotification from "react-push-notification";
 import {
   FORMAT_DATE_MINUTE,
@@ -89,22 +89,30 @@ const EnrollQueuePublicCard: React.FC<IEnrollQueuePublicCardProps> = ({
     `,
           process.env.REACT_APP_PUBLIC_URL + "/public/home"
         );
-      } else {
-        if (
-          // queue ở trạng thái chờ hoặc đang phục vụ và số được gọi là số tiếp theo của queue
-
-          item.currentQueue === item.sequenceNumber
-        ) {
-          sendPushNotification(
-            `
-      Số ${item.sequenceNumber} tại hàng đợi ${item.queue.name} đã đến lượt bạn, vui lòng trở lại phòng chờ để chuẩn bị
-      `,
-            process.env.REACT_APP_PUBLIC_URL + "/public/home"
-          );
-        }
       }
     }
-  }, [item]);
+  }, [item.currentQueue, item.currentQueue, item.status]);
+  React.useEffect(() => {
+    if (
+      // queue ở trạng thái chờ hoặc đang phục vụ và số được gọi là số tiếp theo của queue
+      item?.queue?.status === STATUS_QUEUE_ENUM.WAITING ||
+      item?.queue?.status === STATUS_QUEUE_ENUM.PENDING ||
+      item?.queue?.status === STATUS_QUEUE_ENUM.SERVING
+    ) {
+      if (
+        // queue ở trạng thái chờ hoặc đang phục vụ và số được gọi là số tiếp theo của queue
+
+        item.currentQueue === item.sequenceNumber
+      ) {
+        sendPushNotification(
+          `
+      Số ${item.sequenceNumber} tại hàng đợi ${item.queue.name} đã đến lượt bạn, vui lòng trở lại phòng chờ để chuẩn bị
+      `,
+          process.env.REACT_APP_PUBLIC_URL + "/public/home"
+        );
+      }
+    }
+  }, [item.currentQueue, item.currentQueue, item.status]);
   React.useEffect(() => {
     if (
       // queue ở trạng thái chờ hoặc đang phục vụ và số được gọi là số tiếp theo của queue
@@ -134,7 +142,8 @@ const EnrollQueuePublicCard: React.FC<IEnrollQueuePublicCardProps> = ({
     <>
       <Col sm={12} xs={24} md={8} lg={8} xl={8} xxl={8}>
         {(item?.queue?.status === STATUS_QUEUE_ENUM.WAITING ||
-          item?.queue?.status === STATUS_QUEUE_ENUM.PENDING) &&
+          item?.queue?.status === STATUS_QUEUE_ENUM.PENDING ||
+          item?.queue?.status === STATUS_QUEUE_ENUM.SERVING) &&
         item.currentQueue + 1 === item.sequenceNumber ? (
           <Alert
             message={
@@ -146,7 +155,8 @@ const EnrollQueuePublicCard: React.FC<IEnrollQueuePublicCardProps> = ({
           />
         ) : null}
         {(item?.queue?.status === STATUS_QUEUE_ENUM.WAITING ||
-          item?.queue?.status === STATUS_QUEUE_ENUM.PENDING) &&
+          item?.queue?.status === STATUS_QUEUE_ENUM.PENDING ||
+          item?.queue?.status === STATUS_QUEUE_ENUM.SERVING) &&
         item.currentQueue === item.sequenceNumber ? (
           <Alert
             message={
@@ -203,11 +213,15 @@ const EnrollQueuePublicCard: React.FC<IEnrollQueuePublicCardProps> = ({
                       <Descriptions.Item label="Phục vụ trung bình">
                         <b>
                           {(item?.serveTimeAvg &&
-                            item?.serveTimeAvg &&
-                            item?.serveTimeAvg !== 0 &&
-                            Math.floor(
-                              _.toSafeInteger(item?.serveTimeAvg) / 60
-                            )) + " phút" ?? "Chưa có dữ liệu"}
+                          item?.serveTimeAvg &&
+                          item?.serveTimeAvg !== 0 &&
+                          Math.floor(_.toSafeInteger(item?.serveTimeAvg) / 60) >
+                            0
+                            ? Math.floor(
+                                _.toSafeInteger(item?.serveTimeAvg) / 60
+                              ) + " phút"
+                            : item?.serveTimeAvg) + " giây" ??
+                            "Chưa có dữ liệu"}
                         </b>
                       </Descriptions.Item>
                       <Descriptions.Item
@@ -243,4 +257,4 @@ const EnrollQueuePublicCard: React.FC<IEnrollQueuePublicCardProps> = ({
   );
 };
 
-export default EnrollQueuePublicCard;
+export default memo(EnrollQueuePublicCard);
