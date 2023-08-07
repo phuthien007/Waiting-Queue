@@ -31,6 +31,7 @@ import Marquee from "react-fast-marquee";
 
 interface IEnrollQueuePublicCardProps {
   item: EnrollQueueDto;
+  dataList: EnrollQueueDto[];
 }
 
 const vibrateMobile = () => {
@@ -73,8 +74,9 @@ const sendPushNotification = async (message, url) => {
 
 const EnrollQueuePublicCard: React.FC<IEnrollQueuePublicCardProps> = ({
   item,
+  dataList,
 }) => {
-  React.useCallback(() => {
+  React.useEffect(() => {
     if (
       // queue ở trạng thái chờ hoặc đang phục vụ và số được gọi là số tiếp theo của queue
       (item?.queue?.status === STATUS_QUEUE_ENUM.WAITING ||
@@ -93,7 +95,7 @@ Số ${item.sequenceNumber} tại hàng đợi ${item.queue.name} đã sắp đ�
         process.env.REACT_APP_PUBLIC_URL + "/public/home"
       );
     }
-  }, [item]);
+  }, [dataList]);
 
   const pushMessage = (message) => {
     addNotification({

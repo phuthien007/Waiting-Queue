@@ -249,7 +249,11 @@ const PublicDashboard = () => {
                 {data?.sort(compareByStatus)?.map((item, index) => {
                   return (
                     // <div key={index}>
-                    <EnrollQueuePublicCard key={index} item={item} />
+                    <EnrollQueuePublicCard
+                      dataList={data}
+                      key={index}
+                      item={item}
+                    />
                     // </div>
                   );
                 })}
