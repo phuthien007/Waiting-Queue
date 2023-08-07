@@ -89,6 +89,19 @@ Số ${item.sequenceNumber} tại hàng đợi ${item.queue.name} đã sắp đ�
         process.env.REACT_APP_PUBLIC_URL + "/public/home"
       );
     }
+    if (
+      // queue ở trạng thái chờ hoặc đang phục vụ và số được gọi là số tiếp theo của queue
+      (item?.queue?.status === STATUS_QUEUE_ENUM.WAITING ||
+        item?.queue?.status === STATUS_QUEUE_ENUM.PENDING) &&
+      item.currentQueue === item.sequenceNumber
+    ) {
+      sendPushNotification(
+        `
+Số ${item.sequenceNumber} tại hàng đợi ${item.queue.name} đã đến lượt bạn, vui lòng trở lại phòng chờ để chuẩn bị
+`,
+        process.env.REACT_APP_PUBLIC_URL + "/public/home"
+      );
+    }
   }, [item]);
   React.useEffect(() => {
     if (
