@@ -238,6 +238,7 @@ const EventForm: React.FC<Props> = ({
           labelCol={{
             span: 6,
           }}
+          labelWrap={true}
           wrapperCol={{
             span: 16,
           }}
