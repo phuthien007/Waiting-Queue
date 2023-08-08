@@ -25,6 +25,7 @@ import {
 } from "@api/waitingQueue.schemas";
 import EnrollQueuePublicCard from "components/dashboard/EnrollQueuePublicCard";
 import addNotification from "react-push-notification";
+import { STATUS_QUEUE_ENUM } from "services/utils/constants";
 
 // const vibrateMobile = () => {
 //   // if (navigator.vibrate) {
@@ -71,6 +72,23 @@ const PublicDashboard = () => {
   const [fetchFistTime, setFetchFistTime] = React.useState<boolean>(false);
   const { isFetching, refetch } =
     useEnrollQueuesControllerFindAllMyEnrollQueue();
+  const vibrateMobile = () => {
+    // if (navigator.vibrate) {
+    navigator.vibrate =
+      navigator.vibrate ||
+      navigator.webkitVibrate ||
+      navigator.mozVibrate ||
+      navigator.msVibrate;
+    try {
+      navigator.vibrate([
+        500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500,
+        500,
+      ]);
+    } catch (error) {
+      console.log("er", error);
+    }
+    // }
+  };
 
   useEffect(() => {
     refetch().then((res) => {
@@ -247,15 +265,30 @@ const PublicDashboard = () => {
               <Row justify="center" gutter={[20, 20]}>
                 {/* sort data follow status serving is top  */}
                 {data?.sort(compareByStatus)?.map((item, index) => {
+                  // <div key={index}>
+                  React.useEffect(() => {
+                    if (
+                      // queue ở trạng thái chờ hoặc đang phục vụ và số được gọi là số tiếp theo của queue
+                      (item?.queue?.status === STATUS_QUEUE_ENUM.WAITING ||
+                        item?.queue?.status === STATUS_QUEUE_ENUM.PENDING ||
+                        item?.queue?.status === STATUS_QUEUE_ENUM.SERVING) &&
+                      item.currentQueue + 1 === item.sequenceNumber
+                    ) {
+                      console.log("vibrate");
+                      vibrateMobile();
+                      // pushMessage(`
+                      // Số ${item.sequenceNumber} tại hàng đợi ${item.queue.name} đã sắp đến lượt, vui lòng trở lại phòng chờ để tiếp tục chờ đợi
+                      // `);
+                    }
+                  });
                   return (
-                    // <div key={index}>
                     <EnrollQueuePublicCard
                       dataList={data}
                       key={index}
                       item={item}
                     />
-                    // </div>
                   );
+                  // </div>
                 })}
               </Row>
             </Card>

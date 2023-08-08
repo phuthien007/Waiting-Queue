@@ -113,21 +113,7 @@ const EnrollQueuePublicCard: React.FC<IEnrollQueuePublicCardProps> = ({
       }
     }
   }, [item.currentQueue, item.currentQueue, item.status]);
-  React.useEffect(() => {
-    if (
-      // queue ở trạng thái chờ hoặc đang phục vụ và số được gọi là số tiếp theo của queue
-      (item?.queue?.status === STATUS_QUEUE_ENUM.WAITING ||
-        item?.queue?.status === STATUS_QUEUE_ENUM.PENDING ||
-        item?.queue?.status === STATUS_QUEUE_ENUM.SERVING) &&
-      item.currentQueue + 1 === item.sequenceNumber
-    ) {
-      console.log("vibrate");
-      vibrateMobile();
-      // pushMessage(`
-      // Số ${item.sequenceNumber} tại hàng đợi ${item.queue.name} đã sắp đến lượt, vui lòng trở lại phòng chờ để tiếp tục chờ đợi
-      // `);
-    }
-  });
+ 
 
   const pushMessage = (message) => {
     addNotification({
@@ -220,7 +206,7 @@ const EnrollQueuePublicCard: React.FC<IEnrollQueuePublicCardProps> = ({
                             ? Math.floor(
                                 _.toSafeInteger(item?.serveTimeAvg) / 60
                               ) + " phút"
-                            : item?.serveTimeAvg) + " giây" ??
+                            : item?.serveTimeAvg + " giây") ??
                             "Chưa có dữ liệu"}
                         </b>
                       </Descriptions.Item>
