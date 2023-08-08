@@ -65,13 +65,6 @@ function registerValidSW(swUrl, config) {
         }
         installingWorker.onstatechange = () => {
           if (installingWorker.state === "installed") {
-            if ("Notification" in window && "serviceWorker" in navigator) {
-              Notification.requestPermission().then((permission) => {
-                if (permission === "granted") {
-                  // Quyền thông báo đã được chấp nhận, bạn có thể gửi thông báo đẩy
-                }
-              });
-            }
             if (navigator.serviceWorker.controller) {
               // At this point, the updated precached content has been fetched,
               // but the previous service worker will still serve the older

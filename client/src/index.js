@@ -103,7 +103,13 @@ const queryClient = new QueryClient({
   },
 });
 
-
+if ("Notification" in window && "serviceWorker" in navigator) {
+  Notification.requestPermission().then((permission) => {
+    if (permission === "granted") {
+      // Quyền thông báo đã được chấp nhận, bạn có thể gửi thông báo đẩy
+    }
+  });
+}
 
 const container = document.getElementById("root");
 const root = createRoot(container);
