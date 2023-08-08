@@ -50,6 +50,7 @@ import { loadCurrentAccount, selectUser } from "store/userSlice";
 const DetailEvent = () => {
   const params = useParams();
   const user = useSelector(selectUser);
+  const [isRefetch, setIsRefetch] = useState(false);
   const [time, setTime] = useState(0);
   const [currentSerial, setCurrentSerial] = React.useState<EnrollQueueDto>();
   const dispatch = useDispatch();
@@ -113,6 +114,8 @@ const DetailEvent = () => {
    * Handle update working
    */
   const handleUpdateWorking = async () => {
+    setIsRefetch(!isRefetch);
+
     // update status working
     updateWorking({
       data: {
@@ -157,7 +160,7 @@ const DetailEvent = () => {
 
   const handleNextSerial = async () => {
     getStatisticQueue();
-
+setIsRefetch(!isRefetch);
     // if have current serial
     if (currentSerial) {
       // update status current serial to done
@@ -355,13 +358,19 @@ const DetailEvent = () => {
       <Card title="Danh sách người đợi" className="mt-2 br-8">
         <Tabs defaultActiveKey="2">
           <Tabs.TabPane tab="Tất cả" key="1">
-            <ManagementEnrollQueues status="" />
+            <ManagementEnrollQueues isRefetch={isRefetch} status="" />
           </Tabs.TabPane>
           <Tabs.TabPane tab="Đang chờ" key="2">
-            <ManagementEnrollQueues status={STATUS_ENROLL_QUEUE_ENUM.PENDING} />
+            <ManagementEnrollQueues
+              isRefetch={isRefetch}
+              status={STATUS_ENROLL_QUEUE_ENUM.PENDING}
+            />
           </Tabs.TabPane>
           <Tabs.TabPane tab="Đã xong" key="3">
-            <ManagementEnrollQueues status={STATUS_ENROLL_QUEUE_ENUM.DONE} />
+            <ManagementEnrollQueues
+              isRefetch={isRefetch}
+              status={STATUS_ENROLL_QUEUE_ENUM.DONE}
+            />
           </Tabs.TabPane>
           {/* <Tabs.TabPane tab="Đã hủy" key="4">
             <ManagementEnrollQueues

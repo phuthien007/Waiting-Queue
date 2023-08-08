@@ -38,9 +38,10 @@ import { StatusEnrollQueueRender } from "services/utils/format";
 
 type Props = {
   status: string;
+  isRefetch: boolean;
 };
 
-const ManagementEnrollQueues: React.FC<Props> = ({ status }) => {
+const ManagementEnrollQueues: React.FC<Props> = ({ status, isRefetch }) => {
   const { eventId, queueCode } = useParams();
   const [dataSource, setDataSource] = React.useState<{
     data: EnrollQueueDto[];
@@ -136,7 +137,7 @@ const ManagementEnrollQueues: React.FC<Props> = ({ status }) => {
     refetch().then((res) => {
       setDataSource(res?.data);
     });
-  }, [page, status]);
+  }, [page, status, isRefetch]);
 
   useEffect(() => {
     const enrollQueueInterval = setInterval(() => {
