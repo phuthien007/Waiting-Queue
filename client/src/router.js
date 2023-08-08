@@ -194,15 +194,6 @@ const routes = [
 ];
 
 const AppRouter = ({ history, basename }) => {
-  useEffect(() => {
-    if ("Notification" in window && "serviceWorker" in navigator) {
-      Notification.requestPermission().then((permission) => {
-        if (permission === "granted") {
-          // Quyền thông báo đã được chấp nhận, bạn có thể gửi thông báo đẩy
-        }
-      });
-    }
-  }, []);
   const { routerAnimation } = useSelector(selectSettings);
   const [state, setState] = useState({
     action: history.action,
