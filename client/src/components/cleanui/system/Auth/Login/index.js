@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-unused-vars */
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { CheckCircleFilled, SendOutlined } from "@ant-design/icons";
 import {
@@ -34,10 +34,13 @@ const initialAccount = {
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const recaptchaRef = React.createRef();
   const [tokenCaptcha, setTokenCaptcha] = useState(null);
   const { isLoading: isAuthenticating, mutateAsync } = useAuthControllerLogin();
 
   const onFinish = async (values) => {
+    // reset recaptcha
+    recaptchaRef.current.reset();
     // navigate("/public/home");
     const authenticatedData = await mutateAsync({
       data: {
@@ -47,6 +50,9 @@ const Login = () => {
         token: tokenCaptcha,
       },
     });
+
+    setTokenCaptcha(null);
+
     if (authenticatedData) {
       dispatch(loadCurrentAccount());
       navigate(settingsConfig.getLoginRedirectUrl() || "/");
@@ -125,6 +131,7 @@ const Login = () => {
           ]}
         >
           <ReCAPTCHA
+            ref={recaptchaRef}
             sitekey={process.env.REACT_APP_KEYCAPTCHA}
             onChange={handleRecaptcha}
           />
