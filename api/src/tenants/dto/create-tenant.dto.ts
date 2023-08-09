@@ -7,10 +7,11 @@ import { commonEnum } from 'src/common/enum';
  * CreateTenantDto class for create tenant DTO object from request body
  */
 export class CreateTenantDto extends BaseDto {
-  @ApiPropertyOptional({
-    required: false,
+  @ApiPropertyOptional()
+  @IsNotEmpty({
+    message: 'Recaptcha token không được trống',
   })
-  token?: string;
+  token: string;
 
   @IsNotEmpty()
   @IsString()
