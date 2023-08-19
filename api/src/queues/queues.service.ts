@@ -92,16 +92,12 @@ export class QueuesService {
         startTime = queue.dateGetQrcode.getTime();
       } else {
         // need inital or update time get qrcode
-        await this.queueRepository.update(queue.id, {
-          ...queue,
-          dateGetQrcode: new Date(),
-        });
         // change randomQueueCode
         const randomCodeQueue = getRandomQueueCode();
         queue.randomCode = randomCodeQueue;
-        // update randomCode for queue
-        await this.queueRepository.update(queue.id, {
+        await this.queueRepository.save({
           ...queue,
+          dateGetQrcode: new Date(),
           randomCode: randomCodeQueue,
         });
       }
@@ -119,9 +115,8 @@ export class QueuesService {
     if (!queue.randomCode) {
       const randomCodeQueue = getRandomQueueCode();
       // update randomCode for queue
-      await this.queueRepository.update(queue.id, {
+      await this.queueRepository.save({
         ...queue,
-
         randomCode: randomCodeQueue,
       });
       // handle hash queue

@@ -7,34 +7,41 @@ import { ValidateEmail } from "services/utils/validates";
 import { useTenantsControllerRegisterTenant } from "@api/waitingQueue";
 import { useEffect } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
+import React from "react";
 
 const Register = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [form] = Form.useForm();
-  // const [tokenCaptcha, setTokenCaptcha] = useState(null);
-
+  const [tokenCaptcha, setTokenCaptcha] = React.useState(null);
+  const recaptchaRef = React.createRef();
   const { isLoading, mutateAsync: registerTenant } =
     useTenantsControllerRegisterTenant();
 
   const user = useSelector(selectUser);
   const onFinish = (values) => {
+    recaptchaRef.current.reset();
     registerTenant({
       data: {
         ...values,
         token: tokenCaptcha,
       },
-    }).then((res) => {
-      if (res) {
-        notification.success({
-          message: "Thành công",
-          description:
-            "Chúc mừng bạn đã đăng ký thành công. vui lòng kiểm tra email của bạn",
-        });
-        form.resetFields();
-        navigate("/auth/login");
-      }
-    });
+    })
+      .then((res) => {
+        if (res) {
+          notification.success({
+            message: "Thành công",
+            description:
+              "Chúc mừng bạn đã đăng ký thành công. vui lòng kiểm tra email của bạn",
+          });
+          form.resetFields();
+          navigate("/auth/login");
+        }
+      })
+      .finally(() => {
+        setTokenCaptcha(null);
+        // reset recaptcha
+      });
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -137,6 +144,7 @@ const Register = () => {
             ]}
           >
             <ReCAPTCHA
+              ref={recaptchaRef}
               sitekey={process.env.REACT_APP_KEYCAPTCHA}
               onChange={handleRecaptcha}
             />

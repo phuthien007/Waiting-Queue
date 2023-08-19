@@ -207,6 +207,7 @@ export class EnrollQueuesService {
    * @returns list enroll queue of user
    */
   async findMyAll(tmpSession: string | null | undefined) {
+    // get sessionId from cookie
     const sessionId = tmpSession
       ? tmpSession
       : await this.sessionsService.createOrRetrieve();
@@ -234,6 +235,7 @@ export class EnrollQueuesService {
         // queue pending/ waiting -> done cuoi cung
         // queue serving -> serving cuoi cung
         let getCurrentServeInQueue;
+        // nếu hàng đợi đang đợi hoặc không có người thì lấy stt đã done trước đó
         if (
           enrollQueuesDTO[i].queue.status === QueueEnum.PENDING ||
           enrollQueuesDTO[i].queue.status === QueueEnum.WAITING
@@ -250,6 +252,7 @@ export class EnrollQueuesService {
             order: { sequenceNumber: 'DESC' },
           });
         }
+        // nếu hàng đợi đang phục vụ thì lấy current serve
         if (enrollQueuesDTO[i].queue.status === QueueEnum.SERVING) {
           getCurrentServeInQueue = await this.enrollQueueRepository.findOne({
             where: {

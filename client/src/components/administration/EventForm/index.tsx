@@ -238,6 +238,7 @@ const EventForm: React.FC<Props> = ({
           labelCol={{
             span: 6,
           }}
+          labelWrap={true}
           wrapperCol={{
             span: 16,
           }}
@@ -536,7 +537,7 @@ const EventForm: React.FC<Props> = ({
                 </Col>
                 <Col offset={4} span={16}>
                   <Button
-                    loading={loading}
+                    loading={loading || loadingUploadImage}
                     icon={<i className="fe fe-save mr-2" />}
                     type="primary"
                     htmlType="submit"

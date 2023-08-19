@@ -3,9 +3,20 @@ import {
   EnrollQueuesControllerFindAllEnrollQueueStatus,
   EnrollQueuesControllerUpdateStatusEnrollQueueStatus,
 } from "@api/waitingQueue.schemas";
-import { Badge, Card, Col, Descriptions, Divider, Row, Typography } from "antd";
+import {
+  Alert,
+  Badge,
+  Card,
+  Col,
+  Descriptions,
+  Divider,
+  Row,
+  Typography,
+} from "antd";
+import _ from "lodash";
 import moment from "moment";
-import React from "react";
+import React, { memo } from "react";
+import addNotification from "react-push-notification";
 import {
   FORMAT_DATE_MINUTE,
   STATUS_ENROLL_QUEUE_ENUM,
@@ -16,9 +27,11 @@ import {
   StatusEnrollQueueRenderColor,
   StatusQueueRender,
 } from "services/utils/format";
+import Marquee from "react-fast-marquee";
 
 interface IEnrollQueuePublicCardProps {
   item: EnrollQueueDto;
+  dataList: EnrollQueueDto[];
 }
 
 const vibrateMobile = () => {
@@ -31,7 +44,6 @@ const vibrateMobile = () => {
   try {
     navigator.vibrate([
       500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500,
-      500, 500,
     ]);
   } catch (error) {
     console.log("er", error);
@@ -39,23 +51,108 @@ const vibrateMobile = () => {
   // }
 };
 
+const sendPushNotification = async (message, url) => {
+  if ("serviceWorker" in navigator && "PushManager" in window) {
+    const registration = await navigator.serviceWorker.ready;
+
+    const options = {
+      body: message,
+      // icon: '/path/to/icon.png',
+      data: {
+        url: url, // Đường dẫn tới trang bạn muốn mở khi người dùng nhấp vào thông báo
+      },
+      actions: [
+        { action: "open", title: "Mở ứng dụng" },
+        { action: "close", title: "Đóng" },
+      ],
+    };
+
+    registration.showNotification("Thông báo mới", options);
+  }
+};
+
 const EnrollQueuePublicCard: React.FC<IEnrollQueuePublicCardProps> = ({
   item,
+  dataList,
 }) => {
   React.useEffect(() => {
     if (
-      (item?.queue?.status === STATUS_QUEUE_ENUM.WAITING ||
-        item?.queue?.status === STATUS_QUEUE_ENUM.PENDING) &&
-      item.currentQueue + 1 === item.sequenceNumber
+      // queue ở trạng thái chờ hoặc đang phục vụ và số được gọi là số tiếp theo của queue
+      item?.queue?.status === STATUS_QUEUE_ENUM.WAITING ||
+      item?.queue?.status === STATUS_QUEUE_ENUM.PENDING ||
+      item?.queue?.status === STATUS_QUEUE_ENUM.SERVING
     ) {
-      console.log("vibrate");
-      vibrateMobile();
+      if (item.currentQueue + 1 === item.sequenceNumber) {
+        sendPushNotification(
+          `
+    Số ${item.sequenceNumber} tại hàng đợi ${item.queue.name} đã sắp đến lượt, vui lòng trở lại phòng chờ để tiếp tục chờ đợi
+    `,
+          process.env.REACT_APP_PUBLIC_URL + "/public/home"
+        );
+      }
     }
-  });
+  }, [item.currentQueue, item.currentQueue, item.status]);
+  React.useEffect(() => {
+    if (
+      // queue ở trạng thái chờ hoặc đang phục vụ và số được gọi là số tiếp theo của queue
+      item?.queue?.status === STATUS_QUEUE_ENUM.WAITING ||
+      item?.queue?.status === STATUS_QUEUE_ENUM.PENDING ||
+      item?.queue?.status === STATUS_QUEUE_ENUM.SERVING
+    ) {
+      if (
+        // queue ở trạng thái chờ hoặc đang phục vụ và số được gọi là số tiếp theo của queue
+
+        item.currentQueue === item.sequenceNumber
+      ) {
+        sendPushNotification(
+          `
+      Số ${item.sequenceNumber} tại hàng đợi ${item.queue.name} đã đến lượt bạn, vui lòng trở lại phòng chờ để chuẩn bị
+      `,
+          process.env.REACT_APP_PUBLIC_URL + "/public/home"
+        );
+      }
+    }
+  }, [item.currentQueue, item.currentQueue, item.status]);
+ 
+
+  const pushMessage = (message) => {
+    addNotification({
+      title: "Thông báo",
+      message,
+      theme: "darkblue",
+      native: true, // when using native, your OS will handle theming.
+    });
+  };
 
   return (
     <>
       <Col sm={12} xs={24} md={8} lg={8} xl={8} xxl={8}>
+        {(item?.queue?.status === STATUS_QUEUE_ENUM.WAITING ||
+          item?.queue?.status === STATUS_QUEUE_ENUM.PENDING ||
+          item?.queue?.status === STATUS_QUEUE_ENUM.SERVING) &&
+        item.currentQueue + 1 === item.sequenceNumber ? (
+          <Alert
+            message={
+              <Marquee pauseOnHover gradient={false}>
+                {`  Số thứ tự của bạn tại "${item.queue.name}" đã sắp đến, vui lòng trở lại phòng chờ để tiếp tục chờ đợi !   `}
+              </Marquee>
+            }
+            banner
+          />
+        ) : null}
+        {(item?.queue?.status === STATUS_QUEUE_ENUM.WAITING ||
+          item?.queue?.status === STATUS_QUEUE_ENUM.PENDING ||
+          item?.queue?.status === STATUS_QUEUE_ENUM.SERVING) &&
+        item.currentQueue === item.sequenceNumber ? (
+          <Alert
+            message={
+              <Marquee pauseOnHover gradient={false}>
+                {`  Số thứ tự của bạn tại "${item.queue.name}" đã  đến, vui lòng trở lại phòng chờ để chuẩn bị !   `}
+              </Marquee>
+            }
+            banner
+          />
+        ) : null}
         <Badge.Ribbon
           text={StatusEnrollQueueRender(item?.status)}
           color={StatusEnrollQueueRenderColor(item?.status)}
@@ -87,9 +184,8 @@ const EnrollQueuePublicCard: React.FC<IEnrollQueuePublicCardProps> = ({
                     <>
                       <p>Tên hàng đợi: {item?.queue?.name}</p>
 
-                      {(item?.queue?.status === STATUS_QUEUE_ENUM.WAITING ||
-                        item?.queue?.status === STATUS_QUEUE_ENUM.PENDING) &&
-                        item.status === STATUS_ENROLL_QUEUE_ENUM.PENDING && (
+                      {item.status === STATUS_ENROLL_QUEUE_ENUM.PENDING &&
+                        item?.currentQueue > 0 && (
                           <p>Hiện tại đến số : {item?.currentQueue}</p>
                         )}
                     </>
@@ -103,9 +199,15 @@ const EnrollQueuePublicCard: React.FC<IEnrollQueuePublicCardProps> = ({
                       <Descriptions.Item label="Phục vụ trung bình">
                         <b>
                           {(item?.serveTimeAvg &&
-                            item?.serveTimeAvg &&
-                            item?.serveTimeAvg !== 0 &&
-                            item?.serveTimeAvg) + " s" ?? "Chưa có dữ liệu"}
+                          item?.serveTimeAvg &&
+                          item?.serveTimeAvg !== 0 &&
+                          Math.floor(_.toSafeInteger(item?.serveTimeAvg) / 60) >
+                            0
+                            ? Math.floor(
+                                _.toSafeInteger(item?.serveTimeAvg) / 60
+                              ) + " phút"
+                            : item?.serveTimeAvg + " giây") ??
+                            "Chưa có dữ liệu"}
                         </b>
                       </Descriptions.Item>
                       <Descriptions.Item
@@ -141,4 +243,4 @@ const EnrollQueuePublicCard: React.FC<IEnrollQueuePublicCardProps> = ({
   );
 };
 
-export default EnrollQueuePublicCard;
+export default memo(EnrollQueuePublicCard);

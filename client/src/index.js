@@ -17,6 +17,7 @@ import store from "./store";
 import Localization from "./localization";
 import * as serviceWorker from "./serviceWorker";
 import AppRouter from "./router";
+import { Notifications } from "react-push-notification";
 
 ReactGA.initialize(process.env.REACT_APP_GA4);
 
@@ -48,19 +49,18 @@ const handleError = (error) => {
       });
       // history.push("/error/403");
     } else if (status === 401) {
-      if(messageError){
+      if (messageError) {
         notification.error({
           message: "Lỗi",
           description: messageError,
         });
-      }else{
+      } else {
         notification.error({
           message: "Lỗi",
           description: "Vui lòng đăng nhập lại",
         });
       }
       history.push("/auth/login");
-      
     } else if (status === 400) {
       notification.error({
         message: "Lỗi",
@@ -103,6 +103,14 @@ const queryClient = new QueryClient({
   },
 });
 
+if ("Notification" in window && "serviceWorker" in navigator) {
+  Notification.requestPermission().then((permission) => {
+    if (permission === "granted") {
+      // Quyền thông báo đã được chấp nhận, bạn có thể gửi thông báo đẩy
+    }
+  });
+}
+
 const container = document.getElementById("root");
 const root = createRoot(container);
 root.render(
@@ -110,6 +118,7 @@ root.render(
     <Localization>
       <QueryClientProvider client={queryClient}>
         <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
+        <Notifications />
         <AppRouter history={history} />
       </QueryClientProvider>
     </Localization>
@@ -119,5 +128,5 @@ root.render(
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+serviceWorker.register();
 export { store, history };
