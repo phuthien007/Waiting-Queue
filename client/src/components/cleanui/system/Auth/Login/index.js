@@ -40,7 +40,7 @@ const Login = () => {
 
   const onFinish = async (values) => {
     // reset recaptcha
-    recaptchaRef.current.reset();
+    // recaptchaRef.current.reset();
     // navigate("/public/home");
     const authenticatedData = await mutateAsync({
       data: {
@@ -124,7 +124,7 @@ const Login = () => {
         >
           <Input size="large" type="text" placeholder="Mã công ty" />
         </Form.Item>
-        <Form.Item
+        {/* <Form.Item
           name="recaptcha"
           rules={[
             { required: true, message: "Vui lòng hoàn thành mã captcha" },
@@ -135,7 +135,7 @@ const Login = () => {
             sitekey={process.env.REACT_APP_KEYCAPTCHA}
             onChange={handleRecaptcha}
           />
-        </Form.Item>
+        </Form.Item> */}
         <Button
           type="primary"
           size="large"
