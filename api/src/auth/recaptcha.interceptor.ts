@@ -12,11 +12,12 @@ import { validateRecaptcha } from 'src/common/algorithm';
 @Injectable()
 export class RecaptchaInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    const request = context.switchToHttp().getRequest();
-    if (!request.body.token) {
-      throw new BadRequestException('Recaptcha không hợp lệ');
-    }
-    validateRecaptcha(request.body.token);
+    // if want to use recaptcha, uncomment this code
+    // const request = context.switchToHttp().getRequest();
+    // if (!request.body.token) {
+    //   throw new BadRequestException('Recaptcha không hợp lệ');
+    // }
+    // validateRecaptcha(request.body.token);
     return next.handle();
   }
 }

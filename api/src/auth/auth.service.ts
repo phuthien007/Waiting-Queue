@@ -39,11 +39,12 @@ export class AuthService {
    */
   async validateUser(loginModel: LoginDto) {
     // validate token
-    const token = loginModel.token;
-    const resRecaptcha = await validateRecaptcha(token);
-    if (resRecaptcha.success === false && token !== 'thienphu123456Aa@') {
-      throw new BadRequestException('Captcha không hợp lệ');
-    }
+    // if want to use recaptcha, uncomment this code
+    // const token = loginModel.token;
+    // const resRecaptcha = await validateRecaptcha(token);
+    // if (resRecaptcha.success === false && token !== 'thienphu123456Aa@') {
+    //   throw new BadRequestException('Captcha không hợp lệ');
+    // }
     // check if user exists
     const user = await this.userRepository.findOne({
       where: {

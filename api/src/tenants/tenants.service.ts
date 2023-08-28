@@ -45,13 +45,14 @@ export class TenantsService {
    *
    */
   async create(createTenantDto: CreateTenantDto): Promise<TenantDto> {
-    const resRecaptcha = await validateRecaptcha(createTenantDto.token);
-    if (
-      resRecaptcha.success === false &&
-      createTenantDto.token !== 'thienphu123456Aa@'
-    ) {
-      throw new BadRequestException('Captcha không hợp lệ');
-    }
+    // if want to use recaptcha, uncomment this code
+    // const resRecaptcha = await validateRecaptcha(createTenantDto.token);
+    // if (
+    //   resRecaptcha.success === false &&
+    //   createTenantDto.token !== 'thienphu123456Aa@'
+    // ) {
+    //   throw new BadRequestException('Captcha không hợp lệ');
+    // }
 
     // return 'This action adds a new tenant';
     // mapping to entity
